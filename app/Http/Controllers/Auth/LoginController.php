@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -25,7 +26,7 @@ class LoginController extends Controller
             ]
         );
         $user = User::where('username', $request->credential)->orWhere('email', $request->credential);
-        if ($user->count() == 1) {
+        if ($user->count() == 1 && Hash::check($request->password, $user->first()->password)) {
             $data['auth'] = $user->first();
             $data['auth']['logged'] = true;
             session($data);

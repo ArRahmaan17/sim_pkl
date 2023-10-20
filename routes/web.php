@@ -26,6 +26,10 @@ Route::middleware([Unauthenticated::class])->group(function () {
     })->name('home');
     Route::name('user.')->group(function () {
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
+        Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::get('/user/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
+        Route::post('/user/profile/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('profile.last-change-password');
+        Route::post('/user/profile/changing-password', [ProfileController::class, 'changing_password'])->name('profile.changing-password');
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus');

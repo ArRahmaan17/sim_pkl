@@ -116,7 +116,6 @@ class MenuController extends Controller
                 'records' => Menu::with('child')->orderByRaw('ordered,position')->get()
             ]);
         } catch (\Throwable $th) {
-            dd($th);
             DB::rollBack();
             return Response()->json([
                 'message' => 'Failed Ordering Your Menu', 'records' => Menu::all()

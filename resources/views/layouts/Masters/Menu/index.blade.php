@@ -242,7 +242,13 @@
                         },
                         dataType: "json",
                         success: function(response) {
-
+                            swal(response.message, {
+                                icon: 'success',
+                            });
+                            setTimeout(() => {
+                                swal.close()
+                                location.reload()
+                            }, 1500);
                         }
                     });
                 },
@@ -327,6 +333,7 @@
                                         icon: 'success',
                                     });
                                     setTimeout(() => {
+                                        swal.close()
                                         location.reload()
                                     }, 1500);
                                 },
@@ -374,6 +381,7 @@
                         swal('Good Job', response.message, 'success');
                         $('#modal-create-menu').modal('hide');
                         setTimeout(() => {
+                            swal.close()
                             location.reload()
                         }, 1500);
                     },
@@ -435,6 +443,7 @@
                         swal('Good Job', response.message, 'success');
                         $('#modal-edit-menu').modal('hide');
                         setTimeout(() => {
+                            swal.close()
                             location.reload()
                         }, 1500);
                     },
