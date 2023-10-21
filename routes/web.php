@@ -7,6 +7,8 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authenticated;
 use App\Http\Middleware\Unauthenticated;
+use App\Mail\ChangePasswordMail;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,12 +26,16 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', function () {
         return view('main');
     })->name('home');
+    Route::get('/change-password-email', function () {
+        return new ChangePasswordMail(User::find(session('auth.id')));
+    })->name('email');
     Route::name('user.')->group(function () {
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/user/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
         Route::post('/user/profile/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('profile.last-change-password');
         Route::post('/user/profile/changing-password', [ProfileController::class, 'changing_password'])->name('profile.changing-password');
+        Route::get('/user/profile/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('profile.accept-changed-password');
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus');

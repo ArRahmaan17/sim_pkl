@@ -62,12 +62,37 @@ class ProfileController extends Controller
             $data['created_at'] = now('Asia/Jakarta');
             $data['password'] = Hash::make($request->password);
             ChangePassword::insert($data);
+            Mail::to('sardhi17feb2018@gmail.com')
+                ->send(new ChangePasswordMail(User::where('email', $request->email)->first()));
+            ChangePassword::where('email', $request->email)->update(['mailed' => true]);
             DB::commit();
-            Mail::to('sardhi17feb2018@gmail.com')->send(new ChangePasswordMail());
             return redirect()->route('user.profile')->with('email', 'Check your email to complete process change password');
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th);
+        }
+    }
+    public function accept_changed_password(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $request_change_password = ChangePassword::where('email', base64_decode($request->action));
+            if (
+                $request->validation == env('APP_VALIDATION') &&
+                $request_change_password->count() == 1
+            ) {
+                $request_change_password->update(['changed' => true]);
+                $message = ['success', 'Successfully Change Your Password'];
+            } else {
+                $message = ['error', 'Your Validation Key Is invalid'];
+            }
+            DB::commit();
+            return redirect()->route('user.profile')->with($message[0], $message[1]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $message = ['error', 'Unexpected Error on change password process'];
+            return redirect()->route('user.profile')->with($message[0], $message[1]);
+            //throw $th;
         }
     }
 
