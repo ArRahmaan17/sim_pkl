@@ -2,14 +2,12 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\MenuController;
-use App\Http\Controllers\User\AbsentController;
+use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
-use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authenticated;
 use App\Http\Middleware\Unauthenticated;
-use App\Mail\ChangePasswordMail;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,16 +22,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware([Unauthenticated::class])->group(function () {
-    Route::get('/', function () {
-        return view('main');
-    })->name('home');
-    // Route::get('/change-password-email', function () {
-    //     return new ChangePasswordMail(User::find(session('auth.id')));
-    // })->name('email');
-    Route::name('absent')->group(function () {
-        Route::get('/absent', [AbsentController::class, 'index']);
-    });
+    Route::get('/', HomeController::class)->name('home');
     Route::name('user.')->group(function () {
+        Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance');
+        Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/user/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
