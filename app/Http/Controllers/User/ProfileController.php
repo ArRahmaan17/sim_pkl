@@ -62,7 +62,7 @@ class ProfileController extends Controller
             $data['created_at'] = now('Asia/Jakarta');
             $data['password'] = Hash::make($request->password);
             ChangePassword::insert($data);
-            Mail::to('sardhi17feb2018@gmail.com')
+            Mail::to($request->email)
                 ->send(new ChangePasswordMail(User::where('email', $request->email)->first()));
             ChangePassword::where('email', $request->email)->update(['mailed' => true]);
             DB::commit();
@@ -92,7 +92,6 @@ class ProfileController extends Controller
             DB::rollBack();
             $message = ['error', 'Unexpected Error on change password process'];
             return redirect()->route('user.profile')->with($message[0], $message[1]);
-            //throw $th;
         }
     }
 

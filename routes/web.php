@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Master\MenuController;
+use App\Http\Controllers\User\AbsentController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\Authenticated;
@@ -26,9 +27,12 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', function () {
         return view('main');
     })->name('home');
-    Route::get('/change-password-email', function () {
-        return new ChangePasswordMail(User::find(session('auth.id')));
-    })->name('email');
+    // Route::get('/change-password-email', function () {
+    //     return new ChangePasswordMail(User::find(session('auth.id')));
+    // })->name('email');
+    Route::name('absent')->group(function () {
+        Route::get('/absent', [AbsentController::class, 'index']);
+    });
     Route::name('user.')->group(function () {
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');

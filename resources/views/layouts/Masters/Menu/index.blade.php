@@ -280,6 +280,7 @@
                                 swal('Loading');
                             },
                             success: function(response) {
+                                $('#modal-edit-menu').modal('show');
                                 $('#form-edit-menu').find('input[name=id]').val(
                                     response.record.id);
                                 $('#form-edit-menu').find('input[name=name]').val(
@@ -304,7 +305,7 @@
                                         .val(response.record.access_to)
                                         .trigger('change');
                                 }
-                                $('#modal-edit-menu').modal('show');
+                                swal.close();
                             }
                         });
                     }

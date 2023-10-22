@@ -138,7 +138,7 @@
                     </div>
                     <div class="card-footer row justify-content-end">
                         <button id="change-password" type="button"
-                            class="btn btn-danger text-white m-1 col-12 col-sm-5 {{ date('Y-m-d') == $user->last_reset_password ? 'disabled' : '' }}"><i
+                            class="btn btn-danger text-white m-1 col-12 col-sm-5 {{ date('Y-m-d', time() + 7 * 60 * 60) == $user->last_reset_password ? 'disabled' : '' }}"><i
                                 class="fas fa-lock"></i> Change
                             Password</button>
                         <button id="update-profile" type="button" class="btn btn-warning m-1 col-12 col-sm-5"><i
