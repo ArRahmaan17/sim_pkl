@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
+use Carbon\Carbon;
 use Faker\Guesser\Name;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -32,10 +33,11 @@ class AttendanceController extends Controller
             }
             $file_path = 'attendance/' . $user->first_name . $user->last_name . '/attendance_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
             Storage::put($file_path, $file);
+            Attendance::where('user_id', $request->user_id)->where('status', $request->status)->where('created_at', '>', Carbon::now()->startOfDay())->where('created_at', '<', Carbon::now()->endOfDay())->delete();
             $data = $request->except('_token', 'name');
             $data['photo'] = $file_path;
             $data['created_at'] = now('Asia/Jakarta');
-            $data['time'] = now('Asia/Jakarta');
+            $data['time'] = now('Asia/Jakarta')->addSecond();
             Attendance::insert($data);
             DB::commit();
             return redirect()->route('home')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
@@ -43,5 +45,11 @@ class AttendanceController extends Controller
             DB::rollBack();
             return redirect()->route('user.absent')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
+    }
+    public function all()
+    {
+        $attendance = Attendance::with('user')->where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth())->get();
+        // dd($attendance);
+        return view('layouts.User.Absent.all', ['attendance' => json_encode($attendance)]);
     }
 }

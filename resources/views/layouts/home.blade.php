@@ -13,7 +13,8 @@
                                 <li><a href="{{ route('home') }}?month=1"
                                         class="dropdown-item {{ $month == 'January' ? 'active' : '' }}">January</a></li>
                                 <li><a href="{{ route('home') }}?month=2"
-                                        class="dropdown-item {{ $month == 'February' ? 'active' : '' }}">February</a></li>
+                                        class="dropdown-item {{ $month == 'February' ? 'active' : '' }}">February</a>
+                                </li>
                                 <li><a href="{{ route('home') }}?month=3"
                                         class="dropdown-item {{ $month == 'March' ? 'active' : '' }}">March</a></li>
                                 <li><a href="{{ route('home') }}?month=4"
@@ -33,11 +34,14 @@
                                         class="dropdown-item {{ $month == 'September' ? 'active' : '' }}">September</a>
                                 </li>
                                 <li><a href="{{ route('home') }}?month=10"
-                                        class="dropdown-item {{ $month == 'October' ? 'active' : '' }}">October</a></li>
+                                        class="dropdown-item {{ $month == 'October' ? 'active' : '' }}">October</a>
+                                </li>
                                 <li><a href="{{ route('home') }}?month=11"
-                                        class="dropdown-item {{ $month == 'November' ? 'active' : '' }}">November</a></li>
+                                        class="dropdown-item {{ $month == 'November' ? 'active' : '' }}">November</a>
+                                </li>
                                 <li><a href="{{ route('home') }}?month=11"
-                                        class="dropdown-item {{ $month == 'December' ? 'active' : '' }}">December</a></li>
+                                        class="dropdown-item {{ $month == 'December' ? 'active' : '' }}">December</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -57,7 +61,9 @@
                     </div>
                 </div>
                 <div class="card-icon shadow-primary bg-primary">
-                    <i class="fas fa-chart-line"></i>
+                    <a href="{{ route('user.attendance.all') }}">
+                        <i class="fas fa-chart-line"></i>
+                    </a>
                 </div>
                 <div class="card-wrap">
                     <div class="card-header">

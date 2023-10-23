@@ -71,10 +71,10 @@
     <script src="{{ asset('modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('modules/moment.min.js') }}"></script>
     <script src="{{ asset('js/stisla.js') }}"></script>
+    @yield('script')
     <!-- JS Libraies -->
 
     <!-- Page Specific JS File -->
-
     <!-- Template JS File -->
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
@@ -89,7 +89,6 @@
             });
         });
     </script>
-    @yield('script')
 </body>
 
 </html>
