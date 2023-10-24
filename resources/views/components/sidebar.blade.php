@@ -9,34 +9,38 @@
         <ul class="sidebar-menu">
             <li class="menu-header">Menus</li>
             @foreach ($menus as $menu)
-                @if ($menu->position == 'S')
-                    @if ($menu->child->count() != 0)
-                        <li
-                            class="dropdown {{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
-                            <a href="{{ $menu->link }}" class="nav-link has-dropdown"><i
-                                    class="{{ $menu->icon }}"></i><span>{{ $menu->name }}</span></a>
-                            <ul class="dropdown-menu">
-                                @foreach ($menu->child as $child)
-                                    <li
-                                        class="{{ count(explode(Str::lower($child->name), url()->current())) > 1 ? 'active' : '' }}">
-                                        <a class="nav-link" href="{{ route($child->link) }}"><i
-                                                class="{{ $child->icon }}"></i>{{ $child->name }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </li>
-                    @else
-                        @if ($menu->name == 'Home' && url()->current() == env('APP_URL'))
-                            <li class="active">
-                            @else
+                @if ($menu->access_to == session('auth.role') || $menu->access_to == 'All')
+                    @if ($menu->position == 'S')
+                        @if ($menu->child->count() != 0)
                             <li
-                                class="{{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
+                                class="dropdown {{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
+                                <a href="{{ $menu->link }}" class="nav-link has-dropdown"><i
+                                        class="{{ $menu->icon }}"></i><span>{{ $menu->name }}</span></a>
+                                <ul class="dropdown-menu">
+                                    @foreach ($menu->child as $child)
+                                        @if ($child->access_to == session('auth.role') || $child->access_to == 'All')
+                                            <li
+                                                class="{{ count(explode(Str::lower($child->name), url()->current())) > 1 ? 'active' : '' }}">
+                                                <a class="nav-link" href="{{ route($child->link) }}"><i
+                                                        class="{{ $child->icon }}"></i>{{ $child->name }}</a>
+                                            </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @else
+                            @if ($menu->name == 'Home' && url()->current() == env('APP_URL'))
+                                <li class="active">
+                                @else
+                                <li
+                                    class="{{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
+                            @endif
+                            <a class="nav-link"
+                                href="{{ route($menu->link) == null ? url($menu->link) : route($menu->link) }}">
+                                <i class="{{ $menu->icon }}"></i>
+                                <span>{{ $menu->name }}</span></a>
+                            </li>
                         @endif
-                        <a class="nav-link"
-                            href="{{ route($menu->link) == null ? url($menu->link) : route($menu->link) }}">
-                            <i class="{{ $menu->icon }}"></i>
-                            <span>{{ $menu->name }}</span></a>
-                        </li>
                     @endif
                 @endif
             @endforeach

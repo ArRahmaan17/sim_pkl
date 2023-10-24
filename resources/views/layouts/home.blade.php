@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="card-icon shadow-primary bg-primary">
-                    <a href="{{ route('user.attendance.calendar') }}">
+                    <a href="{{ route('user.attendance.calendar') }}?month={{ app('request')->month ?? now()->month }}">
                         <i class="fas fa-chart-line"></i>
                     </a>
                 </div>

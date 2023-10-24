@@ -24,9 +24,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', HomeController::class)->name('home')->middleware([CompletedProfile::class]);
-    // Route::get('/check', function () {
-    //     dd(session('auth'));
-    // });
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
     Route::name('user.')->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware([CompletedProfile::class]);
