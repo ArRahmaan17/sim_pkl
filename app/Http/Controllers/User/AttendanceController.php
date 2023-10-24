@@ -27,12 +27,16 @@ class AttendanceController extends Controller
         try {
             $user = User::find($request->user_id);
             $file = base64_decode($request->photo);
-            if (!Storage::exists('attendance/' . $user->first_name . $user->last_name . '/')) {
-                Storage::makeDirectory('attendance/' . $user->first_name . $user->last_name . '/');
+            if (!Storage::exists('attendance/' . trim($user->first_name) . trim($user->last_name) . '/')) {
+                Storage::makeDirectory('attendance/' . trim($user->first_name) . trim($user->last_name) . '/');
             }
-            $file_path = 'attendance/' . $user->first_name . $user->last_name . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
+            $file_path = 'attendance/' . trim($user->first_name) . trim($user->last_name) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
             Storage::put($file_path, $file);
-            Attendance::where('user_id', $request->user_id)->where('status', $request->status)->where('created_at', '>', Carbon::now()->startOfDay())->where('created_at', '<', Carbon::now()->endOfDay())->delete();
+            Attendance::where('user_id', $request->user_id)
+                ->where('status', $request->status)
+                ->where('created_at', '>', Carbon::now()->startOfDay())
+                ->where('created_at', '<', Carbon::now()->endOfDay())
+                ->delete();
             $data = $request->except('_token', 'name');
             $data['photo'] = $file_path;
             $data['created_at'] = now('Asia/Jakarta');

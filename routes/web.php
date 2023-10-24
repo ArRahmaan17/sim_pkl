@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Middleware\Authenticated;
+use App\Http\Middleware\CompletedProfile;
 use App\Http\Middleware\Unauthenticated;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +23,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware([Unauthenticated::class])->group(function () {
-    Route::get('/', HomeController::class)->name('home');
+    Route::get('/', HomeController::class)->name('home')->middleware([CompletedProfile::class]);
     Route::name('user.')->group(function () {
-        Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance');
+        Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware([CompletedProfile::class]);
         Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');
         Route::get('/user/calendar', [AttendanceController::class, 'all'])->name('attendance.calendar');
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
@@ -35,7 +36,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/profile/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('profile.accept-changed-password');
     });
     Route::name('master.')->group(function () {
-        Route::get('/master/menus', [MenuController::class, 'index'])->name('menus');
+        Route::get('/master/menus', [MenuController::class, 'index'])->name('menus')->middleware([CompletedProfile::class]);
         Route::get('/master/menus/all', [MenuController::class, 'all'])->name('menus.all');
         Route::post('/master/menus/sort', [MenuController::class, 'sort'])->name('menus.sort');
         Route::post('/master/menus/store', [MenuController::class, 'store'])->name('menus.store');

@@ -22,7 +22,6 @@
                                         <a class="nav-link" href="{{ route($child->link) }}"><i
                                                 class="{{ $child->icon }}"></i>{{ $child->name }}</a>
                                     </li>
-                                    {{-- {{ dd($child->name == 'Attendance' ? explode(Str::lower($child->name), url()->current()) : '') }} --}}
                                 @endforeach
                             </ul>
                         </li>
