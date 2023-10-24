@@ -98,18 +98,21 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'username' => 'required|unique:users,username,' . session('auth.id') . '',
-            'first_name' => 'required',
-            'last_name' => 'required',
+            'username' => 'required|alpha|unique:users,username,' . session('auth.id') . '',
+            'first_name' => 'required|alpha',
+            'last_name' => 'required|alpha',
             'address' => 'required',
             'email' => 'required|unique:users,email,' . session('auth.id') . '',
-            'phone_number' => 'required',
+            'phone_number' => 'required|numeric',
             'gender' => 'required',
         ]);
         DB::beginTransaction();
         try {
             User::find(session('auth.id'))->update($request->except('_token'));
             DB::commit();
+            $data['auth'] = User::find(session('auth.id'));
+            $data['auth']['logged'] = true;
+            session($data);
             return Response()->json([
                 'message' => 'Successfully update your profile',
             ], 200);

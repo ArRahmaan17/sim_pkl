@@ -34,4 +34,9 @@ class LoginController extends Controller
         };
         return redirect()->route('authentication.index');
     }
+    public function logout()
+    {
+        session()->flush();
+        return redirect()->route('home');
+    }
 }

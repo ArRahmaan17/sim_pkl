@@ -22,28 +22,31 @@
                 <div class="form-group">
                     <label class="form-label">Status</label>
                     <div class="selectgroup w-100">
-                        <label class="selectgroup-item">
-                            <input type="radio" name="status" value="IN" class="selectgroup-input" checked="">
-                            <span class="selectgroup-button"><i class="fas fa-sign-in-alt"></i> IN</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input type="radio" name="status" value="SICK" class="selectgroup-input">
-                            <span class="selectgroup-button"><i class="fas fa-hospital-alt"></i> SICK</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input type="radio" name="status" value="ABSENT" class="selectgroup-input">
-                            <span class="selectgroup-button"><i class="fas fa-question"></i> ABSENT</span>
-                        </label>
-                        <label class="selectgroup-item">
-                            <input type="radio" name="status" value="OUT" class="selectgroup-input">
-                            <span class="selectgroup-button"><i class="fas fa-sign-out-alt"></i> OUT</span>
-                        </label>
+                        @if ($history == 0)
+                            <label class="selectgroup-item">
+                                <input type="radio" name="status" value="IN" class="selectgroup-input">
+                                <span class="selectgroup-button"><i class="fas fa-sign-in-alt"></i> IN</span>
+                            </label>
+                            <label class="selectgroup-item">
+                                <input type="radio" name="status" value="SICK" class="selectgroup-input">
+                                <span class="selectgroup-button"><i class="fas fa-hospital-alt"></i> SICK</span>
+                            </label>
+                            <label class="selectgroup-item">
+                                <input type="radio" name="status" value="ABSENT" class="selectgroup-input">
+                                <span class="selectgroup-button"><i class="fas fa-question"></i> ABSENT</span>
+                            </label>
+                        @else
+                            <label class="selectgroup-item">
+                                <input type="radio" name="status" value="OUT" class="selectgroup-input">
+                                <span class="selectgroup-button"><i class="fas fa-sign-out-alt"></i> OUT</span>
+                            </label>
+                        @endif
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Please take a picture:</label>
-                    <div id="camera" class="p-2 mx-auto mx-sm-0"></div>
-                    <button type="button" id="btn-shot" class="btn btn-danger" onclick="take_picture()">
+                    <div id="camera" class="p-2 mx-auto mx-sm-0 my-3"></div>
+                    <button type="button" id="btn-shot" class="btn btn-danger mx-auto mx-sm-2" onclick="take_picture()">
                         <i class="fas fa-camera"></i>
                     </button>
                     <button id="btn-reset" onclick="get_ready()" type="button" class="btn btn-warning d-none"><i
@@ -70,9 +73,21 @@
         });
 
         function get_ready() {
+            let width = 240;
+            let height = 180;
+            if ($(window).innerWidth() < 768) {
+                width = 240;
+                height = 180;
+            } else if ($(window).innerWidth() < 1200) {
+                width = 480;
+                height = 360;
+            } else {
+                width = 540;
+                height = 405;
+            }
             Webcam.set({
-                width: 350,
-                height: 300,
+                width: width,
+                height: height,
                 image_format: 'jpeg',
                 jpeg_quality: 100
             });

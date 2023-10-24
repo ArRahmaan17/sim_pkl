@@ -15,6 +15,7 @@ class CompletedProfile
      */
     public function handle(Request $request, Closure $next): Response
     {
+        session('auth');
         if (null != session('auth.first_name')) {
             return $next($request);
         } else {

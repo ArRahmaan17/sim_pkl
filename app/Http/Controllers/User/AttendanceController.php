@@ -14,11 +14,18 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        if ((session('auth.role') == "S" && (intval(date('H', time() + 7 * 60 * 60)) >= 8 && intval(date('H', time() + 7 * 60 * 60)) <= 9) == false) || (session('auth.role') == "S" && (intval(date('H', time() + 7 * 60 * 60)) > 16 && intval(date('H', time() + 7 * 60 * 60)) < 18) == false)) {
-            return redirect()->route('home')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for absenteeism');
+        if (session('auth.role') == 'S') {
+            if ((intval(date('H', time() + 7 * 60 * 60)) < 8 &&
+                    intval(date('H', time() + 7 * 60 * 60)) > 9) ||
+                (intval(date('H', time() + 7 * 60 * 60)) < 15 &&
+                    intval(date('H', time() + 7 * 60 * 60)) > 18)
+            ) {
+                return redirect()->route('home')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for absenteeism');
+            }
         }
         $user = User::find(session('auth.id'));
-        return view('layouts.User.Absent.index', compact('user'));
+        $history = Attendance::attendance_history(session('auth.id'));
+        return view('layouts.User.Absent.index', compact('user', 'history'));
     }
 
     public function store(Request $request)
@@ -51,8 +58,12 @@ class AttendanceController extends Controller
     }
     public function all()
     {
-        $attendance = Attendance::with('user')->where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth())->get();
-        // dd($attendance);
+        $attendance = Attendance::with('user')->where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth());
+        if (session('auth.role') == 'S') {
+            $attendance = $attendance->where('user_id', session('auth.id'))->get();
+        } else {
+            $attendance = $attendance->get();
+        }
         return view('layouts.User.Absent.all', ['attendance' => json_encode($attendance)]);
     }
 }

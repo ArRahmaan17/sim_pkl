@@ -12,4 +12,9 @@ class Attendance extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public static function attendance_history(int $user_id)
+    {
+        return self::where('user_id', $user_id)->where('created_at', '>', now('Asia/Jakarta')->startOfDay())->where('created_at', '<', now('Asia/Jakarta')->endOfDay())->count();
+    }
 }
