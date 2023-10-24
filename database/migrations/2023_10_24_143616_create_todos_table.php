@@ -15,11 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->bigInteger('cluster_id')->unsigned();
+            $table->foreign('cluster_id')
+                ->references('id')
+                ->on('clusters')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->date('date');
             $table->date('deadline');
-            $table->integer('progress');
-            $table->enum('status', ['Shared', 'Start', 'Analysis', 'Development', 'Done'])->default('Shared');
-            $table->date('finish');
+            $table->integer('progress')->default(0);
+            $table->enum('status', ['Shared', 'Started', 'Analysis', 'Development', 'Done'])->default('Shared');
+            $table->date('finish')->nullable();
             $table->date('evidence_file');
             $table->timestamps();
         });
