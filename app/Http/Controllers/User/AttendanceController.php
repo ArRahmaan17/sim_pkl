@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\User;
 use Carbon\Carbon;
-use Faker\Guesser\Name;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -31,7 +30,7 @@ class AttendanceController extends Controller
             if (!Storage::exists('attendance/' . $user->first_name . $user->last_name . '/')) {
                 Storage::makeDirectory('attendance/' . $user->first_name . $user->last_name . '/');
             }
-            $file_path = 'attendance/' . $user->first_name . $user->last_name . '/attendance_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
+            $file_path = 'attendance/' . $user->first_name . $user->last_name . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
             Storage::put($file_path, $file);
             Attendance::where('user_id', $request->user_id)->where('status', $request->status)->where('created_at', '>', Carbon::now()->startOfDay())->where('created_at', '<', Carbon::now()->endOfDay())->delete();
             $data = $request->except('_token', 'name');
