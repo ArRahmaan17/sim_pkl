@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
@@ -44,6 +45,10 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/master/menus/show/{id}', [MenuController::class, 'show'])->name('menus.show');
         Route::put('/master/menus/update/{id}', [MenuController::class, 'update'])->name('menus.update');
         Route::delete('/master/menus/delete/{id}', [MenuController::class, 'destroy'])->name('menus.delete');
+        Route::get('/master/clusters', [ClusterController::class, 'index'])->name('cluster')->middleware([CompletedProfile::class]);
+        Route::post('/master/clusters/store', [ClusterController::class, 'store'])->name('cluster.store');
+        Route::get('/master/clusters/show/{id?}', [ClusterController::class, 'show'])->name('cluster.show');
+        Route::put('/master/clusters/update/{id?}', [ClusterController::class, 'update'])->name('cluster.update');
     });
 });
 Route::middleware([Authenticated::class])->group(function () {
