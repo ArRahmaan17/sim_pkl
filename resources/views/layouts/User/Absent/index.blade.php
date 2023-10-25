@@ -24,7 +24,7 @@
                     <div class="selectgroup w-100">
                         @if ($history == 0)
                             <label class="selectgroup-item">
-                                <input type="radio" name="status" value="IN" class="selectgroup-input">
+                                <input type="radio" name="status" value="IN" class="selectgroup-input" checked>
                                 <span class="selectgroup-button"><i class="fas fa-sign-in-alt"></i> IN</span>
                             </label>
                             <label class="selectgroup-item">
@@ -37,7 +37,7 @@
                             </label>
                         @else
                             <label class="selectgroup-item">
-                                <input type="radio" name="status" value="OUT" class="selectgroup-input">
+                                <input type="radio" name="status" value="OUT" class="selectgroup-input" checked>
                                 <span class="selectgroup-button"><i class="fas fa-sign-out-alt"></i> OUT</span>
                             </label>
                         @endif
