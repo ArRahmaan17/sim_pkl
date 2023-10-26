@@ -49,6 +49,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::post('/master/clusters/store', [ClusterController::class, 'store'])->name('cluster.store');
         Route::get('/master/clusters/show/{id?}', [ClusterController::class, 'show'])->name('cluster.show');
         Route::put('/master/clusters/update/{id?}', [ClusterController::class, 'update'])->name('cluster.update');
+        Route::delete('/master/clusters/delete/{id?}', [ClusterController::class, 'destroy'])->name('cluster.delete');
     });
 });
 Route::middleware([Authenticated::class])->group(function () {

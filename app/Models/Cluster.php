@@ -9,4 +9,9 @@ class Cluster extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'description', 'created_at', 'updated_at'];
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'cluster_id', 'id');
+    }
 }

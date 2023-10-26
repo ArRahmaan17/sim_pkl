@@ -2,7 +2,8 @@
 @section('content')
     <div class="row justify-content-start justify-content-md-end mb-2">
         <div class="col-sm-3">
-            <button type="button" id="create-new-cluster" class=" btn btn-success">Create New Cluster</button>
+            <button type="button" id="create-new-cluster" class=" btn btn-success"><i class="fas fa-file"></i> Create New
+                Cluster</button>
         </div>
     </div>
     <div class="card">
@@ -40,7 +41,8 @@
                                     <button data-id="{{ $item->id }}" type="button"
                                         class="btn btn-warning mt-1 edit"><i class="fas fa-pen"></i>
                                         Edit</button>
-                                    <button type="button" class="btn btn-danger mt-1 delete"><i class="fas fa-trash"></i>
+                                    <button data-id="{{ $item->id }}" type="button"
+                                        class="btn btn-danger mt-1 delete"><i class="fas fa-trash"></i>
                                         Delete</button>
                                 </td>
                             </tr>
@@ -99,47 +101,78 @@
                 $('#save-cluster').removeClass('d-none');
                 $('#update-cluster').addClass('d-none');
             });
+            $('.delete').click(function() {
+                let id = $(this).data('id');
+                swal({
+                        title: 'Are you sure?',
+                        text: 'Once deleted, you will not be able to recover this cluster!',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            $.ajax({
+                                type: "DELETE",
+                                url: `{{ route('master.cluster.delete') }}/${id}`,
+                                dataType: "json",
+                                data: {
+                                    _token: `{{ csrf_token() }}`
+                                },
+                                success: function(response) {
+                                    swal('Poof! Your cluster has been deleted!', {
+                                        icon: 'success',
+                                    });
+                                    setTimeout(() => {
+                                        swal.close()
+                                        location.reload()
+                                    }, 1500);
+                                },
+                                error: function(error) {
+                                    swal(error.responseJSON.message, {
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        } else {
+                            swal('Your cluster is safe!');
+                        }
+                    });
+            });
             $('.edit').click(function() {
                 $('#modal-create-cluster').modal('show');
                 $('#save-cluster').addClass('d-none');
                 $('#update-cluster').removeClass('d-none');
                 let id = $(this).data('id');
-                $.ajax({
-                    type: "GET",
-                    url: `{{ route('master.cluster.show') }}/${id}`,
-                    dataType: "JSON",
-                    beforeSend: function() {
-                        swal('Loading');
-                    },
-                    success: function(response) {
-                        swal.close()
-                        swal(response.message, {
-                            icon: 'success'
-                        });
-                        $.each(response.data, function(index, data) {
-                            $(`[name=${index}]`).val(data);
-                        });
-                        setTimeout(() => {
+                $('#modal-create-cluster').on('shown.bs.modal', function() {
+                    $.ajax({
+                        type: "GET",
+                        url: `{{ route('master.cluster.show') }}/${id}`,
+                        dataType: "JSON",
+                        beforeSend: function() {
+                            swal('Loading');
+                        },
+                        success: function(response) {
                             swal.close()
-                        }, 150);
-                        $('#update-cluster').data('id', response.data.id)
-                    },
-                    error: function(error) {
-                        swal.close();
-                        let errors = error.responseJSON.errors
-                        if (errors != undefined) {
-                            $.each(errors, function(index, error_list) {
-                                let html = ``;
-                                error_list.forEach(element => {
-                                    html +=
-                                        `<li class="list-group-item border-0">${element}</li>`;
-                                });
-                                $(`[name=${index}]`).addClass('is-invalid')
-                                    .siblings('.invalid-feedback').html(html);
+                            swal(response.message, {
+                                icon: 'success'
                             });
+                            $.each(response.data, function(index, data) {
+                                $(`[name=${index}]`).val(data);
+                            });
+                            $('#update-cluster').data('id', response.data.id)
+                        },
+                        error: function(error) {
+                            swal.close();
+                            swal(error.responseJSON.message, {
+                                icon: 'error'
+                            });
+                            setTimeout(() => {
+                                $('#modal-create-cluster').modal('hide');
+                            }, 1000);
                         }
-                    }
-                });
+                    });
+                })
             });
             $('#update-cluster').click(function() {
                 $('.is-invalid').removeClass('is-invalid')

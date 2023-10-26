@@ -46,14 +46,16 @@ class ClusterController extends Controller
      */
     public function show(string $id)
     {
-        $data = Cluster::find($id);
-        $response = ['message' => 'We found your data', 'data' => $data];
-        $status = 200;
-        if ($data == null) {
+        try {
+            $data = Cluster::findOrFail($id);
+            $response = ['message' => 'We found your data', 'data' => $data];
+            $status = 200;
+            return Response()->json($response, $status);
+        } catch (\Throwable $th) {
             $status = 404;
-            $response = ['message' => 'We cant found your data', 'data' => $data];
+            $response = ['message' => 'We cant found your data', 'data' => []];
+            return Response()->json($response, $status);
         }
-        return Response()->json($response, $status);
     }
 
     /**
@@ -88,6 +90,19 @@ class ClusterController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $cluster = Cluster::with('users')->findOrFail($id);
+            if (count($cluster->users) > 0) {
+                return Response()->json(['message' => "Can't delete menu because it still has related children"], 500);
+            }
+            $cluster->delete();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            if ($th->getCode() == 0) {
+                return Response()->json(['message' => "We can't found your data"], 404);
+            }
+        }
     }
 }
