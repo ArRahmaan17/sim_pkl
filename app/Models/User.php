@@ -25,7 +25,8 @@ class User extends Authenticatable
         'address',
         'phone_number',
         'gender',
-        'last_reset_password'
+        'last_reset_password',
+        'cluster_id'
     ];
 
     /**

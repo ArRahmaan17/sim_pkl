@@ -7,6 +7,7 @@ use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\StudentClusterController;
 use App\Http\Middleware\Authenticated;
 use App\Http\Middleware\CompletedProfile;
 use App\Http\Middleware\Unauthenticated;
@@ -36,6 +37,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::post('/user/profile/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('profile.last-change-password');
         Route::post('/user/profile/changing-password', [ProfileController::class, 'changing_password'])->name('profile.changing-password');
         Route::get('/user/profile/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('profile.accept-changed-password');
+        Route::get('/user/cluster/', [StudentClusterController::class, 'index'])->name('cluster');
+        Route::post('/user/cluster/store', [StudentClusterController::class, 'store'])->name('cluster.store');
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus')->middleware([CompletedProfile::class]);
