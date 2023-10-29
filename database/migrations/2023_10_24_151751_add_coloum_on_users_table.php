@@ -17,7 +17,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('clusters')
                 ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+                ->nullOnDelete();
         });
     }
 
