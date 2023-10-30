@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
+use App\Http\Controllers\Mentor\TaskController;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentClusterController;
@@ -31,14 +32,18 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware([CompletedProfile::class]);
         Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');
         Route::get('/user/calendar', [AttendanceController::class, 'all'])->name('attendance.calendar');
-        Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile');
+        Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile')->middleware([CompletedProfile::class]);
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/user/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
         Route::post('/user/profile/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('profile.last-change-password');
         Route::post('/user/profile/changing-password', [ProfileController::class, 'changing_password'])->name('profile.changing-password');
         Route::get('/user/profile/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('profile.accept-changed-password');
-        Route::get('/user/cluster/', [StudentClusterController::class, 'index'])->name('cluster');
-        Route::post('/user/cluster/store', [StudentClusterController::class, 'store'])->name('cluster.store');
+        Route::get('/user/group/', [StudentClusterController::class, 'index'])->name('group')->middleware([CompletedProfile::class]);
+        Route::post('/user/group/store', [StudentClusterController::class, 'store'])->name('group.store');
+    });
+    Route::name('mentor.')->group(function () {
+        Route::get('/mentor/task', [TaskController::class, 'index'])->name('task')->middleware([CompletedProfile::class]);
+        Route::post('/mentor/task/store', [TaskController::class, 'store'])->name('task.store');
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus')->middleware([CompletedProfile::class]);

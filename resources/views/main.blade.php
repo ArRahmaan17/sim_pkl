@@ -9,12 +9,14 @@
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('modules/bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('modules/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/bootstrap-daterangepicker/daterangepicker.css') }}">
 
     <!-- CSS Libraries -->
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+    @yield('css')
     <!-- Start GA -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
     <script>
@@ -70,7 +72,9 @@
     <script src="{{ asset('modules/bootstrap/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
     <script src="{{ asset('modules/moment.min.js') }}"></script>
+    <script src="{{ asset('modules/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('js/stisla.js') }}"></script>
+
     @yield('script')
     <!-- JS Libraies -->
 

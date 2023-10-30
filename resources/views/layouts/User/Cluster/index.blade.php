@@ -39,6 +39,7 @@
 
 @section('script')
     <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js'></script>
+    <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
         $(function() {
             let container = $(document).find('.cluster').map((index, element) => {
@@ -49,14 +50,20 @@
                     el.className = el.className.replace('ex-moved', '');
                 }).on('drop', function(el) {
                     el.className += ' ex-moved';
-                    console.log($(el).data('user'));
                     $.ajax({
                         type: "POST",
-                        url: `{{ route('user.cluster.store') }}`,
+                        url: `{{ route('user.group.store') }}`,
                         data: $(el).data('user'),
                         dataType: "JSON",
                         success: function(response) {
-
+                            swal(response.message, {
+                                'icon': 'success'
+                            })
+                        },
+                        error: function(error) {
+                            swal(error.responseJSON.message, {
+                                'icon': 'failed'
+                            })
                         }
                     });
                 }).on('over', function(el, container) {

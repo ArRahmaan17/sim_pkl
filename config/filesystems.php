@@ -39,7 +39,21 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'attendance' => [
+            'driver' => 'local',
+            'root' => storage_path('app/attendance'),
+            'url' => env('APP_URL') . '/attendance',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+        'task' => [
+            'driver' => 'local',
+            'root' => storage_path('app/task'),
+            'url' => env('APP_URL') . '/task',
             'visibility' => 'public',
             'throw' => false,
         ],
