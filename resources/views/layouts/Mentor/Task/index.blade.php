@@ -8,19 +8,19 @@
                 <div class="card-body">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">All <span
+                            <a class="nav-link active stasus-all can" href="#">All <span
                                     class="badge badge-white">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Pending <span
-                                    class="badge badge-warning">{{ $pendingTasks }}</span></a>
+                            <a class="nav-link stasus-pending can" href="#">Pending <span
+                                    class="badge badge-warning ">{{ $pendingTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Progress <span
+                            <a class="nav-link stasus-progress can" href="#">Progress <span
                                     class="badge badge-success">{{ $progressTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">End <span
+                            <a class="nav-link stasus-end can" href="#">End <span
                                     class="badge badge-danger">{{ $endTasks }}</span></a>
                         </li>
                     </ul>
@@ -70,44 +70,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- @foreach ($tasks as $task)
-                                    <tr>
-                                        <td>
-                                            {{ $loop->iteration }}
-                                        </td>
-                                        <td>{{ $task->title }}
-                                            <div class="table-links">
-                                                <a href="#" class="text-primary detail"
-                                                    data-id="{{ $task->id }}">View</a>
-                                                <div class="bullet"></div>
-                                                <a href="#" class="text-warning edit"
-                                                    data-id="{{ $task->id }}">Edit</a>
-                                                <div class="bullet"></div>
-                                                <a href="#" class="text-danger delete"
-                                                    data-id="{{ $task->id }}">Trash</a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @foreach (json_decode($task->group) as $index => $group)
-                                                @foreach ($clusters as $cluster)
-                                                    @if ($group == $cluster->id)
-                                                        <a href="#">{{ $cluster->name }}</a>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        </td>
-                                        <td>{{ $task->created_at }}</td>
-                                        <td>
-                                            @if ($task->status == 'Pending')
-                                                <div class="badge badge-success">{{ $task->status }}</div>
-                                            @elseif ($task->group == 'Progress')
-                                                <div class="badge badge-warning">{{ $task->status }}</div>
-                                            @else
-                                                <div class="badge badge-danger">{{ $task->status }}</div>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -252,16 +214,23 @@
     <script src="{{ asset('js/page/features-post-create.js') }}"></script>
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
-        function taskListCreateElement(indexPage = 0) {
+        var endElement = $('.datepicker-end');
+        var startElement = $('.datepicker-start');
+
+        function taskListCreateElement(data = {
+            'indexPage': 0,
+            'search': '',
+            'status': 'All',
+        }) {
             let datas = window.tasks;
             let rowTable = ``;
             let group = '';
             let clusters = JSON.parse(`<?php echo $clusters; ?>`);
             let status = '';
-            if (datas[indexPage].length == undefined) {
-                datas[indexPage] = Object.values(datas[indexPage])
+            if (datas[data.indexPage].length == undefined) {
+                datas[data.indexPage] = Object.values(datas[data.indexPage])
             }
-            datas[indexPage].forEach((element, index) => {
+            datas[data.indexPage].forEach((element, index) => {
                 let group = '';
                 let groups = JSON.parse(`${element.group}`);
                 groups.forEach(value => {
@@ -273,153 +242,65 @@
                 });
                 let status = '';
                 if (element.status == "Pending") {
-                    status = `<div class="badge badge-success">${element.status}</div>`;
-                } else if (element.status == "Progress") {
                     status = `<div class="badge badge-warning">${element.status}</div>`;
+                } else if (element.status == "Progress") {
+                    status = `<div class="badge badge-success">${element.status}</div>`;
                 } else {
                     status = `<div class="badge badge-danger">${element.status}</div>`;
                 }
+                if (data.status != "All") {
+                    if (data.status != element.status) {
+                        return;
+                    }
+                }
                 rowTable += `<tr>
-                                <td>
-                                    ${ (index + 1) + (indexPage*5)}
-                                </td>
-                                <td>${element.title}
-                                    <div class="table-links">
-                                        <a href="#" class="text-primary detail"
-                                            data-id="${element.id}">View</a>
-                                        <div class="bullet"></div>
-                                        <a href="#" class="text-warning edit"
-                                            data-id="${element.id}">Edit</a>
-                                        <div class="bullet"></div>
-                                        <a href="#" class="text-danger delete"
-                                            data-id="${element.id}">Trash</a>
-                                    </div>
-                                </td>
-                                <td>
-                                    ${group}
-                                </td>
-                                <td>${moment(element.created_at).format('YYYY-MM-DD')}</td>
-                                <td>
-                                    ${status}
-                                </td>
-                            </tr>`;
+                    <td>
+                        ${ (index + 1) + (data.indexPage*5)}
+                    </td>
+                    <td>${element.title}
+                        <div class="table-links">
+                            <a href="#" class="text-primary detail"
+                                data-id="${element.id}">View</a>
+                            <div class="bullet"></div>
+                            <a href="#" class="text-warning edit"
+                                data-id="${element.id}">Edit</a>
+                            <div class="bullet"></div>
+                            <a href="#" class="text-danger delete"
+                                data-id="${element.id}">Trash</a>
+                        </div>
+                    </td>
+                    <td>
+                        ${group}
+                    </td>
+                    <td>${moment(element.created_at).format('YYYY-MM-DD HH:mm:ss')}</td>
+                    <td>
+                        ${status}
+                    </td>
+                </tr>`;
             })
             $('tbody').html(rowTable);
             let center = ``;
             for (let index = 0; index < window.tasks.length; index++) {
-                if (index == indexPage || index == (indexPage - 1) || index == (indexPage + 1)) {
-                    center += `<li class="page-item ${index == indexPage ? 'active' : ''}">
+                if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
+                    center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
                     <a class="page-link" onclick="taskListCreateElement(${index})">${index+1}</a>
                 </li>`
                 }
             }
-            let pagination = `<li class="page-item ${indexPage == 0 ? 'disabled': ''}">
-                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement(${indexPage-1})">
+            let pagination = `<li class="page-item ${data.indexPage == 0 ? 'disabled': ''}">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement(${data.indexPage-1})">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
                 ${center}
-                <li class="page-item ${indexPage == (window.tasks.length-1) ? 'disabled' : ''}">
-                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement(${indexPage+1})">
+                <li class="page-item ${data.indexPage == (window.tasks.length-1) ? 'disabled' : ''}">
+                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement(${data.indexPage+1})">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
                     </a>
                 </li>`;
-            $('.pagination').html(pagination)
-        }
-        $(function() {
-            $.ajax({
-                type: "GET",
-                url: "{{ route('database.task.all') }}",
-                dataType: "JSON",
-                success: function(response) {
-                    window.tasks = response.data;
-                    taskListCreateElement();
-                }
-            });
-            var endElement = $('.datepicker-end');
-            var startElement = $('.datepicker-start');
-            $('#modal-create-task').on('shown.bs.modal', function() {
-                startElement.daterangepicker({
-                    locale: {
-                        format: 'YYYY-MM-DD',
-                        language: "ID",
-                        "daysOfWeek": [
-                            "Min",
-                            "Sen",
-                            "Sel",
-                            "Rab",
-                            "Kam",
-                            "Jum",
-                            "Sab"
-                        ],
-                        "monthNames": [
-                            "Januari",
-                            "Februari",
-                            "Maret",
-                            "April",
-                            "Mei",
-                            "Juni",
-                            "Juli",
-                            "Augustus",
-                            "September",
-                            "Oktober",
-                            "Nopember",
-                            "Desember"
-                        ],
-                    },
-                    'drops': 'auto',
-                    "autoApply": true,
-                    'startDate': `{{ $startDate }}`,
-                    'maxDate': `{{ $endDate }}`,
-                    'minDate': `{{ $startDate }}`,
-                    'parentEl': '#modal-create-task',
-                    'singleDatePicker': true,
-                });
-            });
-            startElement.on('apply.daterangepicker', function() {
-                if (moment().format('YYYY-MM-DD') == $(this).val()) {
-                    $('[name=status]').val('Progress');
-                } else {
-                    $('[name=status]').val('Pending');
-                }
-                endElement.daterangepicker({
-                    locale: {
-                        format: 'YYYY-MM-DD',
-                        "daysOfWeek": [
-                            "Min",
-                            "Sen",
-                            "Sel",
-                            "Rab",
-                            "Kam",
-                            "Jum",
-                            "Sab"
-                        ],
-                        "monthNames": [
-                            "Januari",
-                            "Februari",
-                            "Maret",
-                            "April",
-                            "Mei",
-                            "Juni",
-                            "Juli",
-                            "Augustus",
-                            "September",
-                            "Oktober",
-                            "Nopember",
-                            "Desember"
-                        ],
-                    },
-                    'drops': 'auto',
-                    "autoApply": true,
-                    'startDate': $(this).val(),
-                    'maxDate': `{{ $endDate }}`,
-                    'minDate': $(this).val(),
-                    'parentEl': '#modal-create-task',
-                    'singleDatePicker': true,
-                });
-            });
+            $('.pagination').html(pagination);
             $('.edit').click(function() {
                 let id = $(this).data('id');
                 $.ajax({
@@ -433,7 +314,8 @@
                             $('#modal-create-task').modal('show');
                             setTimeout(() => {
                                 $('#save-task').addClass('d-none')
-                                $('#update-task').removeClass('d-none')
+                                $('#update-task').removeClass(
+                                        'd-none')
                                     .data(
                                         'id', response
                                         .data.id)
@@ -443,10 +325,14 @@
                                     .html(
                                         `Update Task ${response.data.title}`
                                     );
-                                $.each(response.data, function(indexInArray,
+                                $.each(response.data, function(
+                                    indexInArray,
                                     valueOfElement) {
-                                    if (indexInArray == "group") {
-                                        JSON.parse(valueOfElement)
+                                    if (indexInArray ==
+                                        "group") {
+                                        JSON.parse(
+                                                valueOfElement
+                                            )
                                             .forEach(
                                                 value => {
                                                     $(`[name="group[]"]`)
@@ -455,31 +341,40 @@
                                                         )
                                                         .attr(
                                                             'selected',
-                                                            true)
+                                                            true
+                                                        )
                                                 })
-                                    } else if (indexInArray ==
+                                    } else if (
+                                        indexInArray ==
                                         'thumbnail') {
                                         $('#image-preview')
-                                            .css("background-size",
+                                            .css(
+                                                "background-size",
                                                 'cover')
-                                            .css('background-image',
+                                            .css(
+                                                'background-image',
                                                 `url(data:image/png;base64,${valueOfElement})`
                                             )
                                             .css(
                                                 'background-position',
-                                                `center center`);
+                                                `center center`
+                                            );
                                     } else {
                                         if (indexInArray ==
                                             'start_date' ||
                                             indexInArray ==
-                                            'deadline_date') {
+                                            'deadline_date'
+                                        ) {
                                             if (indexInArray ==
-                                                'start_date') {
-                                                startElement.data(
-                                                    'daterangepicker'
-                                                ).setStartDate(
-                                                    valueOfElement
-                                                )
+                                                'start_date'
+                                            ) {
+                                                startElement
+                                                    .data(
+                                                        'daterangepicker'
+                                                    )
+                                                    .setStartDate(
+                                                        valueOfElement
+                                                    )
                                             }
                                             $(`[name="${indexInArray}"]`)
                                                 .val(
@@ -496,7 +391,7 @@
                                         }
                                     }
                                 });
-                            }, 311);
+                            }, 400);
                         });
                     },
                     error(error) {
@@ -527,12 +422,15 @@
                                     $(`[data-index="${indexInArray}"]`)
                                         .html('')
                                     group.forEach(element => {
-                                        JSON.parse(valueOfElement)
+                                        JSON.parse(
+                                                valueOfElement
+                                            )
                                             .forEach(
                                                 group => {
                                                     if (element
                                                         .id ==
-                                                        group) {
+                                                        group
+                                                    ) {
                                                         $(`[data-index="${indexInArray}"]`)
                                                             .append(
                                                                 `<a href="#">${element.name}</a> `
@@ -540,18 +438,22 @@
                                                     }
                                                 });
                                     });
-                                } else if (indexInArray == 'thumbnail') {
+                                } else if (indexInArray ==
+                                    'thumbnail') {
                                     $(`[data-index="${indexInArray}"]`)
                                         .html(
                                             `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
                                         );
-                                } else if (indexInArray == 'start_date') {
-                                    let dayLeft = moment(valueOfElement)
+                                } else if (indexInArray ==
+                                    'start_date') {
+                                    let dayLeft = moment(
+                                            valueOfElement)
                                         .diff(
                                             moment(), 'days');
                                     let deadline;
                                     if (dayLeft == 0) {
-                                        deadline = moment(valueOfElement)
+                                        deadline = moment(
+                                                valueOfElement)
                                             .diff(
                                                 moment(
                                                     response.data
@@ -600,99 +502,226 @@
                     }
                 });
             });
-            $('#modal-create-task').on('hidden.bs.modal', function() {
-                $('#create-new-task')[0].reset();
-                $('#image-preview').removeAttr('style');
-            });
-            $('#create-task').click(function() {
-                $('#modal-create-task').modal('show');
-            });
-            $('#save-task').click(function() {
-                $.ajax({
-                    type: "post",
-                    url: "{{ route('mentor.task.store') }}",
-                    data: new FormData($('#create-new-task')[0]),
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function(response) {
-                        swal(response.message, {
-                            'icon': 'success'
-                        });
-                        $('#create-new-task')[0].reset();
-                        $('#image-preview').removeAttr('style');
-                        $('#modal-create-task').modal('hide');
-                        window.tasks = response.data;
-                        taskListCreateElement();
-                    },
-                    error: function(error) {
-                        if (error.responseJSON.errors != undefined) {
-                            let errors = error.responseJSON.errors;
-                            $.each(errors, function(indexInArray, valueOfElement) {
-                                if (indexInArray == 'group') {
-                                    $(`[name="${indexInArray}[]"]`)
-                                        .addClass('is-invalid')
-                                        .siblings('.invalid-feedback')
-                                        .html(`${valueOfElement}`);
-                                } else {
-                                    $(`[name=${indexInArray}]`)
-                                        .addClass('is-invalid')
-                                        .siblings('.invalid-feedback')
-                                        .html(`${valueOfElement}`);
-                                }
-                            });
-                        } else {
-                            swal(error.responseJSON.message, {
-                                'icon': 'error'
-                            });
-                        }
+        }
+        $.ajax({
+            type: "GET",
+            url: "{{ route('database.task.all') }}",
+            dataType: "JSON",
+            success: function(response) {
+                window.tasks = response.data;
+            }
+        }).then(() => {
+            $(function() {
+                taskListCreateElement();
+                $('#modal-create-task').on('shown.bs.modal', function() {
+                    startElement.daterangepicker({
+                        locale: {
+                            format: 'YYYY-MM-DD',
+                            language: "ID",
+                            "daysOfWeek": [
+                                "Min",
+                                "Sen",
+                                "Sel",
+                                "Rab",
+                                "Kam",
+                                "Jum",
+                                "Sab"
+                            ],
+                            "monthNames": [
+                                "Januari",
+                                "Februari",
+                                "Maret",
+                                "April",
+                                "Mei",
+                                "Juni",
+                                "Juli",
+                                "Augustus",
+                                "September",
+                                "Oktober",
+                                "Nopember",
+                                "Desember"
+                            ],
+                        },
+                        'drops': 'auto',
+                        "autoApply": true,
+                        'startDate': `{{ $startDate }}`,
+                        'maxDate': `{{ $endDate }}`,
+                        'minDate': `{{ $startDate }}`,
+                        'parentEl': '#modal-create-task',
+                        'singleDatePicker': true,
+                    });
+                });
+                startElement.on('apply.daterangepicker', function() {
+                    if (moment().format('YYYY-MM-DD') == $(this).val()) {
+                        $('[name=status]').val('Progress');
+                    } else {
+                        $('[name=status]').val('Pending');
                     }
+                    endElement.daterangepicker({
+                        locale: {
+                            format: 'YYYY-MM-DD',
+                            "daysOfWeek": [
+                                "Min",
+                                "Sen",
+                                "Sel",
+                                "Rab",
+                                "Kam",
+                                "Jum",
+                                "Sab"
+                            ],
+                            "monthNames": [
+                                "Januari",
+                                "Februari",
+                                "Maret",
+                                "April",
+                                "Mei",
+                                "Juni",
+                                "Juli",
+                                "Augustus",
+                                "September",
+                                "Oktober",
+                                "Nopember",
+                                "Desember"
+                            ],
+                        },
+                        'drops': 'auto',
+                        "autoApply": true,
+                        'startDate': $(this).val(),
+                        'maxDate': `{{ $endDate }}`,
+                        'minDate': $(this).val(),
+                        'parentEl': '#modal-create-task',
+                        'singleDatePicker': true,
+                    });
+                });
+                $('.stasus-all').click(function() {
+                    taskListCreateElement({
+                        status: 'All',
+                        indexPage: 0,
+                        search: '',
+                    });
+                    $('.can').removeClass('active');
+                    $(this).addClass('active');
+                });
+                $('.stasus-pending').click(function() {
+                    taskListCreateElement({
+                        status: 'Pending',
+                        indexPage: 0,
+                        search: '',
+                    });
+                    $('.can').removeClass('active');
+                    $(this).addClass('active');
+                });
+                $('.stasus-progress').click(function() {
+                    taskListCreateElement({
+                        status: 'Progress',
+                        indexPage: 0,
+                        search: '',
+                    });
+                    $('.can').removeClass('active');
+                    $(this).addClass('active');
+                });
+                $('.stasus-end').click(function() {
+                    taskListCreateElement({
+                        status: 'End',
+                        indexPage: 0,
+                        search: '',
+                    });
+                    $('.can').removeClass('active');
+                    $(this).addClass('active');
+                });
+                $('#modal-create-task').on('hidden.bs.modal', function() {
+                    $('#create-new-task')[0].reset();
+                    $('#image-preview').removeAttr('style');
+                });
+                $('#create-task').click(function() {
+                    $('#modal-create-task').modal('show');
+                });
+                $('#save-task').click(function() {
+                    $.ajax({
+                        type: "post",
+                        url: "{{ route('mentor.task.store') }}",
+                        data: new FormData($('#create-new-task')[0]),
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function(response) {
+                            swal(response.message, {
+                                'icon': 'success'
+                            });
+                            $('#create-new-task')[0].reset();
+                            $('#image-preview').removeAttr('style');
+                            $('#modal-create-task').modal('hide');
+                            window.tasks = response.data;
+                            taskListCreateElement();
+                        },
+                        error: function(error) {
+                            if (error.responseJSON.errors != undefined) {
+                                let errors = error.responseJSON.errors;
+                                $.each(errors, function(indexInArray, valueOfElement) {
+                                    if (indexInArray == 'group') {
+                                        $(`[name="${indexInArray}[]"]`)
+                                            .addClass('is-invalid')
+                                            .siblings('.invalid-feedback')
+                                            .html(`${valueOfElement}`);
+                                    } else {
+                                        $(`[name=${indexInArray}]`)
+                                            .addClass('is-invalid')
+                                            .siblings('.invalid-feedback')
+                                            .html(`${valueOfElement}`);
+                                    }
+                                });
+                            } else {
+                                swal(error.responseJSON.message, {
+                                    'icon': 'error'
+                                });
+                            }
+                        }
+                    });
+                });
+                $('#update-task').click(function() {
+                    let id = $(this).data('id')
+                    $.ajax({
+                        type: "POST",
+                        url: `{{ route('mentor.task.update') }}/${id}`,
+                        data: new FormData($('#create-new-task')[0]),
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function(response) {
+                            swal(response.message, {
+                                'icon': 'success'
+                            });
+                            $('#create-new-task')[0].reset();
+                            $('#image-preview').removeAttr('style');
+                            $('#modal-create-task').modal('hide');
+                            window.tasks = response.data;
+                            taskListCreateElement();
+                        },
+                        error: function(error) {
+                            if (error.responseJSON.errors != undefined) {
+                                let errors = error.responseJSON.errors;
+                                $.each(errors, function(indexInArray, valueOfElement) {
+                                    if (indexInArray == 'group') {
+                                        $(`[name="${indexInArray}[]"]`)
+                                            .addClass('is-invalid')
+                                            .siblings('.invalid-feedback')
+                                            .html(`${valueOfElement}`);
+                                    } else {
+                                        $(`[name=${indexInArray}]`)
+                                            .addClass('is-invalid')
+                                            .siblings('.invalid-feedback')
+                                            .html(`${valueOfElement}`);
+                                    }
+                                });
+                            } else {
+                                swal(error.responseJSON.message, {
+                                    'icon': 'error'
+                                });
+                            }
+                        }
+                    });
                 });
             });
-            $('#update-task').click(function() {
-                console.log(new FormData($('#create-new-task')[0]))
-                let id = $(this).data('id')
-                $.ajax({
-                    type: "POST",
-                    url: `{{ route('mentor.task.update') }}/${id}`,
-                    data: new FormData($('#create-new-task')[0]),
-                    processData: false,
-                    contentType: false,
-                    dataType: "json",
-                    success: function(response) {
-                        swal(response.message, {
-                            'icon': 'success'
-                        });
-                        $('#create-new-task')[0].reset();
-                        $('#image-preview').removeAttr('style');
-                        $('#modal-create-task').modal('hide');
-                        window.tasks = response.data;
-                        taskListCreateElement();
-                    },
-                    error: function(error) {
-                        if (error.responseJSON.errors != undefined) {
-                            let errors = error.responseJSON.errors;
-                            $.each(errors, function(indexInArray, valueOfElement) {
-                                if (indexInArray == 'group') {
-                                    $(`[name="${indexInArray}[]"]`)
-                                        .addClass('is-invalid')
-                                        .siblings('.invalid-feedback')
-                                        .html(`${valueOfElement}`);
-                                } else {
-                                    $(`[name=${indexInArray}]`)
-                                        .addClass('is-invalid')
-                                        .siblings('.invalid-feedback')
-                                        .html(`${valueOfElement}`);
-                                }
-                            });
-                        } else {
-                            swal(error.responseJSON.message, {
-                                'icon': 'error'
-                            });
-                        }
-                    }
-                });
-            })
         });
     </script>
 @endsection
