@@ -9,7 +9,7 @@
                     <ul class="nav nav-pills">
                         <li class="nav-item">
                             <a class="nav-link active" href="#">All <span
-                                    class="badge badge-white">{{ count($tasks) }}</span></a>
+                                    class="badge badge-white">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Pending <span
@@ -70,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($tasks as $task)
+                                {{-- @foreach ($tasks as $task)
                                     <tr>
                                         <td>
                                             {{ $loop->iteration }}
@@ -107,34 +107,13 @@
                                             @endif
                                         </td>
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>
                     <div class="float-right">
                         <nav>
                             <ul class="pagination">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">3</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
                             </ul>
                         </nav>
                     </div>
@@ -273,29 +252,36 @@
     <script src="{{ asset('js/page/features-post-create.js') }}"></script>
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
-        function taskListCreateElement(datas, indexPage = 0) {
+        function taskListCreateElement(indexPage = 0) {
+            let datas = window.tasks;
             let rowTable = ``;
+            let group = '';
+            let clusters = JSON.parse(`<?php echo $clusters; ?>`);
+            let status = '';
+            if (datas[indexPage].length == undefined) {
+                datas[indexPage] = Object.values(datas[indexPage])
+            }
             datas[indexPage].forEach((element, index) => {
                 let group = '';
-                let clusters = JSON.parse(`<?php echo $clusters; ?>`);
                 let groups = JSON.parse(`${element.group}`);
                 groups.forEach(value => {
                     clusters.forEach(cluster => {
                         if (value == cluster.id) {
-                            group += `<a href="#">{{ $cluster->name }}</a>`;
+                            group += `<a href="#">${cluster.name}</a> `;
                         }
                     });
                 });
+                let status = '';
                 if (element.status == "Pending") {
-                    let status = `<div class="badge badge-success">${element.status}</div>`;
+                    status = `<div class="badge badge-success">${element.status}</div>`;
                 } else if (element.status == "Progress") {
-                    let status = `<div class="badge badge-warning">${element.status}</div>`;
+                    status = `<div class="badge badge-warning">${element.status}</div>`;
                 } else {
-                    let status = `<div class="badge badge-danger">${element.status}</div>`;
+                    status = `<div class="badge badge-danger">${element.status}</div>`;
                 }
                 rowTable += `<tr>
                                 <td>
-                                    ${(index + 1) * (indexPage + 1)}
+                                    ${ (index + 1) + (indexPage*5)}
                                 </td>
                                 <td>${element.title}
                                     <div class="table-links">
@@ -318,9 +304,40 @@
                                 </td>
                             </tr>`;
             })
-            $('tbody').html(rowTable)
+            $('tbody').html(rowTable);
+            let center = ``;
+            for (let index = 0; index < window.tasks.length; index++) {
+                if (index == indexPage || index == (indexPage - 1) || index == (indexPage + 1)) {
+                    center += `<li class="page-item ${index == indexPage ? 'active' : ''}">
+                    <a class="page-link" onclick="taskListCreateElement(${index})">${index+1}</a>
+                </li>`
+                }
+            }
+            let pagination = `<li class="page-item ${indexPage == 0 ? 'disabled': ''}">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement(${indexPage-1})">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                ${center}
+                <li class="page-item ${indexPage == (window.tasks.length-1) ? 'disabled' : ''}">
+                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement(${indexPage+1})">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>`;
+            $('.pagination').html(pagination)
         }
         $(function() {
+            $.ajax({
+                type: "GET",
+                url: "{{ route('database.task.all') }}",
+                dataType: "JSON",
+                success: function(response) {
+                    window.tasks = response.data;
+                    taskListCreateElement();
+                }
+            });
             var endElement = $('.datepicker-end');
             var startElement = $('.datepicker-start');
             $('#modal-create-task').on('shown.bs.modal', function() {
@@ -416,12 +433,16 @@
                             $('#modal-create-task').modal('show');
                             setTimeout(() => {
                                 $('#save-task').addClass('d-none')
-                                $('#update-task').removeClass('d-none').data(
-                                    'id', response
-                                    .data.id)
-                                let group = JSON.parse(`<?php echo $clusters; ?>`);
+                                $('#update-task').removeClass('d-none')
+                                    .data(
+                                        'id', response
+                                        .data.id)
+                                let group = JSON.parse(
+                                    `<?php echo $clusters; ?>`);
                                 $("#title-create-task")
-                                    .html(`Update Task ${response.data.title}`);
+                                    .html(
+                                        `Update Task ${response.data.title}`
+                                    );
                                 $.each(response.data, function(indexInArray,
                                     valueOfElement) {
                                     if (indexInArray == "group") {
@@ -444,7 +465,8 @@
                                             .css('background-image',
                                                 `url(data:image/png;base64,${valueOfElement})`
                                             )
-                                            .css('background-position',
+                                            .css(
+                                                'background-position',
                                                 `center center`);
                                     } else {
                                         if (indexInArray ==
@@ -456,11 +478,13 @@
                                                 startElement.data(
                                                     'daterangepicker'
                                                 ).setStartDate(
-                                                    valueOfElement)
+                                                    valueOfElement
+                                                )
                                             }
                                             $(`[name="${indexInArray}"]`)
                                                 .val(
-                                                    `${valueOfElement}`)
+                                                    `${valueOfElement}`
+                                                )
                                                 .trigger(
                                                     'apply.daterangepicker'
                                                 );
@@ -500,12 +524,14 @@
                             $.each(response.data, function(indexInArray,
                                 valueOfElement) {
                                 if (indexInArray == 'group') {
-                                    $(`[data-index="${indexInArray}"]`).html('')
+                                    $(`[data-index="${indexInArray}"]`)
+                                        .html('')
                                     group.forEach(element => {
                                         JSON.parse(valueOfElement)
                                             .forEach(
                                                 group => {
-                                                    if (element.id ==
+                                                    if (element
+                                                        .id ==
                                                         group) {
                                                         $(`[data-index="${indexInArray}"]`)
                                                             .append(
@@ -520,14 +546,17 @@
                                             `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
                                         );
                                 } else if (indexInArray == 'start_date') {
-                                    let dayLeft = moment(valueOfElement).diff(
-                                        moment(), 'days');
+                                    let dayLeft = moment(valueOfElement)
+                                        .diff(
+                                            moment(), 'days');
                                     let deadline;
                                     if (dayLeft == 0) {
-                                        deadline = moment(valueOfElement).diff(
-                                            moment(
-                                                response.data.deadline_date
-                                            ), 'hours')
+                                        deadline = moment(valueOfElement)
+                                            .diff(
+                                                moment(
+                                                    response.data
+                                                    .deadline_date
+                                                ), 'hours')
                                     }
                                     $(`[data-index="${indexInArray}"]`)
                                         .html(
@@ -564,7 +593,8 @@
                             url: `{{ route('mentor.task.delete') }}/${id}`,
                             dataType: "json",
                             success: function(response) {
-                                taskListCreateElement(response.data)
+                                window.tasks = response.data;
+                                taskListCreateElement();
                             }
                         });
                     }
@@ -592,6 +622,8 @@
                         $('#create-new-task')[0].reset();
                         $('#image-preview').removeAttr('style');
                         $('#modal-create-task').modal('hide');
+                        window.tasks = response.data;
+                        taskListCreateElement();
                     },
                     error: function(error) {
                         if (error.responseJSON.errors != undefined) {
@@ -634,6 +666,8 @@
                         $('#create-new-task')[0].reset();
                         $('#image-preview').removeAttr('style');
                         $('#modal-create-task').modal('hide');
+                        window.tasks = response.data;
+                        taskListCreateElement();
                     },
                     error: function(error) {
                         if (error.responseJSON.errors != undefined) {

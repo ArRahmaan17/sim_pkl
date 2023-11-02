@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Database\DatabaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
@@ -28,6 +29,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', HomeController::class)->name('home')->middleware([CompletedProfile::class]);
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
+    Route::name('database.')->group(function () {
+        Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
+    });
     Route::name('user.')->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware([CompletedProfile::class]);
         Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');

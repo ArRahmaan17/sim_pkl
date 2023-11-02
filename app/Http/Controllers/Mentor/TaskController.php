@@ -19,11 +19,10 @@ class TaskController extends Controller
         $startDate = now('Asia/Jakarta')->setDate($yearStart, $monthStart, $dayStart)->startOfDay();
         $endDate = now('Asia/Jakarta')->setDate($yearEnd, $monthEnd, $dayEnd)->endOfDay();
         $clusters = Cluster::all();
-        $tasks = Task::limit(5)->get();
         $pendingTasks = Task::where('status', 'Pending')->count();
         $progressTasks = Task::where('status', 'Progress')->count();
         $endTasks = Task::where('status', 'End')->count();
-        return view('layouts.Mentor.Task.index', compact('startDate', 'endDate', 'clusters', 'tasks', 'pendingTasks', 'progressTasks', 'endTasks'));
+        return view('layouts.Mentor.Task.index', compact('startDate', 'endDate', 'clusters', 'pendingTasks', 'progressTasks', 'endTasks'));
     }
 
     public function store(Request $request)
@@ -50,7 +49,7 @@ class TaskController extends Controller
                 Storage::makeDirectory('task');
             }
             Storage::disk('task')->put($filename . '.' . $extension, $request->file('image')->getContent());
-            return Response()->json(['message' => 'Successfully create task', 'data' => Task::all()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully create task', 'data' => Task::get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed create task'], 500);
@@ -92,7 +91,7 @@ class TaskController extends Controller
             $data['group'] = json_encode($data['group']);
             Task::find($id)->update($data);
             DB::commit();
-            return Response()->json(['message' => 'Successfully update task ' . $request->title, 'data' => Task::all()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully update task ' . $request->title, 'data' => Task::get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed update task ' . $request->title], 500);
@@ -104,7 +103,7 @@ class TaskController extends Controller
         try {
             Task::find($id)->delete();
             DB::commit();
-            return Response()->json(['message' => 'Successfully delete task', 'data' => Task::all()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully delete task', 'data' => Task::get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed delete task'], 500);
