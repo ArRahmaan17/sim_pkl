@@ -44,6 +44,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::name('mentor.')->group(function () {
         Route::get('/mentor/task', [TaskController::class, 'index'])->name('task')->middleware([CompletedProfile::class]);
         Route::post('/mentor/task/store', [TaskController::class, 'store'])->name('task.store');
+        Route::get('/mentor/task/show/{id?}', [TaskController::class, 'show'])->name('task.show');
+        Route::post('/mentor/task/update/{id?}', [TaskController::class, 'update'])->name('task.update');
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus')->middleware([CompletedProfile::class]);
