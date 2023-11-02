@@ -8,19 +8,19 @@
                 <div class="card-body">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active stasus-all can" href="#">All <span
+                            <a class="nav-link active can" data-status="All" href="#">All <span
                                     class="badge badge-white">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link stasus-pending can" href="#">Pending <span
+                            <a class="nav-link can" data-status="Pending" href="#">Pending <span
                                     class="badge badge-warning ">{{ $pendingTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link stasus-progress can" href="#">Progress <span
+                            <a class="nav-link can" data-status="Progress" href="#">Progress <span
                                     class="badge badge-success">{{ $progressTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link stasus-end can" href="#">End <span
+                            <a class="nav-link can" data-status="End" href="#">End <span
                                     class="badge badge-danger">{{ $endTasks }}</span></a>
                         </li>
                     </ul>
@@ -219,9 +219,12 @@
 
         function taskListCreateElement(data = {
             'indexPage': 0,
-            'search': '',
-            'status': 'All',
+            'search': $('[placeholde=search]').val(),
+            'status': $('.can.active').data('status'),
         }) {
+            swal('Loading', {
+                button: false
+            });
             let datas = window.tasks;
             let rowTable = ``;
             let group = '';
@@ -280,7 +283,11 @@
             })
             $('tbody').html(rowTable);
             let center = ``;
-            for (let index = 0; index < window.tasks.length; index++) {
+            for (let index = 0; index < (data.status == "All" ?
+                    `{{ $pendingTasks + $progressTasks + $endTasks }}` : (data.status == "Pending") ?
+                    `{{ $pendingTasks }}` : (data.status == "Progress") ?
+                    `{{ $progressTasks }}` : (data.status == "End") ?
+                    `{{ $endTasks }}` : 0); index++) {
                 if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
                     center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
                     <a class="page-link" onclick="taskListCreateElement(${index})">${index+1}</a>
@@ -502,6 +509,9 @@
                     }
                 });
             });
+            setTimeout(() => {
+                swal.close();
+            }, 300);
         }
         $.ajax({
             type: "GET",
@@ -593,42 +603,14 @@
                         'singleDatePicker': true,
                     });
                 });
-                $('.stasus-all').click(function() {
-                    taskListCreateElement({
-                        status: 'All',
-                        indexPage: 0,
-                        search: '',
-                    });
+                $('.can').click(function() {
                     $('.can').removeClass('active');
                     $(this).addClass('active');
+                    setTimeout(() => {
+                        taskListCreateElement();
+                    }, 300);
                 });
-                $('.stasus-pending').click(function() {
-                    taskListCreateElement({
-                        status: 'Pending',
-                        indexPage: 0,
-                        search: '',
-                    });
-                    $('.can').removeClass('active');
-                    $(this).addClass('active');
-                });
-                $('.stasus-progress').click(function() {
-                    taskListCreateElement({
-                        status: 'Progress',
-                        indexPage: 0,
-                        search: '',
-                    });
-                    $('.can').removeClass('active');
-                    $(this).addClass('active');
-                });
-                $('.stasus-end').click(function() {
-                    taskListCreateElement({
-                        status: 'End',
-                        indexPage: 0,
-                        search: '',
-                    });
-                    $('.can').removeClass('active');
-                    $(this).addClass('active');
-                });
+
                 $('#modal-create-task').on('hidden.bs.modal', function() {
                     $('#create-new-task')[0].reset();
                     $('#image-preview').removeAttr('style');
@@ -657,7 +639,8 @@
                         error: function(error) {
                             if (error.responseJSON.errors != undefined) {
                                 let errors = error.responseJSON.errors;
-                                $.each(errors, function(indexInArray, valueOfElement) {
+                                $.each(errors, function(indexInArray,
+                                    valueOfElement) {
                                     if (indexInArray == 'group') {
                                         $(`[name="${indexInArray}[]"]`)
                                             .addClass('is-invalid')
@@ -700,7 +683,8 @@
                         error: function(error) {
                             if (error.responseJSON.errors != undefined) {
                                 let errors = error.responseJSON.errors;
-                                $.each(errors, function(indexInArray, valueOfElement) {
+                                $.each(errors, function(indexInArray,
+                                    valueOfElement) {
                                     if (indexInArray == 'group') {
                                         $(`[name="${indexInArray}[]"]`)
                                             .addClass('is-invalid')
