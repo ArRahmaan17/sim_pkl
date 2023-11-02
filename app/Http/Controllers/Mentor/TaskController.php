@@ -98,4 +98,15 @@ class TaskController extends Controller
             return Response()->json(['message' => 'Failed update task ' . $request->title], 500);
         }
     }
+    public function delete($id)
+    {
+        DB::beginTransaction();
+        try {
+            Task::find($id)->delete();
+            DB::commit();
+            return Response()->json(['message' => 'Successfully delete task'], 200);
+        } catch (\Throwable $th) {
+            return Response()->json(['message' => 'Failed delete task'], 500);
+        }
+    }
 }

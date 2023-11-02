@@ -83,7 +83,7 @@
                                                 <a href="#" class="text-warning edit"
                                                     data-id="{{ $task->id }}">Edit</a>
                                                 <div class="bullet"></div>
-                                                <a href="#" class="text-danger"
+                                                <a href="#" class="text-danger delete"
                                                     data-id="{{ $task->id }}">Trash</a>
                                             </div>
                                         </td>
@@ -434,7 +434,7 @@
                         });
                     }
                 });
-            })
+            });
             $('.detail').click(function() {
                 let id = $(this).data('id');
                 $.ajax({
@@ -501,7 +501,28 @@
                         });
                     }
                 });
-            })
+            });
+            $('.delete').click(function() {
+                swal("Are you sure want to delete this task?", {
+                    dangerMode: true,
+                    buttons: true,
+                }).then((click) => {
+                    if (click) {
+                        let id = $(this).data('id');
+                        $.ajax({
+                            type: "DELETE",
+                            headers: {
+                                'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                            },
+                            url: `{{ route('mentor.task.delete') }}/${id}`,
+                            dataType: "json",
+                            success: function(response) {
+
+                            }
+                        });
+                    }
+                });
+            });
             $('#modal-create-task').on('hidden.bs.modal', function() {
                 $('#create-new-task')[0].reset();
                 $('#image-preview').removeAttr('style');
