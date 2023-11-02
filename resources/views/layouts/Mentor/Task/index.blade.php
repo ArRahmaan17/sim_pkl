@@ -99,7 +99,7 @@
                                         <td>{{ $task->created_at }}</td>
                                         <td>
                                             @if ($task->status == 'Pending')
-                                                <div class="badge badge-warning">{{ $task->status }}</div>
+                                                <div class="badge badge-success">{{ $task->status }}</div>
                                             @elseif ($task->group == 'Progress')
                                                 <div class="badge badge-warning">{{ $task->status }}</div>
                                             @else
@@ -273,6 +273,53 @@
     <script src="{{ asset('js/page/features-post-create.js') }}"></script>
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
+        function taskListCreateElement(datas, indexPage = 0) {
+            let rowTable = ``;
+            datas[indexPage].forEach((element, index) => {
+                let group = '';
+                let clusters = JSON.parse(`<?php echo $clusters; ?>`);
+                let groups = JSON.parse(`${element.group}`);
+                groups.forEach(value => {
+                    clusters.forEach(cluster => {
+                        if (value == cluster.id) {
+                            group += `<a href="#">{{ $cluster->name }}</a>`;
+                        }
+                    });
+                });
+                if (element.status == "Pending") {
+                    let status = `<div class="badge badge-success">${element.status}</div>`;
+                } else if (element.status == "Progress") {
+                    let status = `<div class="badge badge-warning">${element.status}</div>`;
+                } else {
+                    let status = `<div class="badge badge-danger">${element.status}</div>`;
+                }
+                rowTable += `<tr>
+                                <td>
+                                    ${(index + 1) * (indexPage + 1)}
+                                </td>
+                                <td>${element.title}
+                                    <div class="table-links">
+                                        <a href="#" class="text-primary detail"
+                                            data-id="${element.id}">View</a>
+                                        <div class="bullet"></div>
+                                        <a href="#" class="text-warning edit"
+                                            data-id="${element.id}">Edit</a>
+                                        <div class="bullet"></div>
+                                        <a href="#" class="text-danger delete"
+                                            data-id="${element.id}">Trash</a>
+                                    </div>
+                                </td>
+                                <td>
+                                    ${group}
+                                </td>
+                                <td>${moment(element.created_at).format('YYYY-MM-DD')}</td>
+                                <td>
+                                    ${status}
+                                </td>
+                            </tr>`;
+            })
+            $('tbody').html(rowTable)
+        }
         $(function() {
             var endElement = $('.datepicker-end');
             var startElement = $('.datepicker-start');
@@ -517,7 +564,7 @@
                             url: `{{ route('mentor.task.delete') }}/${id}`,
                             dataType: "json",
                             success: function(response) {
-
+                                taskListCreateElement(response.data)
                             }
                         });
                     }
