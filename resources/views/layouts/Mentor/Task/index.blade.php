@@ -8,19 +8,19 @@
                 <div class="card-body">
                     <ul class="nav nav-pills">
                         <li class="nav-item">
-                            <a class="nav-link active can" data-status="All" href="#">All <span
-                                    class="badge badge-info">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
+                            <a class="nav-link active can" data-status="All" href="#"><i class="fas fa-list"></i> All
+                                <span class="badge badge-info">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link can" data-status="Pending" href="#">Pending <span
-                                    class="badge badge-warning ">{{ $pendingTasks }}</span></a>
+                            <a class="nav-link can" data-status="Pending" href="#"><i class="fas fa-pause"></i>
+                                Pending <span class="badge badge-warning ">{{ $pendingTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link can" data-status="Progress" href="#">Progress <span
-                                    class="badge badge-success">{{ $progressTasks }}</span></a>
+                            <a class="nav-link can" data-status="Progress" href="#"><i class="fas fa-spinner"></i>
+                                Progress <span class="badge badge-success">{{ $progressTasks }}</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link can" data-status="End" href="#">End <span
+                            <a class="nav-link can" data-status="End" href="#"><i class="fas fa-lock"></i> End <span
                                     class="badge badge-danger">{{ $endTasks }}</span></a>
                         </li>
                     </ul>
@@ -331,7 +331,6 @@
             let center = ``;
             if (data.search != "") {
                 searchcount = checkCountSearch(data.search.toLowerCase());
-                console.log(searchcount)
             } else {
                 if (data.status == "All") {
                     searchcount = {{ $pendingTasks + $progressTasks + $endTasks }}
@@ -366,103 +365,118 @@
                     </a>
                 </li>`;
             $('.pagination').html(pagination);
+            setTimeout(() => {
+                swal.close();
+            }, 500);
             $('.edit').click(function() {
                 let id = $(this).data('id');
                 $.ajax({
                     type: "GET",
                     url: `{{ route('mentor.task.show') }}/${id}`,
                     dataType: "JSON",
-                    success: function(response) {
-                        swal(response.message, {
-                            'icon': 'success'
-                        }).then((click) => {
-                            $('#modal-create-task').modal('show');
-                            setTimeout(() => {
-                                $('#save-task').addClass('d-none')
-                                $('#update-task').removeClass(
-                                        'd-none')
-                                    .data(
-                                        'id', response
-                                        .data.id)
-                                let group = JSON.parse(
-                                    `<?php echo $clusters; ?>`);
-                                $("#title-create-task")
-                                    .html(
-                                        `Update Task ${response.data.title}`
-                                    );
-                                $.each(response.data, function(
-                                    indexInArray,
-                                    valueOfElement) {
-                                    if (indexInArray ==
-                                        "group") {
-                                        JSON.parse(
-                                                valueOfElement
-                                            )
-                                            .forEach(
-                                                value => {
-                                                    $(`[name="group[]"]`)
-                                                        .find(
-                                                            `option[value=${value}]`
-                                                        )
-                                                        .attr(
-                                                            'selected',
-                                                            true
-                                                        )
-                                                })
-                                    } else if (
-                                        indexInArray ==
-                                        'thumbnail') {
-                                        $('#image-preview')
-                                            .css(
-                                                "background-size",
-                                                'cover')
-                                            .css(
-                                                'background-image',
-                                                `url(data:image/png;base64,${valueOfElement})`
-                                            )
-                                            .css(
-                                                'background-position',
-                                                `center center`
-                                            );
-                                    } else {
-                                        if (indexInArray ==
-                                            'start_date' ||
-                                            indexInArray ==
-                                            'deadline_date'
-                                        ) {
-                                            if (indexInArray ==
-                                                'start_date'
-                                            ) {
-                                                startElement
-                                                    .data(
-                                                        'daterangepicker'
-                                                    )
-                                                    .setStartDate(
-                                                        valueOfElement
-                                                    )
-                                            }
-                                            $(`[name="${indexInArray}"]`)
-                                                .val(
-                                                    `${valueOfElement}`
-                                                )
-                                                .trigger(
-                                                    'apply.daterangepicker'
-                                                );
-                                        } else {
-                                            $(`[name="${indexInArray}"]`)
-                                                .val(
-                                                    `${valueOfElement}`
-                                                );
-                                        }
-                                    }
-                                });
-                            }, 400);
+                    beforeSend: function() {
+                        swal('Loading', {
+                            button: false,
+                            icon: `{{ asset('img/loading.gif') }}`
                         });
                     },
+                    success: function(response) {
+                        swal.close();
+                        setTimeout(() => {
+                            swal(response.message, {
+                                'icon': 'success'
+                            }).then((click) => {
+                                $('#modal-create-task').modal('show');
+                                setTimeout(() => {
+                                    $('#save-task').addClass('d-none')
+                                    $('#update-task').removeClass(
+                                            'd-none')
+                                        .data(
+                                            'id', response
+                                            .data.id)
+                                    let group = JSON.parse(
+                                        `<?php echo $clusters; ?>`);
+                                    $("#title-create-task")
+                                        .html(
+                                            `Update Task ${response.data.title}`
+                                        );
+                                    $.each(response.data, function(
+                                        indexInArray,
+                                        valueOfElement) {
+                                        if (indexInArray ==
+                                            "group") {
+                                            JSON.parse(
+                                                    valueOfElement
+                                                )
+                                                .forEach(
+                                                    value => {
+                                                        $(`[name="group[]"]`)
+                                                            .find(
+                                                                `option[value=${value}]`
+                                                            )
+                                                            .attr(
+                                                                'selected',
+                                                                true
+                                                            )
+                                                    })
+                                        } else if (
+                                            indexInArray ==
+                                            'thumbnail') {
+                                            $('#image-preview')
+                                                .css(
+                                                    "background-size",
+                                                    'cover')
+                                                .css(
+                                                    'background-image',
+                                                    `url(data:image/png;base64,${valueOfElement})`
+                                                )
+                                                .css(
+                                                    'background-position',
+                                                    `center center`
+                                                );
+                                        } else {
+                                            if (indexInArray ==
+                                                'start_date' ||
+                                                indexInArray ==
+                                                'deadline_date'
+                                            ) {
+                                                if (indexInArray ==
+                                                    'start_date'
+                                                ) {
+                                                    startElement
+                                                        .data(
+                                                            'daterangepicker'
+                                                        )
+                                                        .setStartDate(
+                                                            valueOfElement
+                                                        )
+                                                }
+                                                $(`[name="${indexInArray}"]`)
+                                                    .val(
+                                                        `${valueOfElement}`
+                                                    )
+                                                    .trigger(
+                                                        'apply.daterangepicker'
+                                                    );
+                                            } else {
+                                                $(`[name="${indexInArray}"]`)
+                                                    .val(
+                                                        `${valueOfElement}`
+                                                    );
+                                            }
+                                        }
+                                    });
+                                }, 400);
+                            });
+                        }, 500);
+                    },
                     error(error) {
-                        swal(error.responseJSON.message, {
-                            'icon': 'error'
-                        });
+                        swal.close();
+                        setTimeout(() => {
+                            swal(error.responseJSON.message, {
+                                'icon': 'error'
+                            });
+                        }, 300);
                     }
                 });
             });
@@ -472,76 +486,87 @@
                     type: "GET",
                     url: `{{ route('mentor.task.show') }}/${id}`,
                     dataType: "JSON",
+                    beforeSend: function() {
+                        swal('Loading', {
+                            button: false,
+                            icon: `{{ asset('img/loading.gif') }}`
+                        });
+                    },
                     success: function(response) {
-                        swal(response.message, {
-                            'icon': 'success'
-                        }).then((click) => {
-                            let group = JSON.parse(`<?php echo $clusters; ?>`);
-                            $("#title-view-task")
-                                .html(
-                                    `View Task ${response.data.title} <div class="badge badge-warning">${response.data.status}</div>`
-                                );
-                            $.each(response.data, function(indexInArray,
-                                valueOfElement) {
-                                if (indexInArray == 'group') {
-                                    $(`[data-index="${indexInArray}"]`)
-                                        .html('')
-                                    group.forEach(element => {
-                                        JSON.parse(
-                                                valueOfElement
-                                            )
-                                            .forEach(
-                                                group => {
-                                                    if (element
-                                                        .id ==
-                                                        group
-                                                    ) {
-                                                        $(`[data-index="${indexInArray}"]`)
-                                                            .append(
-                                                                `<a href="#">${element.name}</a> `
-                                                            );
-                                                    }
-                                                });
-                                    });
-                                } else if (indexInArray ==
-                                    'thumbnail') {
-                                    $(`[data-index="${indexInArray}"]`)
-                                        .html(
-                                            `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
-                                        );
-                                } else if (indexInArray ==
-                                    'start_date') {
-                                    let dayLeft = moment(
-                                            valueOfElement)
-                                        .diff(
-                                            moment(), 'days');
-                                    let deadline;
-                                    if (dayLeft == 0) {
-                                        deadline = moment(
+                        swal.close();
+                        setTimeout(() => {
+                            swal(response.message, {
+                                'icon': 'success'
+                            }).then((click) => {
+                                let group = JSON.parse(`<?php echo $clusters; ?>`);
+                                $("#title-view-task")
+                                    .html(
+                                        `View Task ${response.data.title} <div class="badge badge-warning">${response.data.status}</div>`
+                                    );
+                                $.each(response.data, function(indexInArray,
+                                    valueOfElement) {
+                                    if (indexInArray == 'group') {
+                                        $(`[data-index="${indexInArray}"]`)
+                                            .html('')
+                                        group.forEach(element => {
+                                            JSON.parse(
+                                                    valueOfElement
+                                                )
+                                                .forEach(
+                                                    group => {
+                                                        if (element
+                                                            .id ==
+                                                            group
+                                                        ) {
+                                                            $(`[data-index="${indexInArray}"]`)
+                                                                .append(
+                                                                    `<a href="#">${element.name}</a> `
+                                                                );
+                                                        }
+                                                    });
+                                        });
+                                    } else if (indexInArray ==
+                                        'thumbnail') {
+                                        $(`[data-index="${indexInArray}"]`)
+                                            .html(
+                                                `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
+                                            );
+                                    } else if (indexInArray ==
+                                        'start_date') {
+                                        let dayLeft = moment(
                                                 valueOfElement)
                                             .diff(
-                                                moment(
-                                                    response.data
-                                                    .deadline_date
-                                                ), 'hours')
+                                                moment(), 'days');
+                                        let deadline;
+                                        if (dayLeft == 0) {
+                                            deadline = moment(
+                                                    valueOfElement)
+                                                .diff(
+                                                    moment(
+                                                        response.data
+                                                        .deadline_date
+                                                    ), 'hours')
+                                        }
+                                        $(`[data-index="${indexInArray}"]`)
+                                            .html(
+                                                `Start in ${dayLeft} Days${deadline == undefined ? '' : `, DeadLine on ${deadline == 0 ? 'this day' : `${deadline} Days`}` }`
+                                            );
+                                    } else {
+                                        $(`[data-index="${indexInArray}"]`)
+                                            .html(`${valueOfElement}`);
                                     }
-                                    $(`[data-index="${indexInArray}"]`)
-                                        .html(
-                                            `Start in ${dayLeft} Days${deadline == undefined ? '' : `, DeadLine on ${deadline == 0 ? 'this day' : `${deadline} Days`}` }`
-                                        );
-                                } else {
-                                    $(`[data-index="${indexInArray}"]`)
-                                        .html(`${valueOfElement}`);
-                                }
+                                });
+                                $('#modal-view-task').modal('show');
                             });
-                            $('#modal-view-task').modal('show');
-                        });
-
+                        }, 300);
                     },
                     error(error) {
-                        swal(error.responseJSON.message, {
-                            'icon': 'error'
-                        });
+                        swal.close();
+                        setTimeout(() => {
+                            swal(error.responseJSON.message, {
+                                'icon': 'error'
+                            });
+                        }, 300);
                     }
                 });
             });
@@ -559,17 +584,35 @@
                             },
                             url: `{{ route('mentor.task.delete') }}/${id}`,
                             dataType: "json",
+                            beforeSend: function() {
+                                swal('Loading', {
+                                    button: false,
+                                    icon: `{{ asset('img/loading.gif') }}`
+                                });
+                            },
                             success: function(response) {
-                                window.tasks = response.data;
-                                taskListCreateElement();
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(response.message, {
+                                        'icon': 'success'
+                                    })
+                                    window.tasks = response.data;
+                                    taskListCreateElement();
+                                }, 300);
+                            },
+                            error: function(error) {
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(error.responseJSON.message, {
+                                        'icon': 'error'
+                                    });
+                                }, 300);
                             }
                         });
                     }
                 });
             });
-            setTimeout(() => {
-                swal.close();
-            }, 500);
+
         }
         $.ajax({
             type: "GET",
