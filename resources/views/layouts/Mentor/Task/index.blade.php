@@ -218,8 +218,23 @@
         var endElement = $('.datepicker-end');
         var startElement = $('.datepicker-start');
 
+        function chunkArray(array, size = 5) {
+            const chunkedArray = [];
+            for (let i = 0; i < array.length; i += size) {
+                chunkedArray.push(array.slice(i, i + size));
+            }
+            return chunkedArray;
+        }
+
+        function chunkResolver() {
+            window.tasks.forEach((element, index) => {
+                if (element.length == undefined) {
+                    window.tasks[index] = Object.values(window.tasks[index])
+                }
+            })
+        }
+
         function checkCountSearch(search) {
-            // element.title.toLowerCase().split(data.search).length
             window.tasks.forEach((element, index) => {
                 if (element.length == undefined) {
                     window.tasks[index] = Object.values(window.tasks[index])
@@ -232,7 +247,7 @@
                     count++;
                 }
             });
-            return count;
+            return count % 5;
         }
 
         function taskListCreateElement(data = {
@@ -250,9 +265,12 @@
             let clusters = JSON.parse(`<?php echo $clusters; ?>`);
             let status = '';
             let searchcount = 0;
-            if (datas[data.indexPage].length == undefined) {
-                window.tasks[data.indexPage] = Object.values(datas[data.indexPage]);
-                datas[data.indexPage] = Object.values(datas[data.indexPage]);
+            if (data.search != '') {
+                let dataTask = window.tasks.flat(2);
+                dataTask = dataTask.filter(element => {
+                    return element.title.toLowerCase().split(data.search.toLowerCase()).length > 1
+                });
+                datas = chunkArray(dataTask)
             }
             datas[data.indexPage].forEach((element, index) => {
                 let group = '';
@@ -271,9 +289,6 @@
                     status = `<div class="badge badge-success">${element.status}</div>`;
                 } else {
                     status = `<div class="badge badge-danger">${element.status}</div>`;
-                }
-                if (element.title.toLowerCase().split(data.search).length == 1) {
-                    return
                 }
                 if (data.status != "All") {
                     if (data.status != element.status) {
@@ -320,7 +335,7 @@
                     searchcount = {{ $endTasks }}
                 }
             }
-            for (let index = 0; index < searchcount % 5; index++) {
+            for (let index = 0; index < (searchcount <= 5 ? 1 : searchcount % 5); index++) {
                 if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
                     center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
                     <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
@@ -552,6 +567,7 @@
             dataType: "JSON",
             success: function(response) {
                 window.tasks = response.data;
+                chunkResolver();
             }
         }).then(() => {
             $(function() {
