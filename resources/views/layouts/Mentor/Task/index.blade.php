@@ -218,6 +218,23 @@
         var endElement = $('.datepicker-end');
         var startElement = $('.datepicker-start');
 
+        function checkCountSearch(search) {
+            // element.title.toLowerCase().split(data.search).length
+            window.tasks.forEach((element, index) => {
+                if (element.length == undefined) {
+                    window.tasks[index] = Object.values(window.tasks[index])
+                }
+            })
+            let tasks = window.tasks.flat(2);
+            let count = 0;
+            tasks.forEach((element, index) => {
+                if (element.title.toLowerCase().split(search.toLowerCase()).length > 1) {
+                    count++;
+                }
+            });
+            return count;
+        }
+
         function taskListCreateElement(data = {
             'indexPage': 0,
             'search': $('[name=search-task]').val(),
@@ -232,8 +249,10 @@
             let group = '';
             let clusters = JSON.parse(`<?php echo $clusters; ?>`);
             let status = '';
+            let searchcount = 0;
             if (datas[data.indexPage].length == undefined) {
-                datas[data.indexPage] = Object.values(datas[data.indexPage])
+                window.tasks[data.indexPage] = Object.values(datas[data.indexPage]);
+                datas[data.indexPage] = Object.values(datas[data.indexPage]);
             }
             datas[data.indexPage].forEach((element, index) => {
                 let group = '';
@@ -288,26 +307,35 @@
             })
             $('tbody').html(rowTable);
             let center = ``;
-            for (let index = 0; index < (data.status == "All" ?
-                    `{{ $pendingTasks + $progressTasks + $endTasks }}` : (data.status == "Pending") ?
-                    `{{ $pendingTasks }}` : (data.status == "Progress") ?
-                    `{{ $progressTasks }}` : (data.status == "End") ?
-                    `{{ $endTasks }}` : 0); index++) {
+            if (data.search != "") {
+                searchcount = checkCountSearch(data.search.toLowerCase());
+            } else {
+                if (data.status == "All") {
+                    searchcount = {{ $pendingTasks + $progressTasks + $endTasks }}
+                } else if (data.status == "Pending") {
+                    searchcount = {{ $pendingTasks }}
+                } else if (data.status == "Progress") {
+                    searchcount = {{ $progressTasks }}
+                } else if (data.status == "End") {
+                    searchcount = {{ $endTasks }}
+                }
+            }
+            for (let index = 0; index < searchcount % 5; index++) {
                 if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
                     center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
-                    <a class="page-link" onclick="taskListCreateElement(${index})">${index+1}</a>
+                    <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
                 </li>`
                 }
             }
             let pagination = `<li class="page-item ${data.indexPage == 0 ? 'disabled': ''}">
-                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement(${data.indexPage-1})">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement({'indexPage': ${data.indexPage-1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">Previous</span>
                     </a>
                 </li>
                 ${center}
-                <li class="page-item ${data.indexPage == (window.tasks.length-1) ? 'disabled' : ''}">
-                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement(${data.indexPage+1})">
+                <li class="page-item ${data.indexPage == ((searchcount % 5)-1) ? 'disabled' : ''}">
+                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
                     </a>
