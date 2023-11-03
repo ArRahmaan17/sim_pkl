@@ -614,15 +614,8 @@
             });
 
         }
-        $.ajax({
-            type: "GET",
-            url: "{{ route('database.task.all') }}",
-            dataType: "JSON",
-            success: function(response) {
-                window.tasks = response.data;
-                chunkResolver();
-            }
-        }).then(() => {
+
+        function ready() {
             $(function() {
                 taskListCreateElement();
                 $('#modal-create-task').on('shown.bs.modal', function() {
@@ -808,6 +801,19 @@
                     });
                 });
             });
+        }
+        $.ajax({
+            type: "GET",
+            url: "{{ route('database.task.all') }}",
+            dataType: "JSON",
+            success: function(response) {
+                window.tasks = response.data;
+                chunkResolver();
+            }
+        }).then(() => {
+            ready()
+        }).catch(() => {
+            ready()
         });
     </script>
 @endsection
