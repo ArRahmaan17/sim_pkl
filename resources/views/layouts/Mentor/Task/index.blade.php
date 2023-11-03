@@ -366,9 +366,6 @@
                     </a>
                 </li>`;
                 $('.pagination').html(pagination);
-                setTimeout(() => {
-                    swal.close();
-                }, 500);
                 $('.edit').click(function() {
                     let id = $(this).data('id');
                     $.ajax({
@@ -614,6 +611,9 @@
                     });
                 });
             }
+            setTimeout(() => {
+                swal.close();
+            }, 500);
         }
 
         function ready() {
