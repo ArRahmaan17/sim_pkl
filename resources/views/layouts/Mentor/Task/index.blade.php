@@ -358,7 +358,7 @@
                     </a>
                 </li>
                 ${center}
-                <li class="page-item ${data.indexPage == (searchcount < 6 && searchcount > 0 ? 1 : (searchcount == 1) ? 0 : (searchcount %
+                <li class="page-item ${data.indexPage == ((searchcount == 1 || searchcount <= 5) ? 0 : (searchcount %
                     5)-1) ? 'disabled' : ''}">
                     <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
                         <span aria-hidden="true">&raquo;</span>
