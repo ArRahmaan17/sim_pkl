@@ -9,7 +9,7 @@
                     <ul class="nav nav-pills">
                         <li class="nav-item">
                             <a class="nav-link active can" data-status="All" href="#">All <span
-                                    class="badge badge-white">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
+                                    class="badge badge-info">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link can" data-status="Pending" href="#">Pending <span
@@ -46,9 +46,10 @@
                     <div class="float-right">
                         <form>
                             <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search">
+                                <input type="text" class="form-control" placeholder="Search" name="search-task">
                                 <div class="input-group-append">
-                                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    <button onclick="taskListCreateElement()" type="button" class="btn btn-primary"><i
+                                            class="fas fa-search"></i></button>
                                 </div>
                             </div>
                         </form>
@@ -219,11 +220,12 @@
 
         function taskListCreateElement(data = {
             'indexPage': 0,
-            'search': $('[placeholde=search]').val(),
+            'search': $('[name=search-task]').val(),
             'status': $('.can.active').data('status'),
         }) {
             swal('Loading', {
-                button: false
+                button: false,
+                icon: `{{ asset('img/loading.gif') }}`
             });
             let datas = window.tasks;
             let rowTable = ``;
@@ -250,6 +252,9 @@
                     status = `<div class="badge badge-success">${element.status}</div>`;
                 } else {
                     status = `<div class="badge badge-danger">${element.status}</div>`;
+                }
+                if (element.title.toLowerCase().split(data.search).length == 1) {
+                    return
                 }
                 if (data.status != "All") {
                     if (data.status != element.status) {
@@ -511,7 +516,7 @@
             });
             setTimeout(() => {
                 swal.close();
-            }, 300);
+            }, 500);
         }
         $.ajax({
             type: "GET",
