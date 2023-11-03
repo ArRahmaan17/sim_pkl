@@ -234,7 +234,7 @@
             })
         }
 
-        function checkCountSearch(search) {
+        function checkCountSearch(search, status) {
             window.tasks.forEach((element, index) => {
                 if (element.length == undefined) {
                     window.tasks[index] = Object.values(window.tasks[index])
@@ -243,11 +243,18 @@
             let tasks = window.tasks.flat(2);
             let count = 0;
             tasks.forEach((element, index) => {
-                if (element.title.toLowerCase().split(search.toLowerCase()).length > 1) {
-                    count++;
+                if (status == 'All') {
+                    if (element.title.toLowerCase().split(search.toLowerCase()).length > 1) {
+                        count++;
+                    }
+                } else {
+                    if (element.title.toLowerCase().split(search.toLowerCase()).length > 1 && element.status ==
+                        status) {
+                        count++;
+                    }
                 }
             });
-            return count % 5;
+            return count;
         }
 
         function taskListCreateElement(data = {
@@ -324,6 +331,7 @@
             let center = ``;
             if (data.search != "") {
                 searchcount = checkCountSearch(data.search.toLowerCase());
+                console.log(searchcount)
             } else {
                 if (data.status == "All") {
                     searchcount = {{ $pendingTasks + $progressTasks + $endTasks }}
@@ -335,7 +343,8 @@
                     searchcount = {{ $endTasks }}
                 }
             }
-            for (let index = 0; index < (searchcount <= 5 ? 1 : searchcount % 5); index++) {
+            for (let index = 0; index < (searchcount < 6 && searchcount > 0 ? 1 : (searchcount == 0) ? 0 : searchcount %
+                    5); index++) {
                 if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
                     center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
                     <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
@@ -349,7 +358,8 @@
                     </a>
                 </li>
                 ${center}
-                <li class="page-item ${data.indexPage == ((searchcount % 5)-1) ? 'disabled' : ''}">
+                <li class="page-item ${data.indexPage == (searchcount < 6 && searchcount > 0 ? 1 : (searchcount == 0) ? 0 : (searchcount %
+                    5)-1) ? 'disabled' : ''}">
                     <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">Next</span>
