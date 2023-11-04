@@ -49,7 +49,7 @@ class TaskController extends Controller
                 Storage::makeDirectory('task');
             }
             Storage::disk('task')->put($filename . '.' . $extension, $request->file('image')->getContent());
-            return Response()->json(['message' => 'Successfully create task', 'data' => Task::get()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully create task', 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed create task'], 500);
@@ -91,7 +91,7 @@ class TaskController extends Controller
             $data['group'] = json_encode($data['group']);
             Task::find($id)->update($data);
             DB::commit();
-            return Response()->json(['message' => 'Successfully update task ' . $request->title, 'data' => Task::get()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully update task ' . $request->title, 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed update task ' . $request->title], 500);
@@ -103,7 +103,7 @@ class TaskController extends Controller
         try {
             Task::find($id)->delete();
             DB::commit();
-            return Response()->json(['message' => 'Successfully delete task', 'data' => Task::get()->chunk(5)], 200);
+            return Response()->json(['message' => 'Successfully delete task', 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             return Response()->json(['message' => 'Failed delete task'], 500);

@@ -10,7 +10,7 @@ class DatabaseController extends Controller
 {
     public function tasks_all()
     {
-        $tasks = Task::get()->toArray();
+        $tasks = Task::orderBy('created_at')->get()->toArray();
         $tasks = collect($tasks)->chunk(5);
         if (count($tasks) == 0) {
             return Response()->json(['message' => 'Tasks record not found', 'data' => $tasks], 404);
