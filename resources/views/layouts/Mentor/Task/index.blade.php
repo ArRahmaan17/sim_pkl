@@ -332,14 +332,15 @@
                     $('tbody').html(rowTable);
                     let center = ``;
                     searchcount = checkCountSearch(data.search.toLowerCase(), data.status);
-                    console.log(data.indexPage, ((searchcount / 5).toString().split('.').length ==
-                        1) ? Math.floor(searchcount / 5) : Math.floor(searchcount / 5))
-                    for (let index = 0; index < ((searchcount <= 5) ? 1 : ((searchcount / 5).toString().split('.').length ==
-                            1) ? Math.floor(searchcount / 5) : Math.floor(searchcount / 5) + 1); index++) {
-                        if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
-                            center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
+                    if (searchcount != 0) {
+                        for (let index = 0; index < ((searchcount <= 5) ? 1 : ((searchcount / 5).toString().split('.')
+                                .length ==
+                                1) ? Math.floor(searchcount / 5) : Math.floor(searchcount / 5) + 1); index++) {
+                            if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
+                                center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
                                             <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
                                        </li>`
+                            }
                         }
                     }
                     let pagination = `<li class="page-item ${data.indexPage == 0 ? 'disabled': ''}">
