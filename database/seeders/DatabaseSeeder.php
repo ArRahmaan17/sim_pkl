@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory(1)->create();
+        // \App\Models\User::factory(1)->create();
         // Menu::factory()->create([
         //     [
         //         "name" => "Home",
@@ -94,9 +94,6 @@ class DatabaseSeeder extends Seeder
         //         "updated_at" => null
         //     ]
         // ]);
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\Task::factory(53)->create();
     }
 }

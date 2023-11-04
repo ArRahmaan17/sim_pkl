@@ -266,44 +266,45 @@
                 button: false,
                 icon: `{{ asset('img/loading.gif') }}`
             });
-            if (window.tasks != undefined) {
-                let datas = window.tasks;
-                let rowTable = ``;
-                let group = '';
-                let clusters = JSON.parse(`<?php echo $clusters; ?>`);
-                let status = '';
-                let searchcount = 0;
-                if (data.search != '') {
-                    let dataTask = window.tasks.flat(2);
-                    dataTask = dataTask.filter(element => {
-                        return element.title.toLowerCase().split(data.search.toLowerCase()).length > 1
-                    });
-                    datas = chunkArray(dataTask)
-                }
-                datas[data.indexPage].forEach((element, index) => {
+            if (window.tasks != undefined && window.tasks != []) {
+                if (window.tasks[data.indexPage] != undefined) {
+                    let datas = window.tasks;
+                    let rowTable = ``;
                     let group = '';
-                    let groups = JSON.parse(`${element.group}`);
-                    groups.forEach(value => {
-                        clusters.forEach(cluster => {
-                            if (value == cluster.id) {
-                                group += `<a href="#">${cluster.name}</a> `;
-                            }
-                        });
-                    });
+                    let clusters = JSON.parse(`<?php echo $clusters; ?>`);
                     let status = '';
-                    if (element.status == "Pending") {
-                        status = `<div class="badge badge-warning">${element.status}</div>`;
-                    } else if (element.status == "Progress") {
-                        status = `<div class="badge badge-success">${element.status}</div>`;
-                    } else {
-                        status = `<div class="badge badge-danger">${element.status}</div>`;
+                    let searchcount = 0;
+                    if (data.search != '') {
+                        let dataTask = window.tasks.flat(2);
+                        dataTask = dataTask.filter(element => {
+                            return element.title.toLowerCase().split(data.search.toLowerCase()).length > 1
+                        });
+                        datas = chunkArray(dataTask)
                     }
-                    if (data.status != "All") {
-                        if (data.status != element.status) {
-                            return;
+                    datas[data.indexPage].forEach((element, index) => {
+                        let group = '';
+                        let groups = JSON.parse(`${element.group}`);
+                        groups.forEach(value => {
+                            clusters.forEach(cluster => {
+                                if (value == cluster.id) {
+                                    group += `<a href="#">${cluster.name}</a> `;
+                                }
+                            });
+                        });
+                        let status = '';
+                        if (element.status == "Pending") {
+                            status = `<div class="badge badge-warning">${element.status}</div>`;
+                        } else if (element.status == "Progress") {
+                            status = `<div class="badge badge-success">${element.status}</div>`;
+                        } else {
+                            status = `<div class="badge badge-danger">${element.status}</div>`;
                         }
-                    }
-                    rowTable += `<tr>
+                        if (data.status != "All") {
+                            if (data.status != element.status) {
+                                return;
+                            }
+                        }
+                        rowTable += `<tr>
                     <td>
                         ${ (index + 1) + (data.indexPage*5)}
                     </td>
@@ -327,289 +328,279 @@
                         ${status}
                     </td>
                 </tr>`;
-                })
-                $('tbody').html(rowTable);
-                let center = ``;
-                if (data.search != "") {
-                    searchcount = checkCountSearch(data.search.toLowerCase());
-                } else {
-                    if (data.status == "All") {
-                        searchcount = {{ $pendingTasks + $progressTasks + $endTasks }}
-                    } else if (data.status == "Pending") {
-                        searchcount = {{ $pendingTasks }}
-                    } else if (data.status == "Progress") {
-                        searchcount = {{ $progressTasks }}
-                    } else if (data.status == "End") {
-                        searchcount = {{ $endTasks }}
+                    })
+                    $('tbody').html(rowTable);
+                    let center = ``;
+                    searchcount = checkCountSearch(data.search.toLowerCase(), data.status);
+                    console.log(data.indexPage, ((searchcount / 5).toString().split('.').length ==
+                        1) ? Math.floor(searchcount / 5) : Math.floor(searchcount / 5))
+                    for (let index = 0; index < ((searchcount <= 5) ? 1 : ((searchcount / 5).toString().split('.').length ==
+                            1) ? Math.floor(searchcount / 5) : Math.floor(searchcount / 5) + 1); index++) {
+                        if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
+                            center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
+                                            <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
+                                       </li>`
+                        }
                     }
-                }
-                for (let index = 0; index < (searchcount < 6 && searchcount > 0 ? 1 : (searchcount == 0) ? 0 : searchcount %
-                        5); index++) {
-                    if (index == data.indexPage || index == (data.indexPage - 1) || index == (data.indexPage + 1)) {
-                        center += `<li class="page-item ${index == data.indexPage ? 'active' : ''}">
-                    <a class="page-link" onclick="taskListCreateElement({'indexPage': ${index},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">${index+1}</a>
-                </li>`
-                    }
-                }
-                let pagination = `<li class="page-item ${data.indexPage == 0 ? 'disabled': ''}">
-                    <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement({'indexPage': ${data.indexPage-1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                ${center}
-                <li class="page-item ${data.indexPage == ((searchcount == 1 || searchcount <= 5) ? 0 : (searchcount %
-                    5)-1) ? 'disabled' : ''}">
-                    <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>`;
-                $('.pagination').html(pagination);
-                $('.edit').click(function() {
-                    let id = $(this).data('id');
-                    $.ajax({
-                        type: "GET",
-                        url: `{{ route('mentor.task.show') }}/${id}`,
-                        dataType: "JSON",
-                        beforeSend: function() {
-                            swal('Loading', {
-                                button: false,
-                                icon: `{{ asset('img/loading.gif') }}`
-                            });
-                        },
-                        success: function(response) {
-                            swal.close();
-                            setTimeout(() => {
-                                swal(response.message, {
-                                    'icon': 'success'
-                                }).then((click) => {
-                                    $('#modal-create-task').modal('show');
-                                    setTimeout(() => {
-                                        $('#save-task').addClass('d-none')
-                                        $('#update-task').removeClass(
-                                                'd-none')
-                                            .data(
-                                                'id', response
-                                                .data.id)
-                                        let group = JSON.parse(
-                                            `<?php echo $clusters; ?>`);
-                                        $("#title-create-task")
-                                            .html(
-                                                `Update Task ${response.data.title}`
-                                            );
-                                        $.each(response.data, function(
-                                            indexInArray,
-                                            valueOfElement) {
-                                            if (indexInArray ==
-                                                "group") {
-                                                JSON.parse(
-                                                        valueOfElement
-                                                    )
-                                                    .forEach(
-                                                        value => {
-                                                            $(`[name="group[]"]`)
-                                                                .find(
-                                                                    `option[value=${value}]`
-                                                                )
-                                                                .attr(
-                                                                    'selected',
-                                                                    true
-                                                                )
-                                                        })
-                                            } else if (
-                                                indexInArray ==
-                                                'thumbnail') {
-                                                $('#image-preview')
-                                                    .css(
-                                                        "background-size",
-                                                        'cover')
-                                                    .css(
-                                                        'background-image',
-                                                        `url(data:image/png;base64,${valueOfElement})`
-                                                    )
-                                                    .css(
-                                                        'background-position',
-                                                        `center center`
-                                                    );
-                                            } else {
+                    let pagination = `<li class="page-item ${data.indexPage == 0 ? 'disabled': ''}">
+                                            <a class="page-link" href="#" aria-label="Previous" onclick="taskListCreateElement({'indexPage': ${data.indexPage-1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
+                                                <span aria-hidden="true">&laquo;</span>
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                        ${center}
+                                        <li class="page-item ${data.indexPage == ((searchcount <= 5) ? 0 : Math.floor(searchcount / 5)) ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
+                                                <span aria-hidden="true">&raquo;</span>
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>`;
+                    $('.pagination').html(pagination);
+                    $('.edit').click(function() {
+                        let id = $(this).data('id');
+                        $.ajax({
+                            type: "GET",
+                            url: `{{ route('mentor.task.show') }}/${id}`,
+                            dataType: "JSON",
+                            beforeSend: function() {
+                                swal('Loading', {
+                                    button: false,
+                                    icon: `{{ asset('img/loading.gif') }}`
+                                });
+                            },
+                            success: function(response) {
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(response.message, {
+                                        'icon': 'success'
+                                    }).then((click) => {
+                                        $('#modal-create-task').modal('show');
+                                        setTimeout(() => {
+                                            $('#save-task').addClass('d-none')
+                                            $('#update-task').removeClass(
+                                                    'd-none')
+                                                .data(
+                                                    'id', response
+                                                    .data.id)
+                                            let group = JSON.parse(
+                                                `<?php echo $clusters; ?>`);
+                                            $("#title-create-task")
+                                                .html(
+                                                    `Update Task ${response.data.title}`
+                                                );
+                                            $.each(response.data, function(
+                                                indexInArray,
+                                                valueOfElement) {
                                                 if (indexInArray ==
-                                                    'start_date' ||
-                                                    indexInArray ==
-                                                    'deadline_date'
-                                                ) {
-                                                    if (indexInArray ==
-                                                        'start_date'
-                                                    ) {
-                                                        startElement
-                                                            .data(
-                                                                'daterangepicker'
-                                                            )
-                                                            .setStartDate(
-                                                                valueOfElement
-                                                            )
-                                                    }
-                                                    $(`[name="${indexInArray}"]`)
-                                                        .val(
-                                                            `${valueOfElement}`
+                                                    "group") {
+                                                    JSON.parse(
+                                                            valueOfElement
                                                         )
-                                                        .trigger(
-                                                            'apply.daterangepicker'
+                                                        .forEach(
+                                                            value => {
+                                                                $(`[name="group[]"]`)
+                                                                    .find(
+                                                                        `option[value=${value}]`
+                                                                    )
+                                                                    .attr(
+                                                                        'selected',
+                                                                        true
+                                                                    )
+                                                            })
+                                                } else if (
+                                                    indexInArray ==
+                                                    'thumbnail') {
+                                                    $('#image-preview')
+                                                        .css(
+                                                            "background-size",
+                                                            'cover')
+                                                        .css(
+                                                            'background-image',
+                                                            `url(data:image/png;base64,${valueOfElement})`
+                                                        )
+                                                        .css(
+                                                            'background-position',
+                                                            `center center`
                                                         );
                                                 } else {
-                                                    $(`[name="${indexInArray}"]`)
-                                                        .val(
-                                                            `${valueOfElement}`
-                                                        );
+                                                    if (indexInArray ==
+                                                        'start_date' ||
+                                                        indexInArray ==
+                                                        'deadline_date'
+                                                    ) {
+                                                        if (indexInArray ==
+                                                            'start_date'
+                                                        ) {
+                                                            startElement
+                                                                .data(
+                                                                    'daterangepicker'
+                                                                )
+                                                                .setStartDate(
+                                                                    valueOfElement
+                                                                )
+                                                        }
+                                                        $(`[name="${indexInArray}"]`)
+                                                            .val(
+                                                                `${valueOfElement}`
+                                                            )
+                                                            .trigger(
+                                                                'apply.daterangepicker'
+                                                            );
+                                                    } else {
+                                                        $(`[name="${indexInArray}"]`)
+                                                            .val(
+                                                                `${valueOfElement}`
+                                                            );
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    }, 400);
-                                });
-                            }, 500);
-                        },
-                        error(error) {
-                            swal.close();
-                            setTimeout(() => {
-                                swal(error.responseJSON.message, {
-                                    'icon': 'error'
-                                });
-                            }, 300);
-                        }
-                    });
-                });
-                $('.detail').click(function() {
-                    let id = $(this).data('id');
-                    $.ajax({
-                        type: "GET",
-                        url: `{{ route('mentor.task.show') }}/${id}`,
-                        dataType: "JSON",
-                        beforeSend: function() {
-                            swal('Loading', {
-                                button: false,
-                                icon: `{{ asset('img/loading.gif') }}`
-                            });
-                        },
-                        success: function(response) {
-                            swal.close();
-                            setTimeout(() => {
-                                swal(response.message, {
-                                    'icon': 'success'
-                                }).then((click) => {
-                                    let group = JSON.parse(`<?php echo $clusters; ?>`);
-                                    $("#title-view-task")
-                                        .html(
-                                            `View Task ${response.data.title} <div class="badge badge-warning">${response.data.status}</div>`
-                                        );
-                                    $.each(response.data, function(indexInArray,
-                                        valueOfElement) {
-                                        if (indexInArray == 'group') {
-                                            $(`[data-index="${indexInArray}"]`)
-                                                .html('')
-                                            group.forEach(element => {
-                                                JSON.parse(
-                                                        valueOfElement
-                                                    )
-                                                    .forEach(
-                                                        group => {
-                                                            if (element
-                                                                .id ==
-                                                                group
-                                                            ) {
-                                                                $(`[data-index="${indexInArray}"]`)
-                                                                    .append(
-                                                                        `<a href="#">${element.name}</a> `
-                                                                    );
-                                                            }
-                                                        });
                                             });
-                                        } else if (indexInArray ==
-                                            'thumbnail') {
-                                            $(`[data-index="${indexInArray}"]`)
-                                                .html(
-                                                    `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
-                                                );
-                                        } else if (indexInArray ==
-                                            'start_date') {
-                                            let dayLeft = moment(
-                                                    valueOfElement)
-                                                .diff(
-                                                    moment(), 'days');
-                                            let deadline;
-                                            if (dayLeft == 0) {
-                                                deadline = moment(
+                                        }, 400);
+                                    });
+                                }, 500);
+                            },
+                            error(error) {
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(error.responseJSON.message, {
+                                        'icon': 'error'
+                                    });
+                                }, 300);
+                            }
+                        });
+                    });
+                    $('.detail').click(function() {
+                        let id = $(this).data('id');
+                        $.ajax({
+                            type: "GET",
+                            url: `{{ route('mentor.task.show') }}/${id}`,
+                            dataType: "JSON",
+                            beforeSend: function() {
+                                swal('Loading', {
+                                    button: false,
+                                    icon: `{{ asset('img/loading.gif') }}`
+                                });
+                            },
+                            success: function(response) {
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(response.message, {
+                                        'icon': 'success'
+                                    }).then((click) => {
+                                        let group = JSON.parse(`<?php echo $clusters; ?>`);
+                                        $("#title-view-task")
+                                            .html(
+                                                `View Task ${response.data.title} <div class="badge badge-warning">${response.data.status}</div>`
+                                            );
+                                        $.each(response.data, function(indexInArray,
+                                            valueOfElement) {
+                                            if (indexInArray == 'group') {
+                                                $(`[data-index="${indexInArray}"]`)
+                                                    .html('')
+                                                group.forEach(element => {
+                                                    JSON.parse(
+                                                            valueOfElement
+                                                        )
+                                                        .forEach(
+                                                            group => {
+                                                                if (element
+                                                                    .id ==
+                                                                    group
+                                                                ) {
+                                                                    $(`[data-index="${indexInArray}"]`)
+                                                                        .append(
+                                                                            `<a href="#">${element.name}</a> `
+                                                                        );
+                                                                }
+                                                            });
+                                                });
+                                            } else if (indexInArray ==
+                                                'thumbnail') {
+                                                $(`[data-index="${indexInArray}"]`)
+                                                    .html(
+                                                        `<img class="img-thumbnail" src="data:image/png;base64,${valueOfElement}" class="img-fluid">`
+                                                    );
+                                            } else if (indexInArray ==
+                                                'start_date') {
+                                                let dayLeft = moment(
                                                         valueOfElement)
                                                     .diff(
-                                                        moment(
-                                                            response.data
-                                                            .deadline_date
-                                                        ), 'hours')
+                                                        moment(), 'days');
+                                                let deadline;
+                                                if (dayLeft == 0) {
+                                                    deadline = moment(
+                                                            valueOfElement)
+                                                        .diff(
+                                                            moment(
+                                                                response.data
+                                                                .deadline_date
+                                                            ), 'hours')
+                                                }
+                                                $(`[data-index="${indexInArray}"]`)
+                                                    .html(
+                                                        `Start in ${dayLeft} Days${deadline == undefined ? '' : `, DeadLine on ${deadline == 0 ? 'this day' : `${deadline} Days`}` }`
+                                                    );
+                                            } else {
+                                                $(`[data-index="${indexInArray}"]`)
+                                                    .html(`${valueOfElement}`);
                                             }
-                                            $(`[data-index="${indexInArray}"]`)
-                                                .html(
-                                                    `Start in ${dayLeft} Days${deadline == undefined ? '' : `, DeadLine on ${deadline == 0 ? 'this day' : `${deadline} Days`}` }`
-                                                );
-                                        } else {
-                                            $(`[data-index="${indexInArray}"]`)
-                                                .html(`${valueOfElement}`);
-                                        }
-                                    });
-                                    $('#modal-view-task').modal('show');
-                                });
-                            }, 300);
-                        },
-                        error(error) {
-                            swal.close();
-                            setTimeout(() => {
-                                swal(error.responseJSON.message, {
-                                    'icon': 'error'
-                                });
-                            }, 300);
-                        }
-                    });
-                });
-                $('.delete').click(function() {
-                    swal("Are you sure want to delete this task?", {
-                        dangerMode: true,
-                        buttons: true,
-                    }).then((click) => {
-                        if (click) {
-                            let id = $(this).data('id');
-                            $.ajax({
-                                type: "DELETE",
-                                headers: {
-                                    'X-CSRF-TOKEN': `{{ csrf_token() }}`
-                                },
-                                url: `{{ route('mentor.task.delete') }}/${id}`,
-                                dataType: "json",
-                                beforeSend: function() {
-                                    swal('Loading', {
-                                        button: false,
-                                        icon: `{{ asset('img/loading.gif') }}`
-                                    });
-                                },
-                                success: function(response) {
-                                    swal.close();
-                                    setTimeout(() => {
-                                        swal(response.message, {
-                                            'icon': 'success'
-                                        })
-                                        window.tasks = response.data;
-                                        taskListCreateElement();
-                                    }, 300);
-                                },
-                                error: function(error) {
-                                    swal.close();
-                                    setTimeout(() => {
-                                        swal(error.responseJSON.message, {
-                                            'icon': 'error'
                                         });
-                                    }, 300);
-                                }
-                            });
-                        }
+                                        $('#modal-view-task').modal('show');
+                                    });
+                                }, 300);
+                            },
+                            error(error) {
+                                swal.close();
+                                setTimeout(() => {
+                                    swal(error.responseJSON.message, {
+                                        'icon': 'error'
+                                    });
+                                }, 300);
+                            }
+                        });
                     });
-                });
+                    $('.delete').click(function() {
+                        swal("Are you sure want to delete this task?", {
+                            dangerMode: true,
+                            buttons: true,
+                        }).then((click) => {
+                            if (click) {
+                                let id = $(this).data('id');
+                                $.ajax({
+                                    type: "DELETE",
+                                    headers: {
+                                        'X-CSRF-TOKEN': `{{ csrf_token() }}`
+                                    },
+                                    url: `{{ route('mentor.task.delete') }}/${id}`,
+                                    dataType: "json",
+                                    beforeSend: function() {
+                                        swal('Loading', {
+                                            button: false,
+                                            icon: `{{ asset('img/loading.gif') }}`
+                                        });
+                                    },
+                                    success: function(response) {
+                                        swal.close();
+                                        setTimeout(() => {
+                                            swal(response.message, {
+                                                'icon': 'success'
+                                            })
+                                            window.tasks = response.data;
+                                            taskListCreateElement();
+                                        }, 300);
+                                    },
+                                    error: function(error) {
+                                        swal.close();
+                                        setTimeout(() => {
+                                            swal(error.responseJSON.message, {
+                                                'icon': 'error'
+                                            });
+                                        }, 300);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
             }
             setTimeout(() => {
                 swal.close();
