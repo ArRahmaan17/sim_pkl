@@ -153,7 +153,7 @@
                             icon: 'success'
                         });
                         setTimeout(() => {
-                            swal.close();
+                            alertClose();
                             location.reload()
                         }, 1500);
                     },

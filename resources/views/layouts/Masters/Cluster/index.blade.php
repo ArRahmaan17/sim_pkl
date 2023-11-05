@@ -163,7 +163,7 @@
                             $('#update-cluster').data('id', response.data.id)
                         },
                         error: function(error) {
-                            swal.close();
+                            alertClose();
                             swal(error.responseJSON.message, {
                                 icon: 'error'
                             });
@@ -187,7 +187,7 @@
                         swal('Loading');
                     },
                     success: function(response) {
-                        swal.close();
+                        alertClose();
                         $('#modal-create-cluster').modal('hide')
                         swal(response.message, {
                             icon: 'success'
@@ -198,7 +198,7 @@
                         }, 1500);
                     },
                     error: function(error) {
-                        swal.close();
+                        alertClose();
                         let errors = error.responseJSON.errors
                         if (errors != undefined) {
                             $.each(errors, function(index, error_list) {
@@ -226,7 +226,7 @@
                         swal('Loading');
                     },
                     success: function(response) {
-                        swal.close();
+                        alertClose();
                         $('#modal-create-cluster').modal('hide')
                         swal(response.message, {
                             icon: 'success'
@@ -237,7 +237,7 @@
                         }, 1500);
                     },
                     error: function(error) {
-                        swal.close();
+                        alertClose();
                         let errors = error.responseJSON.errors
                         if (errors != undefined) {
                             $.each(errors, function(index, error_list) {

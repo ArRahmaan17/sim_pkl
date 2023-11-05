@@ -6,7 +6,25 @@
  */
 
 "use strict";
+function alertClose() {
+    swal.close();
+}
+function chunkArray(array, size = 5) {
+    const chunkedArray = [];
+    for (let i = 0; i < array.length; i += size) {
+        chunkedArray.push(array.slice(i, i + size));
+    }
+    return chunkedArray;
+}
 
+function chunkResolver(data = window.tasks) {
+    data.forEach((element, index) => {
+        if (element.length == undefined) {
+            data[index] = Object.values(data[index])
+        }
+    });
+    return data;
+}
 function serializeObject(node) {
     var o = {};
     var a = node.serializeArray();

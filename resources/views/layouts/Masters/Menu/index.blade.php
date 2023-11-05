@@ -305,7 +305,7 @@
                                         .val(response.record.access_to)
                                         .trigger('change');
                                 }
-                                swal.close();
+                                alertClose()
                             }
                         });
                     }

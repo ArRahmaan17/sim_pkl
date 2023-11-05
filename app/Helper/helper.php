@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Storage;
 
-function storage_asset($path)
+function tasks_asset($path)
 {
     return base64_encode(Storage::disk('task')->get($path));
 }

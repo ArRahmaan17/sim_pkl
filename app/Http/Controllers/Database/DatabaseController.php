@@ -18,4 +18,17 @@ class DatabaseController extends Controller
             return Response()->json(['message' => 'Found tasks record ', 'data' => $tasks], 200);
         }
     }
+    public function all_student_task($cluster_id)
+    {
+        $tasks = Task::whereJsonContains('group', ["" . $cluster_id])->orderBy('created_at')->get()->map(function ($task, $index) {
+            $task->thumbnail = tasks_asset($task->thumbnail);
+            return $task;
+        });
+        $tasks = collect($tasks)->chunk(5);
+        if (count($tasks) == 0) {
+            return Response()->json(['message' => 'Tasks record not found', 'data' => $tasks], 404);
+        } else {
+            return Response()->json(['message' => 'Found tasks record ', 'data' => $tasks], 200);
+        }
+    }
 }

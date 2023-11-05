@@ -1,29 +1,49 @@
 @extends('main')
-@section('css')
-@endsection
 @section('content')
     <div class="row">
         <div class="col-12">
             <div class="card mb-0">
                 <div class="card-body">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item">
-                            <a class="nav-link active can" data-status="All" href="#"><i class="fas fa-list"></i> All
-                                <span class="badge badge-info">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link can" data-status="Pending" href="#"><i class="fas fa-pause"></i>
-                                Pending <span class="badge badge-warning ">{{ $pendingTasks }}</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link can" data-status="Progress" href="#"><i class="fas fa-spinner"></i>
-                                Progress <span class="badge badge-success">{{ $progressTasks }}</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link can" data-status="End" href="#"><i class="fas fa-lock"></i> End <span
-                                    class="badge badge-danger">{{ $endTasks }}</span></a>
-                        </li>
-                    </ul>
+                    <div class="row">
+                        <div class="col-9">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item">
+                                    <a class="nav-link active can" data-status="All" href="#"><i
+                                            class="fas fa-list"></i>
+                                        All
+                                        <span
+                                            class="badge badge-info">{{ $pendingTasks + $progressTasks + $endTasks }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link can" data-status="Pending" href="#"><i
+                                            class="fas fa-pause"></i>
+                                        Pending <span class="badge badge-warning ">{{ $pendingTasks }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link can" data-status="Progress" href="#"><i
+                                            class="fas fa-spinner"></i>
+                                        Progress <span class="badge badge-success">{{ $progressTasks }}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link can" data-status="End" href="#"><i class="fas fa-lock"></i> End
+                                        <span class="badge badge-danger">{{ $endTasks }}</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-3">
+                            <div class="float-right">
+                                <form>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search" name="search-task">
+                                        <div class="input-group-append">
+                                            <button onclick="taskListCreateElement()" type="button"
+                                                class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,18 +63,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="float-right">
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Search" name="search-task">
-                                <div class="input-group-append">
-                                    <button onclick="taskListCreateElement()" type="button" class="btn btn-primary"><i
-                                            class="fas fa-search"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
                     <div class="clearfix mb-3"></div>
 
                     <div class="table-responsive">
@@ -218,22 +226,6 @@
         var endElement = $('.datepicker-end');
         var startElement = $('.datepicker-start');
 
-        function chunkArray(array, size = 5) {
-            const chunkedArray = [];
-            for (let i = 0; i < array.length; i += size) {
-                chunkedArray.push(array.slice(i, i + size));
-            }
-            return chunkedArray;
-        }
-
-        function chunkResolver() {
-            window.tasks.forEach((element, index) => {
-                if (element.length == undefined) {
-                    window.tasks[index] = Object.values(window.tasks[index])
-                }
-            })
-        }
-
         function checkCountSearch(search, status) {
             window.tasks.forEach((element, index) => {
                 if (element.length == undefined) {
@@ -280,6 +272,12 @@
                             return element.title.toLowerCase().split(data.search.toLowerCase()).length > 1
                         });
                         datas = chunkArray(dataTask)
+                    }
+                    if (datas.length == 0) {
+                        setTimeout(() => {
+                            alertClose();
+                        }, 500);
+                        return
                     }
                     datas[data.indexPage].forEach((element, index) => {
                         let group = '';
@@ -370,7 +368,7 @@
                                 });
                             },
                             success: function(response) {
-                                swal.close();
+                                alertClose();
                                 setTimeout(() => {
                                     swal(response.message, {
                                         'icon': 'success'
@@ -460,7 +458,7 @@
                                 }, 500);
                             },
                             error(error) {
-                                swal.close();
+                                alertClose();
                                 setTimeout(() => {
                                     swal(error.responseJSON.message, {
                                         'icon': 'error'
@@ -482,7 +480,7 @@
                                 });
                             },
                             success: function(response) {
-                                swal.close();
+                                alertClose();
                                 setTimeout(() => {
                                     swal(response.message, {
                                         'icon': 'success'
@@ -550,7 +548,7 @@
                                 }, 300);
                             },
                             error(error) {
-                                swal.close();
+                                alertClose();
                                 setTimeout(() => {
                                     swal(error.responseJSON.message, {
                                         'icon': 'error'
@@ -580,7 +578,7 @@
                                         });
                                     },
                                     success: function(response) {
-                                        swal.close();
+                                        alertClose();
                                         setTimeout(() => {
                                             swal(response.message, {
                                                 'icon': 'success'
@@ -590,7 +588,7 @@
                                         }, 300);
                                     },
                                     error: function(error) {
-                                        swal.close();
+                                        alertClose();
                                         setTimeout(() => {
                                             swal(error.responseJSON.message, {
                                                 'icon': 'error'
@@ -604,7 +602,7 @@
                 }
             }
             setTimeout(() => {
-                swal.close();
+                alertClose();
             }, 500);
         }
 
@@ -801,7 +799,7 @@
             dataType: "JSON",
             success: function(response) {
                 window.tasks = response.data;
-                chunkResolver();
+                window.tasks = chunkResolver();
             }
         }).then(() => {
             ready()

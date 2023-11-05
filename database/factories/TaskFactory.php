@@ -21,7 +21,7 @@ class TaskFactory extends Factory
             'title' => fake()->jobTitle(),
             'start_date' => fake()->date(),
             'deadline_date' => fake()->date(),
-            'group' => json_encode([2, 3, 4]),
+            'group' => json_encode(['2', '3', '4']),
             'content' => fake()->text(1000),
             'thumbnail' => 'task-2023-12-11.png',
             'status' => 'Pending',

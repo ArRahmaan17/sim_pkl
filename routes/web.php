@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Mentor\TaskController;
+use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentClusterController;
@@ -31,6 +32,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
     Route::name('database.')->group(function () {
         Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
+        Route::get('/database/task/user/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
     });
     Route::name('user.')->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance')->middleware([CompletedProfile::class]);
@@ -44,6 +46,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/profile/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('profile.accept-changed-password');
         Route::get('/user/group/', [StudentClusterController::class, 'index'])->name('group')->middleware([CompletedProfile::class]);
         Route::post('/user/group/store', [StudentClusterController::class, 'store'])->name('group.store');
+        Route::get('/user/todo/', [userTask::class, 'index'])->name('todo')->middleware([CompletedProfile::class]);
     });
     Route::name('mentor.')->group(function () {
         Route::get('/mentor/task', [TaskController::class, 'index'])->name('task')->middleware([CompletedProfile::class]);

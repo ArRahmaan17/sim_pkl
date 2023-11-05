@@ -60,7 +60,7 @@ class TaskController extends Controller
     {
         try {
             $task = Task::findOrFail($id);
-            $task->thumbnail =  storage_asset($task->thumbnail);
+            $task->thumbnail =  tasks_asset($task->thumbnail);
             return Response()->json(['message' => 'Task found', 'data' => $task], 200);
         } catch (\Throwable $th) {
             if ($th->getCode() == 0) {
