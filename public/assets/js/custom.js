@@ -9,6 +9,25 @@
 function alertClose() {
     swal.close();
 }
+function getMoment(status = "y", duration) {
+    let des = '';
+    if (status == 'y') {
+        des = 'year';
+    } else if (status == 'M') {
+        des = 'month';
+    } else if (status == 'd') {
+        des = 'day';
+    } else if (status == 'h') {
+        des = 'hour';
+    } else if (status == 'm') {
+        des = 'minute';
+    } else if (status == 's') {
+        des = 'second';
+    }
+    return (duration.get(status) != 0) ? parseInt(duration.get(status)) > 1 ? `${Math.abs(duration.get(status))} ${des}s` :
+        `${Math.abs(duration.get(status))} ${des}` : ''
+}
+
 function chunkArray(array, size = 5) {
     const chunkedArray = [];
     for (let i = 0; i < array.length; i += size) {
