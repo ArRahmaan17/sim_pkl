@@ -24,7 +24,7 @@ function getMoment(status = "y", duration) {
     } else if (status == 's') {
         des = 'second';
     }
-    return (duration.get(status) != 0) ? parseInt(duration.get(status)) > 1 ? `${Math.abs(duration.get(status))} ${des}s` :
+    return (duration.get(status) != 0) ? Math.abs(duration.get(status)) > 1 ? `${Math.abs(duration.get(status))} ${des}s` :
         `${Math.abs(duration.get(status))} ${des}` : ''
 }
 
