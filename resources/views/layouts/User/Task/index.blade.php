@@ -51,6 +51,19 @@
     </div>
     <div class="row mt-2" id="container-tasks">
     </div>
+    <div class="card mb-0 pt-3">
+        <div class="card-body m-0 p-0">
+            <div class="float-left">
+                <h2 class="px-1">List Of Your Task</h2>
+            </div>
+            <div class="float-right">
+                <nav>
+                    <ul class="pagination">
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
@@ -105,6 +118,7 @@
                         setTimeout(() => {
                             alertClose();
                         }, 500);
+                        $('#container-tasks').html(elementTasks);
                         return
                     }
                     datas[data.indexPage].forEach((element, index) => {
@@ -130,10 +144,10 @@
                                             <div class="article-details">
                                                 <div class="article-category">
                                                     <div class="bullet"></div>
-                                                    <a>${moment().zone(-7).from(moment(element.created_at).zone(-7))}</a>
+                                                    <a>${moment(moment(element.created_at).zone('-07:00').format('YYYY-MM-DD HH:mm:ss')).fromNow()}</a>
                                                 </div>
                                                 <div class="article-title">
-                                                    <h2><a href="#">${element.title}</a></h2>
+                                                    <a href="{{ route('user.todo.show') }}/${element.id}" class="text-truncate" style='display:block;'>${element.title}</a>
                                                 </div>
                                                 <div class="article-user">
                                                     <div class="article-user-details">
@@ -165,13 +179,13 @@
                                             </a>
                                         </li>
                                         ${center}
-                                        <li class="page-item ${data.indexPage == ((searchcount <= 5) ? 0 : Math.floor(searchcount / 5)) ? 'disabled' : ''}">
+                                        <li class="page-item ${data.indexPage == ((searchcount <= 5) ? 0 : (data.search != "") ?Math.floor(searchcount / 5)-1:Math.floor(searchcount / 5)) ? 'disabled' : ''}">
                                             <a class="page-link" href="#" aria-label="Next" onclick="taskListCreateElement({'indexPage': ${data.indexPage+1},'search': $('[name=search-task]').val(),'status': $('.can.active').data('status')})">
                                                 <span aria-hidden="true">&raquo;</span>
                                                 <span class="sr-only">Next</span>
                                             </a>
                                         </li>`;
-
+                    $('.pagination').html(pagination);
                 }
             }
             setTimeout(() => {
@@ -182,6 +196,11 @@
         function ready() {
             $(function() {
                 taskListCreateElement();
+                $('.can').click(function() {
+                    $('.can').removeClass('active');
+                    $(this).addClass('active');
+                    taskListCreateElement();
+                })
             });
         }
 

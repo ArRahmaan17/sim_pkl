@@ -47,6 +47,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/group/', [StudentClusterController::class, 'index'])->name('group')->middleware([CompletedProfile::class]);
         Route::post('/user/group/store', [StudentClusterController::class, 'store'])->name('group.store');
         Route::get('/user/todo/', [userTask::class, 'index'])->name('todo')->middleware([CompletedProfile::class]);
+        Route::get('/user/todo/{id?}', [userTask::class, 'show'])->name('todo.show');
     });
     Route::name('mentor.')->group(function () {
         Route::get('/mentor/task', [TaskController::class, 'index'])->name('task')->middleware([CompletedProfile::class]);
