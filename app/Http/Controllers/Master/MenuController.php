@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class MenuController extends Controller
 {
@@ -15,7 +16,14 @@ class MenuController extends Controller
     public function index()
     {
         $allMenus = Menu::with('child')->orderByRaw('ordered,position')->get();
-        return view('layouts.Masters.Menu.index', compact('allMenus'));
+        $routeCollection = Route::getRoutes()->getRoutesByName();
+        // dd($routeCollection->getName());
+        $routeCollection = collect($routeCollection)->filter(function ($route, $index) {
+            if ($route->methods()[0] == 'GET') {
+                return $route;
+            }
+        });
+        return view('layouts.Masters.Menu.index', compact('allMenus', 'routeCollection'));
     }
     /**
      * Store a newly created resource in storage.

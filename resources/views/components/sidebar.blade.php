@@ -1,10 +1,10 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="{{ route('home') }}"><i class="fas fa-home"></i> {{ env('APP_NAME') }} </a>
+            <a href="{{ route('home.index') }}"><i class="fas fa-home"></i> {{ env('APP_NAME') }} </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="{{ route('home') }}">{{ env('SHORT_APP_NAME') }}</a>
+            <a href="{{ route('home.index') }}">{{ env('SHORT_APP_NAME') }}</a>
         </div>
         <ul class="sidebar-menu">
             <li class="menu-header">Menus</li>
@@ -21,7 +21,7 @@
                                         @if ($child->access_to == session('auth.role') || $child->access_to == 'All')
                                             <li
                                                 class="{{ count(explode(Str::lower($child->name), url()->current())) > 1 ? 'active' : '' }}">
-                                                <a class="nav-link" href="{{ route($child->link) }}"><i
+                                                <a class="nav-link" href="{{ url($child->link) }}"><i
                                                         class="{{ $child->icon }}"></i>{{ $child->name }}</a>
                                             </li>
                                         @endif
@@ -35,8 +35,7 @@
                                 <li
                                     class="{{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
                             @endif
-                            <a class="nav-link"
-                                href="{{ route($menu->link) == null ? url($menu->link) : route($menu->link) }}">
+                            <a class="nav-link" href="{{ url($menu->link) }}">
                                 <i class="{{ $menu->icon }}"></i>
                                 <span>{{ $menu->name }}</span></a>
                             </li>

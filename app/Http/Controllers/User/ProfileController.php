@@ -44,7 +44,7 @@ class ProfileController extends Controller
     {
         $user = User::find(session('auth.id'));
         if (session('handle.counter_change_password') != null) {
-            return redirect()->route('user.profile')->with('try_again', 'Really Bro You Try Again?');
+            return redirect()->route('user.profile.index')->with('try_again', 'Really Bro You Try Again?');
         }
         return view('layouts.User.Profile.change-password');
     }
@@ -66,7 +66,7 @@ class ProfileController extends Controller
                 ->send(new ChangePasswordMail(User::where('email', $request->email)->first()));
             ChangePassword::where('email', $request->email)->update(['mailed' => true]);
             DB::commit();
-            return redirect()->route('user.profile')->with('email', 'Check your email to complete process change password');
+            return redirect()->route('user.profile.index')->with('email', 'Check your email to complete process change password');
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th);
@@ -87,11 +87,11 @@ class ProfileController extends Controller
                 $message = ['error', 'Your Validation Key Is invalid'];
             }
             DB::commit();
-            return redirect()->route('user.profile')->with($message[0], $message[1]);
+            return redirect()->route('user.profile.index')->with($message[0], $message[1]);
         } catch (\Throwable $th) {
             DB::rollBack();
             $message = ['error', 'Unexpected Error on change password process'];
-            return redirect()->route('user.profile')->with($message[0], $message[1]);
+            return redirect()->route('user.profile.index')->with($message[0], $message[1]);
         }
     }
 

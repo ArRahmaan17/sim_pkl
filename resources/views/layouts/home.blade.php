@@ -11,36 +11,36 @@
                                 id="attendance-month">{{ $month }}</a>
                             <ul class="dropdown-menu dropdown-menu-sm">
                                 <li class="dropdown-title">Select Month</li>
-                                <li><a href="{{ route('home') }}?month=1"
+                                <li><a href="{{ route('home.index') }}?month=1"
                                         class="dropdown-item {{ $month == 'January' ? 'active' : '' }}">January</a></li>
-                                <li><a href="{{ route('home') }}?month=2"
+                                <li><a href="{{ route('home.index') }}?month=2"
                                         class="dropdown-item {{ $month == 'February' ? 'active' : '' }}">February</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=3"
+                                <li><a href="{{ route('home.index') }}?month=3"
                                         class="dropdown-item {{ $month == 'March' ? 'active' : '' }}">March</a></li>
-                                <li><a href="{{ route('home') }}?month=4"
+                                <li><a href="{{ route('home.index') }}?month=4"
                                         class="dropdown-item {{ $month == 'April' ? 'active' : '' }}">April</a></li>
-                                <li><a href="{{ route('home') }}?month=5"
+                                <li><a href="{{ route('home.index') }}?month=5"
                                         class="dropdown-item {{ $month == 'May' ? 'active' : '' }}">May</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=6"
+                                <li><a href="{{ route('home.index') }}?month=6"
                                         class="dropdown-item {{ $month == 'June' ? 'active' : '' }}">June</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=7"
+                                <li><a href="{{ route('home.index') }}?month=7"
                                         class="dropdown-item {{ $month == 'July' ? 'active' : '' }}">July</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=8"
+                                <li><a href="{{ route('home.index') }}?month=8"
                                         class="dropdown-item {{ $month == 'August' ? 'active' : '' }}">August</a></li>
-                                <li><a href="{{ route('home') }}?month=9"
+                                <li><a href="{{ route('home.index') }}?month=9"
                                         class="dropdown-item {{ $month == 'September' ? 'active' : '' }}">September</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=10"
+                                <li><a href="{{ route('home.index') }}?month=10"
                                         class="dropdown-item {{ $month == 'October' ? 'active' : '' }}">October</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=11"
+                                <li><a href="{{ route('home.index') }}?month=11"
                                         class="dropdown-item {{ $month == 'November' ? 'active' : '' }}">November</a>
                                 </li>
-                                <li><a href="{{ route('home') }}?month=11"
+                                <li><a href="{{ route('home.index') }}?month=12"
                                         class="dropdown-item {{ $month == 'December' ? 'active' : '' }}">December</a>
                                 </li>
                             </ul>

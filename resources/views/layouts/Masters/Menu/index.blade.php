@@ -52,7 +52,7 @@
                                             <div class="badge badge-success mb-2">True</div>
                                             <div class="list-group">
                                                 @foreach ($menu->child as $child)
-                                                    <a href="{{ route($child->link) }}" target="_blank"
+                                                    <a href="{{ $child->link }}" target="_blank"
                                                         class="list-group-item list-group-item-action ">
                                                         {{ $child->name }}
                                                     </a>
@@ -135,7 +135,12 @@
                         </div>
                         <div class="form-group">
                             <label>Link</label>
-                            <input name="link" type="text" class="form-control">
+                            <select name="link" id="" class="form-control">
+                                @foreach ($routeCollection as $route)
+                                    <option value="{{ url('/') }}/{{ $route->uri() }}">{{ $route->getName() }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Position</label>
@@ -187,7 +192,13 @@
                         </div>
                         <div class="form-group">
                             <label>Link</label>
-                            <input name="link" type="text" class="form-control">
+                            {{-- <input name="link" type="text" class="form-control"> --}}
+                            <select name="link" id="" class="form-control">
+                                @foreach ($routeCollection as $route)
+                                    <option value="{{ url('/') }}/{{ $route->uri() }}">{{ $route->getName() }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Parent</label>
@@ -427,7 +438,7 @@
                     id: $('#form-edit-menu').find('input[name=id]').val(),
                     name: $('#form-edit-menu').find('input[name=name]').val(),
                     icon: $('#form-edit-menu').find('input[name=icon]').val(),
-                    link: $('#form-edit-menu').find('input[name=link]').val(),
+                    link: $('#form-edit-menu').find('select[name=link]').find('option:selected').val(),
                     parent: $('#form-edit-menu').find('select[name=parent]').val(),
                     position: $('#form-edit-menu').find('select[name=position]').val(),
                     access_to: $('#form-edit-menu').find('select[name=access_to]').val(),

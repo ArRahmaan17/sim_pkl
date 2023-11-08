@@ -19,7 +19,7 @@ class CompletedProfile
         if (null != session('auth.first_name')) {
             return $next($request);
         } else {
-            return redirect()->route('user.profile')->with('error', 'Please Complete Your Profile First');
+            return redirect()->route('user.profile.index')->with('error', 'Please Complete Your Profile First');
         }
     }
 }

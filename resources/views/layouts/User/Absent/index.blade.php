@@ -5,11 +5,6 @@
             <h3>Form Attendance</h3>
         </div>
         <div class="card-body">
-            @if (session('error'))
-                <div class="col-12">
-                    <div class="alert alert-danger">{!! session('error') !!}</div>
-                </div>
-            @endif
             <form action="{{ route('user.attendance.process') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ $user->id }}">

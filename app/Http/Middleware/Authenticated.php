@@ -16,7 +16,7 @@ class Authenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (session('auth.logged') !== null) {
-            return redirect()->route('home');
+            return redirect()->route('home.index');
         } else {
             return $next($request);
         }

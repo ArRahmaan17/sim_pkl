@@ -209,7 +209,7 @@
                 <div class="dropdown-title">Logged in 5 min ago</div>
                 @foreach ($menus as $menu)
                     @if ($menu->position == 'N')
-                        <a href="{{ route($menu->link) }}"
+                        <a href="{{ $menu->link }}"
                             class="dropdown-item has-icon {{ count(explode(Str::lower($menu->name), url()->current())) > 1 ? 'active' : '' }}">
                             <i class="{{ $menu->icon }}"></i> {{ $menu->name }}
                         </a>

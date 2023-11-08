@@ -21,7 +21,7 @@ class TaskController extends Controller
             $task = Task::findOrFail(intval($id));
             return view('layouts.User.Task.detail', compact('task'));
         } catch (\Throwable $th) {
-            return redirect()->route('user.todo')->with('error', 'We Cant Find Your Specified Data');
+            return redirect()->route('user.todo.index')->with('error', 'We Cant Find Your Specified Data');
         }
     }
 }

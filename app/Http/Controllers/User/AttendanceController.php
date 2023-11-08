@@ -20,7 +20,7 @@ class AttendanceController extends Controller
                 (intval(date('H', time() + 7 * 60 * 60)) < 15 &&
                     intval(date('H', time() + 7 * 60 * 60)) > 18)
             ) {
-                return redirect()->route('home')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for absenteeism');
+                return redirect()->route('home.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for absenteeism');
             }
         }
         $user = User::find(session('auth.id'));
@@ -50,10 +50,10 @@ class AttendanceController extends Controller
             $data['time'] = now('Asia/Jakarta')->addSecond();
             Attendance::insert($data);
             DB::commit();
-            return redirect()->route('home')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
+            return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return redirect()->route('user.absent')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
+            return redirect()->route('user.attendance.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
     }
     public function all()
