@@ -32,7 +32,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
     Route::name('database.')->group(function () {
         Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
-        Route::get('/database/task/user/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
+        Route::get('/database/task/user/{id?}/role/{role?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
     });
     Route::name('user.')->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance.index')->middleware([CompletedProfile::class]);

@@ -205,7 +205,7 @@
         }
         $.ajax({
             type: "GET",
-            url: `{{ route('database.task.user', session('auth.cluster_id')) }}`,
+            url: `{{ route('database.task.user', [session('auth.cluster_id'), session('auth.role')]) }}`,
             dataType: "json",
             success: function(response) {
                 window.tasks = chunkResolver(response.data);
