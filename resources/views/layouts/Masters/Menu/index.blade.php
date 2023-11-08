@@ -377,7 +377,7 @@
                     _token: `{{ csrf_token() }}`,
                     name: $('#form-menu').find('input[name=name]').val(),
                     icon: $('#form-menu').find('input[name=icon]').val(),
-                    link: $('#form-menu').find('input[name=link]').val(),
+                    link: $('#form-menu').find('select[name=link]').find('option:selected').val(),
                     position: $('#form-menu').find('select[name=position]').val(),
                     access_to: $('#form-menu').find('select[name=access_to]').val(),
                 }
