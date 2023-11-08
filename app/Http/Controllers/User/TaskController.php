@@ -10,9 +10,15 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $pendingTasks = Task::where('status', 'Pending')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
-        $progressTasks = Task::where('status', 'Progress')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
-        $endTasks = Task::where('status', 'End')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
+        if (session('auth.role') == "M") {
+            $pendingTasks = Task::where('status', 'Pending')->count();
+            $progressTasks = Task::where('status', 'Progress')->count();
+            $endTasks = Task::where('status', 'End')->count();
+        } else {
+            $pendingTasks = Task::where('status', 'Pending')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
+            $progressTasks = Task::where('status', 'Progress')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
+            $endTasks = Task::where('status', 'End')->whereJsonContains('group', ["" . session('auth.cluster_id')])->count();
+        }
         return view('layouts.User.Task.index', compact('pendingTasks', 'progressTasks', 'endTasks'));
     }
     public function show($id)

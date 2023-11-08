@@ -203,7 +203,6 @@
                 })
             });
         }
-
         $.ajax({
             type: "GET",
             url: `{{ route('database.task.user', session('auth.cluster_id')) }}`,
