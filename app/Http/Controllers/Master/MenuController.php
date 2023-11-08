@@ -221,10 +221,11 @@ class MenuController extends Controller
                 ], 500);
             } else {
                 Menu::find($id)->delete();
+                DB::commit();
                 return Response()->json(['message' => "Successfully Deleted Menu"], 200);
             }
-            DB::commit();
         } catch (\Throwable $th) {
+            DB::rollBack();
             //throw $th;
             dd($th);
             return Response()->json([
