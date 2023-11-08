@@ -18,7 +18,7 @@ class DatabaseController extends Controller
             return Response()->json(['message' => 'Found tasks record ', 'data' => $tasks], 200);
         }
     }
-    public function all_student_task($cluster_id, $role)
+    public function all_student_task($role, $cluster_id)
     {
         if ($role == "M") {
             $tasks = Task::orderBy('created_at')->get()->map(function ($task, $index) {
