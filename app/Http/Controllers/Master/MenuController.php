@@ -227,7 +227,6 @@ class MenuController extends Controller
         } catch (\Throwable $th) {
             DB::rollBack();
             //throw $th;
-            dd($th);
             return Response()->json([
                 'message' => "Failed Delete Menu",
             ], 500);
