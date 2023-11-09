@@ -288,7 +288,7 @@
                             url: `{{ url()->current() }}/show/${id}`,
                             dataType: "json",
                             beforeSend: function() {
-                                swal('Loading');
+                                alertLoading()
                             },
                             success: function(response) {
                                 $('#modal-edit-menu').modal('show');
@@ -387,7 +387,7 @@
                     data: data,
                     dataType: "json",
                     beforeSend: function() {
-                        swal('Loading');
+                        alertLoading()
                     },
                     success: function(response) {
                         swal('Good Job', response.message, 'success');
@@ -449,7 +449,7 @@
                     data: data,
                     dataType: "json",
                     beforeSend: function() {
-                        swal('Loading');
+                        alertLoading()
                     },
                     success: function(response) {
                         swal('Good Job', response.message, 'success');

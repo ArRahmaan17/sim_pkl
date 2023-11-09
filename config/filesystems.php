@@ -57,7 +57,11 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-
+        'task-file' => [
+            'driver' => 'local',
+            'root' => storage_path('app/task-file'),
+            'url' => env('APP_URL') . '/task-file',
+        ],
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

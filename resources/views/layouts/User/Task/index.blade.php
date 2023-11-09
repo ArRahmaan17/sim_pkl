@@ -96,10 +96,7 @@
             'search': $('[name=search-task]').val(),
             'status': $('.can.active').data('status'),
         }) {
-            swal('Loading', {
-                button: false,
-                icon: `{{ asset('img/loading.gif') }}`
-            });
+            alertLoading()
             if (window.tasks != undefined && window.tasks != []) {
                 if (window.tasks[data.indexPage] != undefined) {
                     let datas = window.tasks;

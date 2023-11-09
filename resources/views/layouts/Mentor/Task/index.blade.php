@@ -254,10 +254,7 @@
             'search': $('[name=search-task]').val(),
             'status': $('.can.active').data('status'),
         }) {
-            swal('Loading', {
-                button: false,
-                icon: `{{ asset('img/loading.gif') }}`
-            });
+            alertLoading()
             if (window.tasks != undefined && window.tasks != []) {
                 if (window.tasks[data.indexPage] != undefined) {
                     let datas = window.tasks;
@@ -362,10 +359,7 @@
                             url: `{{ route('mentor.task.show') }}/${id}`,
                             dataType: "JSON",
                             beforeSend: function() {
-                                swal('Loading', {
-                                    button: false,
-                                    icon: `{{ asset('img/loading.gif') }}`
-                                });
+                                alertLoading();
                             },
                             success: function(response) {
                                 alertClose();
@@ -474,10 +468,7 @@
                             url: `{{ route('mentor.task.show') }}/${id}`,
                             dataType: "JSON",
                             beforeSend: function() {
-                                swal('Loading', {
-                                    button: false,
-                                    icon: `{{ asset('img/loading.gif') }}`
-                                });
+                                alertLoading();
                             },
                             success: function(response) {
                                 alertClose();
@@ -572,10 +563,7 @@
                                     url: `{{ route('mentor.task.delete') }}/${id}`,
                                     dataType: "json",
                                     beforeSend: function() {
-                                        swal('Loading', {
-                                            button: false,
-                                            icon: `{{ asset('img/loading.gif') }}`
-                                        });
+                                        alertLoading()
                                     },
                                     success: function(response) {
                                         alertClose();

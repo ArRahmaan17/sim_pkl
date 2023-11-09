@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="{{ asset('modules/bootstrap-daterangepicker/daterangepicker.css') }}">
 
     <!-- CSS Libraries -->
-
+    @yield('css')
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/components.css') }}">
-    @yield('css')
+
     <!-- Start GA -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
     <script>
@@ -75,6 +75,15 @@
     <script src="{{ asset('modules/select2/dist/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('js/stisla.js') }}"></script>
 
+    <script>
+        function alertLoading() {
+            swal('Loading', {
+                button: false,
+                closeOnClickOutside: false,
+                icon: `{{ asset('img/loading.gif') }}`
+            });
+        }
+    </script>
     @yield('script')
     <!-- JS Libraies -->
 

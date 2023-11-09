@@ -150,7 +150,7 @@
                         url: `{{ route('master.cluster.show') }}/${id}`,
                         dataType: "JSON",
                         beforeSend: function() {
-                            swal('Loading');
+                            alertLoading()
                         },
                         success: function(response) {
                             swal.close()
@@ -184,7 +184,7 @@
                     data: form_data,
                     dataType: "JSON",
                     beforeSend: function() {
-                        swal('Loading');
+                        alertLoading()
                     },
                     success: function(response) {
                         alertClose();
@@ -223,7 +223,7 @@
                     data: form_data,
                     dataType: "JSON",
                     beforeSend: function() {
-                        swal('Loading');
+                        alertLoading()
                     },
                     success: function(response) {
                         alertClose();
