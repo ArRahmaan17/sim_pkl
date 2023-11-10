@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Mentor;
 use App\Http\Controllers\Controller;
 use App\Models\Cluster;
 use App\Models\Task;
+use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -43,7 +45,21 @@ class TaskController extends Controller
             $data = $request->except('_token', 'image');
             $data['thumbnail'] = $filename . '.' . $extension;
             $data['group'] = json_encode($data['group']);
-            Task::create($data);
+            $task = Task::create($data);
+            foreach (json_decode($data['group']) as $key => $group) {
+                $users = User::where(['cluster_id' => $group, 'role' => 'S'])->get();
+                foreach ($users as $key => $user) {
+                    $todo = [
+                        'user_id' => $user->id,
+                        'description' => $user->first_name . ' ' . $user->last_name . ' start task ' . $data['title'],
+                        'cluster_id' => $group,
+                        'task_id' => $task->id,
+                        'status' => 'Shared',
+                        'created_at' => now('Asia/Jakarta')
+                    ];
+                    Todo::insert($todo);
+                }
+            }
             DB::commit();
             if (!Storage::directoryExists('/task')) {
                 Storage::makeDirectory('task');
@@ -51,6 +67,7 @@ class TaskController extends Controller
             Storage::disk('task')->put($filename . '.' . $extension, $request->file('image')->getContent());
             return Response()->json(['message' => 'Successfully create task', 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
+            dd($th);
             DB::rollBack();
             return Response()->json(['message' => 'Failed create task'], 500);
         }
