@@ -15,7 +15,8 @@ class AttendanceController extends Controller
     public function index()
     {
         if (session('auth.role') == 'S') {
-            if ((intval(date('H', time() + 7 * 60 * 60)) < 8 &&
+            if (
+                !(intval(date('H', time() + 7 * 60 * 60)) < 8 &&
                     intval(date('H', time() + 7 * 60 * 60)) > 9) ||
                 (intval(date('H', time() + 7 * 60 * 60)) < 15 &&
                     intval(date('H', time() + 7 * 60 * 60)) > 18)
@@ -41,8 +42,8 @@ class AttendanceController extends Controller
             Storage::put($file_path, $file);
             Attendance::where('user_id', $request->user_id)
                 ->where('status', $request->status)
-                ->where('created_at', '>', Carbon::now()->startOfDay())
-                ->where('created_at', '<', Carbon::now()->endOfDay())
+                ->where('created_at', '>', Carbon::now('Asia/Jakarta')->startOfDay())
+                ->where('created_at', '<', Carbon::now('Asia/Jakarta')->endOfDay())
                 ->delete();
             $data = $request->except('_token', 'name');
             $data['photo'] = $file_path;
@@ -53,6 +54,7 @@ class AttendanceController extends Controller
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th);
             return redirect()->route('user.attendance.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
     }

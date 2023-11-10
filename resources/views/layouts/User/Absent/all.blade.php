@@ -47,7 +47,7 @@
                     center: 'title',
                     right: ''
                 },
-                initialDate: '2023-10-23',
+                initialDate: `{{ now('Asia/Jakarta') }}`,
                 initialView: 'dayGridMonth',
                 events: modified_data,
             });
