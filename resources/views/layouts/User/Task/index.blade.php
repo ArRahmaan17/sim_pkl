@@ -133,26 +133,26 @@
                             }
                         }
                         elementTasks += `<div class="col-12 col-md-4 col-lg-4">
-                                        <article class="article article-style-c">
-                                            <div class="article-header">
-                                                <div class="article-image" style='background-image: url("data:image/png;base64,${element.thumbnail}"); background-size:cover; background-position: center center;' >
-                                                </div>
-                                            </div>
-                                            <div class="article-details">
-                                                <div class="article-category">
-                                                    <div class="bullet"></div>
-                                                    <a>${moment(moment(element.created_at).zone('-07:00').format('YYYY-MM-DD HH:mm:ss')).fromNow()}</a>
-                                                </div>
-                                                <div class="article-title">
-                                                    <a href="{{ route('user.todo.show') }}/${element.id}" class="text-truncate" style='display:block;'>${element.title}</a>
-                                                </div>
-                                                <div class="article-user">
-                                                    <div class="article-user-details">
-                                                        ${status}
+                                            <article class="article article-style-c">
+                                                <div class="article-header">
+                                                    <div class="article-image" style='background-image: url("data:image/png;base64,${element.thumbnail}"); background-size:cover; background-position: center center;' >
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </article>
+                                                <div class="article-details">
+                                                    <div class="article-category">
+                                                        <div class="bullet"></div>
+                                                        <a>${moment(moment(element.created_at).zone('-07:00').format('YYYY-MM-DD HH:mm:ss')).fromNow()}</a>
+                                                    </div>
+                                                    <div class="article-title" style="display: block;">
+                                                        <p><a href="{{ route('user.todo.show') }}/${element.id}">${element.title}</a></p>
+                                                    </div>
+                                                    <div class="article-user">
+                                                        <div class="article-user-details">
+                                                            ${status}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </article>
                                     </div>`;
                     });
                     $('#container-tasks').html(elementTasks);

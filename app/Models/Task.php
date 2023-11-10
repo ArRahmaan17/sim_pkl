@@ -23,4 +23,8 @@ class Task extends Model
         'created_at',
         'updated_at'
     ];
+    public function allFile()
+    {
+        return $this->hasMany(TaskFile::class, 'task_id', 'id');
+    }
 }

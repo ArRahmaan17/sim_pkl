@@ -26,7 +26,6 @@ class TaskController extends Controller
     }
     public function store(Request $request)
     {
-        set_time_limit(180);
         if ($request->has('file')) {
             $task_id = implode('', explode(env('APP_URL') . '/user/todo/', url()->previous()));
             if (!Storage::directoryExists('task-file')) {
@@ -42,9 +41,12 @@ class TaskController extends Controller
                 if (Storage::disk('task-file')->exists($filename)) {
                     $data['file'] = $filename;
                 }
+                $data['created_at'] = now('Asia/Jakarta');
                 TaskFile::insert($data);
-                return Response()->json(['message' => "Task Updated, You successfully collected the task"]);
+                DB::commit();
+                return Response()->json(['message' => "Task Updated, You successfully collected the task", 'data' => TaskFile::all()]);
             } catch (\Throwable $th) {
+                DB::rollBack();
                 //throw $th;
                 dd($th);
             }
@@ -53,10 +55,16 @@ class TaskController extends Controller
     public function show($id)
     {
         try {
-            $task = Task::findOrFail(intval($id));
-            return view('layouts.User.Task.detail', compact('task'));
+            $task = Task::with('allFile')->findOrFail(intval($id));
+            $countTask = TaskFile::where(['user_id' => session('auth.id')])->count();
+            return view('layouts.User.Task.detail', compact('task', 'countTask'));
         } catch (\Throwable $th) {
             return redirect()->route('user.todo.index')->with('error', 'We Cant Find Your Specified Data');
         }
+    }
+    public function download($id)
+    {
+        $task = TaskFile::find($id);
+        return Storage::disk('task-file')->download($task->file);
     }
 }
