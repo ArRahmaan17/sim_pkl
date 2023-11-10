@@ -5,6 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Models\TaskFile;
+use App\Models\Todo;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -52,12 +54,32 @@ class TaskController extends Controller
             }
         }
     }
+    public function start(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::findOrFail($request->user_id);
+            $task = Task::findOrFail($request->task_id);
+            $data = $request->all();
+            $data['created_at'] = now('Asia/Jakarta');
+            $data['cluster_id'] = $user->cluster_id;
+            $data['start'] = now('Asia/Jakarta');
+            Todo::insert($data);
+            DB::commit();
+            return Response()->json(['message' => "Task Started, Please store your work files before " . $task->deadline_date . ' 23:59:59']);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            //throw $th;
+            dd($th);
+        }
+    }
     public function show($id)
     {
         try {
             $task = Task::with('allFile')->findOrFail(intval($id));
             $countTask = TaskFile::where(['user_id' => session('auth.id')])->count();
-            return view('layouts.User.Task.detail', compact('task', 'countTask'));
+            $countStartTask = Todo::where(['user_id' => session('auth.id'), 'status' => 'Shared'])->count();
+            return view('layouts.User.Task.detail', compact('task', 'countTask', 'countStartTask'));
         } catch (\Throwable $th) {
             return redirect()->route('user.todo.index')->with('error', 'We Cant Find Your Specified Data');
         }

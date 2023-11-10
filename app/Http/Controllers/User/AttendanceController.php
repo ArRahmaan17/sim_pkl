@@ -28,7 +28,6 @@ class AttendanceController extends Controller
         $history = Attendance::attendance_history(session('auth.id'));
         return view('layouts.User.Absent.index', compact('user', 'history'));
     }
-
     public function store(Request $request)
     {
         DB::beginTransaction();

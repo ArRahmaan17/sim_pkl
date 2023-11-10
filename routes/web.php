@@ -49,6 +49,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/todo/', [userTask::class, 'index'])->name('todo.index')->middleware([CompletedProfile::class]);
         Route::get('/user/todo/{id?}', [userTask::class, 'show'])->name('todo.show');
         Route::post('/user/todo/store', [userTask::class, 'store'])->name('todo.store');
+        Route::post('/user/todo/start', [userTask::class, 'start'])->name('todo.start');
         Route::get('/user/todo/download/{id?}', [userTask::class, 'download'])->name('todo.download');
     });
     Route::name('mentor.')->group(function () {

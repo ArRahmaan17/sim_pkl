@@ -23,10 +23,17 @@
                                     class="fas fa-hourglass-end fa-spin"></i> The processing time in
                                 {{ now()->parse($task->start_date . ' 00:01:01', 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
                         @elseif ($task->status == 'Progress')
-                            <button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"
-                                {{ $countTask == 0 ? '' : 'disabled' }}><i class="fas fa-upload"></i>
-                                Upload before
-                                {{ now()->parse(now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta')->format('Y-m-d H:i:s'))->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
+                            @if ($countStartTask == 0)
+                                <button type="button" onclick="startTask()" class="btn btn-success time-count"><i
+                                        class="fas fa-play"></i>
+                                    Start before
+                                    {{ now()->parse(now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta'))->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
+                            @else
+                                <button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"
+                                    {{ $countTask == 0 ? '' : 'disabled' }}><i class="fas fa-upload"></i>
+                                    Upload before
+                                    {{ now()->parse(now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta'))->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
+                            @endif
                         @elseif ($task->status == 'End')
                             <button type="button" class="btn btn-danger disabled time-count"><i
                                     class="far fa-calendar-times"></i> The processing
@@ -152,6 +159,48 @@
     <script>
         Dropzone.autoDiscover = false;
 
+        function countdown(counter = parseInt(`{{ $countStartTask }}`)) {
+            setInterval(() => {
+                if (`{{ $task->status }}` == 'Pending') {
+                    y = moment(`{{ $task->start_date }} 00:01:01`);
+                    x = moment();
+                    duration = moment.duration(y.diff(x));
+                    $('.time-count').html(
+                        `<i class="fas fa-hourglass-end fa-spin"></i> The processing time in ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} from now`
+                    )
+                } else if (`{{ $task->status }}` == 'Progress') {
+                    y = moment(`{{ $task->deadline_date }} 23:59:59`);
+                    x = moment();
+                    duration = moment.duration(x.diff(y));
+                    let status = '<i class="fas fa-upload"></i> Upload';
+                    if (counter == 0) {
+                        status = '<i class="fas fa-play"></i> Start'
+                    }
+                    let countdown =
+                        `${status} before ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} from now`;
+                    $('.count-time-form').html(`${countdown}`);
+                    $('.time-count').html(countdown);
+                } else if (`{{ $task->status }}` == 'End') {
+                    y = moment(`{{ $task->deadline_date }} 23:59:59`);
+                    x = moment();
+                    duration = moment.duration(y.diff(x));
+                    $('.time-count').html(
+                        `<i class="far fa-calendar-times"></i> The processing time is up in ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} ago`
+                    );
+                }
+                let tasks = JSON.parse(`<?php echo $task->allFile; ?>`);
+                tasks.forEach((task, index) => {
+                    y = moment(task.created_at.split('T').join(
+                        ' ').split('.000000Z').join(''));
+                    x = moment();
+                    duration = moment.duration(y.diff(x));
+                    $($('.task-collection')[index]).html(
+                        `Task collection on ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} ago`
+                    )
+                });
+            }, 1000);
+        }
+
         function showFormStoreTask() {
             $('#modal-store-task').modal('show');
         }
@@ -176,9 +225,45 @@
                     $('.time-count').attr('disabled', true)
                 },
                 error: function(error) {
-                    $(this).removeClass('disabled');
+                    $('#save-file-task').removeClass('disabled');
                     $('button[data-dissmis=modal]').removeClass('disabled');
                     alertClose();
+                }
+            });
+        }
+
+        function startTask() {
+            swal("Are you sure you want to start this task?", {
+                icon: 'info',
+                buttons: ["Cancel", "Start Task!"],
+            }).then((click) => {
+                if (click) {
+                    $.ajax({
+                        type: "POST",
+                        url: `{{ route('user.todo.start') }}`,
+                        headers: {
+                            "X-CSRF-TOKEN": `{{ csrf_token() }}`
+                        },
+                        data: {
+                            user_id: `{{ session('auth.id') }}`,
+                            task_id: `{{ $task->id }}`,
+                            status: `Started`,
+                            description: `{{ session('auth.first_name') }} start task {{ $task->title }}`,
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            swal(response.message, {
+                                icon: 'success',
+                            });
+                            $('.article-cta').html(
+                                `<button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"></button>`
+                            );
+                            countdown(1);
+                        },
+                        error: function(error) {
+                            alertClose();
+                        }
+                    });
                 }
             });
         }
@@ -210,7 +295,7 @@
                     })
                     file_upload.then((done) => {
                         storeTask();
-                        $(this).removeClass('disabled');
+                        $('#save-file-task').removeClass('disabled');
                         $('button[data-dissmis=modal]').removeClass('disabled');
                         alertClose();
                     });
@@ -224,41 +309,7 @@
                     storeTask();
                 }
             });
-            setInterval(() => {
-                if (`{{ $task->status }}` == 'Pending') {
-                    y = moment(`{{ $task->start_date }} 00:01:01`);
-                    x = moment();
-                    duration = moment.duration(y.diff(x));
-                    $('.time-count').html(
-                        `<i class="fas fa-hourglass-end fa-spin"></i> The processing time in ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} from now`
-                    )
-                } else if (`{{ $task->status }}` == 'Progress') {
-                    y = moment(`{{ $task->deadline_date }} 23:59:59`);
-                    x = moment();
-                    duration = moment.duration(x.diff(y));
-                    let countdown =
-                        `<i class="fas fa-upload"></i> Upload before ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} from now`;
-                    $('.count-time-form').html(`${countdown}`)
-                    $('.time-count').html(countdown);
-                } else if (`{{ $task->status }}` == 'End') {
-                    y = moment(`{{ $task->deadline_date }} 23:59:59`);
-                    x = moment();
-                    duration = moment.duration(y.diff(x));
-                    $('.time-count').html(
-                        `<i class="far fa-calendar-times"></i> The processing time is up in ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} ago`
-                    );
-                }
-                let tasks = JSON.parse(`<?php echo $task->allFile; ?>`);
-                tasks.forEach((task, index) => {
-                    y = moment(task.created_at.split('T').join(
-                        ' ').split('.000000Z').join(''));
-                    x = moment();
-                    duration = moment.duration(y.diff(x));
-                    $($('.task-collection')[index]).html(
-                        `Task collection on ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} ago`
-                    )
-                });
-            }, 1000);
+            countdown();
         });
     </script>
 @endsection

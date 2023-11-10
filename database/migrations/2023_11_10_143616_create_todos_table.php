@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->bigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
             $table->text('description');
             $table->bigInteger('cluster_id')->unsigned();
             $table->foreign('cluster_id')
@@ -21,12 +26,17 @@ return new class extends Migration
                 ->on('clusters')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->date('date');
-            $table->date('deadline');
-            $table->integer('progress')->default(0);
+            $table->bigInteger('task_id')->unsigned();
+            $table->foreign('task_id')
+                ->references('id')
+                ->on('tasks')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();
+            $table->time('start')->nullable();
+            $table->integer('progress')->default(0)->nullable();
             $table->enum('status', ['Shared', 'Started', 'Analysis', 'Development', 'Done'])->default('Shared');
-            $table->date('finish')->nullable();
-            $table->date('evidence_file');
+            $table->time('finish')->nullable();
+            $table->string('evidence_file')->nullable();
             $table->timestamps();
         });
     }
