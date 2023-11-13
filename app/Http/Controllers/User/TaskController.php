@@ -46,11 +46,11 @@ class TaskController extends Controller
                 }
                 $data['created_at'] = now('Asia/Jakarta');
                 TaskFile::insert($data);
-                $data['cluster_id'] = session('auth.id');
+                $data['cluster_id'] = session('auth.cluster_id');
                 $data['evidence_file'] = $data['file'];
                 $task = Task::find($request->task_id);
                 $task_activity = Todo::where(['task_id' => $request->task_id, 'user_id' => session('auth.id')])->orderBy('id', 'desc')->first();
-                $data['description'] = session('auth.first_name') . " " . session('') . "task " . $task->title . " updated to done ";
+                $data['description'] = session('auth.first_name') . " " . session('') . "task " . $task->title . " update to done ";
                 $data['status'] = "Done";
                 $data['progress'] = 100;
                 $data['finish'] = now('Asia/Jakarta');
@@ -92,7 +92,6 @@ class TaskController extends Controller
             $task = Task::with('allFile')->findOrFail(intval($id));
             $countTask = TaskFile::where(['user_id' => session('auth.id'), 'task_id' => $id])->count();
             $countStartTask = Todo::where(['task_id' => $id, 'user_id' => session('auth.id'), 'status' => 'Started'])->count();
-            // dd($countStartTask . ' start task', $countTask . ' count task collected');
             return view('layouts.User.Task.detail', compact('task', 'countTask', 'countStartTask'));
         } catch (\Throwable $th) {
             return redirect()->route('user.todo.index')->with('error', 'We Cant Find Your Specified Data');

@@ -53,7 +53,6 @@ class AttendanceController extends Controller
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th);
             return redirect()->route('user.attendance.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
     }

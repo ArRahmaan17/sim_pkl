@@ -58,13 +58,99 @@
                                         </div>
                                     </div>
                                 @endif
-                                <form method="POST" action="{{ route('register.registration') }}">
+                                <form method="POST" action="{{ route('register.student.registration') }}">
                                     @csrf
+                                    <div class="text-center mt-4 mb-3">
+                                        <div class="text-job text-muted">Student Profile</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="first_name" class="d-block">First Name</label>
+                                            <input id="first_name" type="text"
+                                                class="form-control @error('first_name') is-invalid @enderror"
+                                                name="first_name" value="{{ old('first_name') }}">
+                                            @error('first_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label for="last_name" class="d-block">Last Name</label>
+                                            <input id="last_name" type="text"
+                                                class="form-control @error('last_name') is-invalid @enderror"
+                                                name="last_name" value="{{ old('last_name') }}">
+                                            @error('last_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label for="student_identification_number">NIS</label>
+                                            <input id="student_identification_number" type="text"
+                                                class="form-control @error('student_identification_number') is-invalid @enderror"
+                                                name="student_identification_number"
+                                                value="{{ old('student_identification_number') }}">
+                                            @error('student_identification_number')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label>Phone Number</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <i class="fas fa-phone"></i>
+                                                    </div>
+                                                </div>
+                                                <input type="text" name="phone_number"
+                                                    class="form-control phone-number @error('phone_number') is-invalid @enderror"
+                                                    value="{{ old('phone_number') }}">
+                                                @error('phone_number')
+                                                    <div class="invalid-feedback">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <textarea id="address" class="form-control @error('address') is-invalid @enderror" name="address">{{ old('address') }}</textarea>
+                                        @error('address')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="gender">Gender</label>
+                                        <select id="gender"
+                                            class="form-control @error('gender') is-invalid @enderror" name="gender">
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
+                                            <option value="NB">Non-binary</option>
+                                        </select>
+                                        @error('gender')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="text-center mt-4 mb-3">
+                                        <div class="text-job text-muted">Student User</div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="username">Username</label>
                                         <input id="username" type="text"
                                             class="form-control @error('username') is-invalid  @enderror"
-                                            name="username">
+                                            name="username" value="{{ old('username') }}">
                                         @error('username')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -75,7 +161,8 @@
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input id="email" type="email"
-                                            class="form-control @error('email') is-invalid @enderror" name="email">
+                                            class="form-control @error('email') is-invalid @enderror" name="email"
+                                            value="{{ old('email') }}">
                                         @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -85,31 +172,11 @@
 
                                     <div class="row">
                                         <div class="form-group col-6">
-                                            <label for="first_name" class="d-block">First Name</label>
-                                            <input id="first_name" type="text"
-                                                class="form-control @error('first_name') is-invalid @enderror"
-                                                name="first_name">
-                                            @error('first_name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="last_name" class="d-block">Last Name</label>
-                                            <input id="last_name" type="text"
-                                                class="form-control @error('last_name') is-invalid @enderror"
-                                                name="last_name">
-                                            @error('last_name')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-6">
                                             <label for="password" class="d-block">Password</label>
                                             <input id="password" type="password"
                                                 class="form-control @error('password') is-invalid @enderror pwstrength"
-                                                data-indicator="pwindicator" name="password">
+                                                data-indicator="pwindicator" name="password"
+                                                value="{{ old('password') }}">
                                             @error('password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -119,61 +186,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-6">
-                                            <label for="confirm_password" class="d-block">Password Confirmation</label>
+                                            <label for="confirm_password" class="d-block">Password
+                                                Confirmation</label>
                                             <input id="confirm_password" type="password"
                                                 class="form-control @error('confirm_password') is-invalid @enderror"
-                                                name="password_confirm">
+                                                name="password_confirm" value="{{ old('confirm_password') }}">
                                             @error('confirm_password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="student_identification_number">NIS</label>
-                                        <input id="student_identification_number" type="text"
-                                            class="form-control @error('student_identification_number') is-invalid @enderror" name="student_identification_number">
-                                        @error('student_identification_number')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="phone_number">Phone Number</label>
-                                        <input id="phone_number" type="text"
-                                            class="form-control @error('phone_number') is-invalid @enderror" name="phone_number">
-                                        @error('phone_number')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="address">Address</label>
-                                        <input id="address" type="text"
-                                            class="form-control @error('address') is-invalid @enderror" name="address">
-                                        @error('address')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="gender">Gender</label>
-                                        <select id="gender" class="form-control select2 @error('gender') is-invalid @enderror" name="gender">
-                                            <option>Male</option>
-                                            <option>Female</option>
-                                            <option>Non-binary</option>
-                                        </select>
-                                        @error('gender')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
                                     </div>
 
                                     <div class="form-group">

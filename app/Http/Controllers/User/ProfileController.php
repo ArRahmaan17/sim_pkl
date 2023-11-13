@@ -72,6 +72,7 @@ class ProfileController extends Controller
             dd($th);
         }
     }
+
     public function accept_changed_password(Request $request)
     {
         DB::beginTransaction();
@@ -98,9 +99,9 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'username' => 'required|alpha|unique:users,username,' . session('auth.id') . '',
-            'first_name' => 'required|alpha',
-            'last_name' => 'required|alpha',
+            'username' => 'required|alpha_num|unique:users,username,' . session('auth.id') . '',
+            'first_name' => 'required|regex:/[^0-9]+/',
+            'last_name' => 'required|regex:/[^0-9]+/',
             'address' => 'required',
             'email' => 'required|unique:users,email,' . session('auth.id') . '',
             'phone_number' => 'required|numeric',

@@ -29,9 +29,6 @@ class StudentClusterController extends Controller
                 'cluster_id' => intval($request->cluster_id) != 0 ? intval($request->cluster_id) : null, 'updated_at' => now('Asia/Jakarta')
             ]);
             DB::commit();
-            $data['auth'] = User::find($request->id);
-            $data['auth']['logged'] = true;
-            session($data);
             return Response()->json(['message' => 'Successfully Change Group'], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
