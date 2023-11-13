@@ -51,7 +51,7 @@ class TaskController extends Controller
                 foreach ($users as $key => $user) {
                     $todo = [
                         'user_id' => $user->id,
-                        'description' => $user->first_name . ' ' . $user->last_name . ' start task ' . $data['title'],
+                        'description' => $user->first_name . ' ' . $user->last_name . ' shared task ' . $data['title'],
                         'cluster_id' => $group,
                         'task_id' => $task->id,
                         'status' => 'Shared',
@@ -67,7 +67,6 @@ class TaskController extends Controller
             Storage::disk('task')->put($filename . '.' . $extension, $request->file('image')->getContent());
             return Response()->json(['message' => 'Successfully create task', 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
-            dd($th);
             DB::rollBack();
             return Response()->json(['message' => 'Failed create task'], 500);
         }

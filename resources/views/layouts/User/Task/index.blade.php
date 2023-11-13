@@ -143,10 +143,8 @@
                                                         <div class="bullet"></div>
                                                         <a>${moment(moment(element.created_at).zone('-07:00').format('YYYY-MM-DD HH:mm:ss')).fromNow()}</a>
                                                     </div>
-                                                    <div class="article-title" style="display: block;">
-                                                        <p><a href="{{ route('user.todo.show') }}/${element.id}">${element.title}</a></p>
-                                                    </div>
                                                     <div class="article-user">
+                                                        <p><a href="{{ route('user.todo.show') }}/${element.id}">${element.title}</a></p>
                                                         <div class="article-user-details">
                                                             ${status}
                                                         </div>

@@ -27,12 +27,12 @@
                                 <button type="button" onclick="startTask()" class="btn btn-success time-count"><i
                                         class="fas fa-play"></i>
                                     Start before
-                                    {{ now()->parse(now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta'))->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
+                                    {{ now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
                             @else
                                 <button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"
                                     {{ $countTask == 0 ? '' : 'disabled' }}><i class="fas fa-upload"></i>
                                     Upload before
-                                    {{ now()->parse(now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta'))->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
+                                    {{ now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
                             @endif
                         @elseif ($task->status == 'End')
                             <button type="button" class="btn btn-danger disabled time-count"><i
@@ -106,6 +106,54 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="modal-activity-task" tabindex="-1" role="dialog" data-keyboard='false'
+        data-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Update Your Task Progress</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="form-update-activity">
+                        <div class="alert alert-danger create d-none">
+                            <div class="alert-title">We Found Some Error</div>
+                            <div class="alert-body">
+                            </div>
+                        </div>
+                        @csrf
+                        <input type="hidden" name="user_id" value="{{ session('auth.id') }}">
+                        <input type="hidden" name="task_id" value="{{ $task->id }}">
+                        <input type="hidden" name="extension" value="">
+                        <input type="hidden" name="progress" value="">
+                        <input type="hidden" name="start" value="">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input name='name' type="text" class="form-control" readonly
+                                value="{{ session('auth.first_name') . ' ' . session('auth.last_name') }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Status activity</label>
+                            <input name='status' type="text" class="form-control" readonly value="">
+                        </div>
+                        <div class="form-group">
+                            <label>Describe your activity</label>
+                            <textarea class="form-control" name="description" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="">Screenshot evidence</label>
+                            <div id="activity-dropzone" class="dropzone"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>
+                        Close</button>
+                    <button id="update-activity-task" type="button" class="btn btn-primary"><i class="fas fa-pen"></i>
+                        Update activity Task</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modal-all-task-file" tabindex="-1" role="dialog" data-keyboard='false'
         data-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -157,10 +205,12 @@
     <script src="{{ asset('modules/dropzonejs/min/dropzone.min.js') }}"></script>
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
+        let interval;
         Dropzone.autoDiscover = false;
 
         function countdown(counter = parseInt(`{{ $countStartTask }}`)) {
-            setInterval(() => {
+            clearInterval(interval);
+            interval = setInterval(() => {
                 if (`{{ $task->status }}` == 'Pending') {
                     y = moment(`{{ $task->start_date }} 00:01:01`);
                     x = moment();
@@ -171,7 +221,7 @@
                 } else if (`{{ $task->status }}` == 'Progress') {
                     y = moment(`{{ $task->deadline_date }} 23:59:59`);
                     x = moment();
-                    duration = moment.duration(x.diff(y));
+                    duration = moment.duration(y.diff(x));
                     let status = '<i class="fas fa-upload"></i> Upload';
                     if (counter == 0) {
                         status = '<i class="fas fa-play"></i> Start'
@@ -202,7 +252,27 @@
         }
 
         function showFormStoreTask() {
-            $('#modal-store-task').modal('show');
+            $.ajax({
+                type: "GET",
+                url: `{{ route('database.task.progress', $task->id) }}`,
+                dataType: "json",
+                success: function(response) {
+                    if (response.data.status != 'Development') {
+                        if (response.data.status == "Started") {
+                            $('input[name=status]').val('Analysis');
+                            $('input[name=progress]').val(40);
+                            $('input[name=start]').val(response.data.start);
+                        } else if (response.data.status == "Analysis") {
+                            $('input[name=status]').val('Development');
+                            $('input[name=progress]').val(80);
+                            $('input[name=start]').val(response.data.start);
+                        }
+                        $('#modal-activity-task').modal('show');
+                    } else {
+                        $('#modal-store-task').modal('show');
+                    }
+                }
+            });
         }
 
         function showAllFilesUploaded() {
@@ -226,6 +296,28 @@
                 },
                 error: function(error) {
                     $('#save-file-task').removeClass('disabled');
+                    $('button[data-dissmis=modal]').removeClass('disabled');
+                    alertClose();
+                }
+            });
+        }
+
+        function updateactivityTask() {
+            $.ajax({
+                type: "POST",
+                url: `{{ route('user.todo.activity-update') }}`,
+                data: new FormData($('#form-update-activity')[0]),
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                success: function(response) {
+                    swal(response.message, {
+                        icon: 'success',
+                    });
+                    $('#modal-activity-task').modal('hide');
+                },
+                error: function(error) {
+                    $('#update-activity-task').removeClass('disabled');
                     $('button[data-dissmis=modal]').removeClass('disabled');
                     alertClose();
                 }
@@ -274,9 +366,24 @@
                 paramName: 'file',
                 acceptedFiles: '.zip',
                 addRemoveLinks: true,
+                maxFiles: 1,
                 timeout: -1,
                 autoProcessQueue: false,
                 maxFilesize: 100,
+                headers: {
+                    "X-CSRF-TOKEN": `{{ csrf_token() }}`
+                }
+            });
+            let activityDropzone = new Dropzone("#activity-dropzone", {
+                url: `{{ route('user.todo.activity-update') }}`,
+                method: "POST",
+                paramName: 'activity_photos',
+                acceptedFiles: '.png, .jpeg, .jpg',
+                addRemoveLinks: true,
+                maxFiles: 1,
+                timeout: -1,
+                autoProcessQueue: false,
+                maxFilesize: 5,
                 headers: {
                     "X-CSRF-TOKEN": `{{ csrf_token() }}`
                 }
@@ -307,6 +414,29 @@
                         return
                     }
                     storeTask();
+                }
+            });
+            $('#update-activity-task').click(function() {
+                alertLoading();
+                $(this).addClass('disabled');
+                $('button[data-dissmis=modal]').addClass('disabled');
+                if (activityDropzone.getQueuedFiles().length > 0) {
+                    let file_upload = new Promise((resolve, reject) => {
+                        activityDropzone.processQueue();
+                        activityDropzone.on("success", function(file, response) {
+                            $('[name=extension]').val(response.extension)
+                            activityDropzone.removeFile(file);
+                            return resolve(true)
+                        });
+                    })
+                    file_upload.then((done) => {
+                        updateactivityTask();
+                        $('#update-activity-task').removeClass('disabled');
+                        $('button[data-dissmis=modal]').removeClass('disabled');
+                        alertClose();
+                    });
+                } else {
+                    updateactivityTask();
                 }
             });
             countdown();

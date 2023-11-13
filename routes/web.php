@@ -33,6 +33,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::name('database.')->group(function () {
         Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
         Route::get('/database/task/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
+        Route::get('/database/task/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
     });
     Route::name('user.')->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance.index')->middleware([CompletedProfile::class]);
@@ -50,6 +51,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/todo/{id?}', [userTask::class, 'show'])->name('todo.show');
         Route::post('/user/todo/store', [userTask::class, 'store'])->name('todo.store');
         Route::post('/user/todo/start', [userTask::class, 'start'])->name('todo.start');
+        Route::post('/user/todo/activity-update', [userTask::class, 'activity_update'])->name('todo.activity-update');
         Route::get('/user/todo/download/{id?}', [userTask::class, 'download'])->name('todo.download');
     });
     Route::name('mentor.')->group(function () {

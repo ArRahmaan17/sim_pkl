@@ -24,8 +24,8 @@ function getMoment(status = "y", duration) {
     } else if (status == 's') {
         des = 'second';
     }
-    return (duration.get(status) != 0) ? Math.abs(duration.get(status)) > 1 ? `${Math.abs(duration.get(status))} ${des}s` :
-        `${Math.abs(duration.get(status))} ${des}` : ''
+    return (duration.get(status) != 0) ? duration.get(status) > 1 ? `${duration.get(status)} ${des}s` :
+        `${duration.get(status)} ${des}` : ''
 }
 
 function chunkArray(array, size = 5) {

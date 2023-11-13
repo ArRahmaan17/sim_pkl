@@ -32,10 +32,10 @@ return new class extends Migration
                 ->on('tasks')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->time('start')->nullable();
+            $table->dateTime('start')->nullable();
             $table->integer('progress')->default(0)->nullable();
             $table->enum('status', ['Shared', 'Started', 'Analysis', 'Development', 'Done'])->default('Shared');
-            $table->time('finish')->nullable();
+            $table->dateTime('finish')->nullable();
             $table->string('evidence_file')->nullable();
             $table->timestamps();
         });
