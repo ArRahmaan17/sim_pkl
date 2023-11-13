@@ -45,7 +45,7 @@
 
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h4>Student Register</h4>
+                                <h4>Student Register Form</h4>
                             </div>
 
                             <div class="card-body">
