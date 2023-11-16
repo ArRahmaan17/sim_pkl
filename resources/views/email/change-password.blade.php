@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Password</title>
+    {{-- yk_-7J?oLeYU --}}
 </head>
 
 <body>
@@ -36,7 +37,7 @@
         <tr>
             <td bgcolor="#f7f7f7" style="padding: 20px 30px 20px 30px;">
                 <p>If you need any assistance or have any questions, please contact our support team at <a
-                        href="mailto:support@your-website.com">support@your-website.com</a>.</p>
+                        href="mailto:info@nugcreative.my.id">info@nugcreative.my.id</a>.</p>
             </td>
         </tr>
     </table>

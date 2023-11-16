@@ -77,7 +77,11 @@ class ProfileController extends Controller
     {
         DB::beginTransaction();
         try {
-            $request_change_password = ChangePassword::where('email', base64_decode($request->action));
+            $request_change_password = ChangePassword::where([
+                'email' => base64_decode($request->action),
+                'mailed' => 1,
+                'changed' => 0
+            ]);
             if (
                 $request->validation == env('APP_VALIDATION') &&
                 $request_change_password->count() == 1

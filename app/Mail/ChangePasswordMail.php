@@ -39,7 +39,7 @@ class ChangePasswordMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'test.email',
+            view: 'email.change-password',
             with: [
                 'full_name' => $this->user->username ?? $this->user->first_name . ' ' . $this->user->last_name,
                 'email' => base64_encode($this->user->email),

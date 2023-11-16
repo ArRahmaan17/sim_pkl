@@ -143,7 +143,7 @@
                             setTimeout(() => {
                                 swal.close()
                                 window.location.href =
-                                    `{{ route('user.profile') }}`;
+                                    `{{ route('user.profile.index') }}`;
                             }, 1500);
                         } else {
                             swal('Greate choose!', {
