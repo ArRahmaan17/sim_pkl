@@ -131,9 +131,9 @@
                                         <label for="gender">Gender</label>
                                         <select id="gender"
                                             class="form-control @error('gender') is-invalid @enderror" name="gender">
-                                            <option value="M">Male</option>
-                                            <option value="F">Female</option>
-                                            <option value="NB">Non-binary</option>
+                                            <option value="M">Men</option>
+                                            <option value="F">Women</option>
+                                            <option value="A">Prefer not answer</option>
                                         </select>
                                         @error('gender')
                                             <div class="invalid-feedback">
