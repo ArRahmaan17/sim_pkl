@@ -40,10 +40,8 @@
                                 time is up in
                                 {{ now()->parse($task->deadline_date . ' 23:59:59', 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</button>
                         @endif
-                        @if (session('auth.role') == 'M')
-                            <button class="btn btn-info" onclick="showAllFilesUploaded()"><i class="fas fa-file"></i>
-                                All file</button>
-                        @endif
+                        <button class="btn btn-info" onclick="showAllFilesUploaded()"><i class="fas fa-file"></i>
+                            {{ session('auth.role') == 'M' ? 'All file' : 'Your Activity' }}</button>
                     </div>
                 </div>
             </article>
@@ -159,39 +157,72 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">All file uploaded on task {{ $task->title }}</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">
+                        {{ session('auth.role') == 'M' ? 'All file uploaded' : 'Your activity' }}
+                        on task {{ $task->title }}</h5>
                 </div>
                 <div class="modal-body" style="height: 600px; overflow:scroll;">
-                    @forelse ($task->allFile as $file)
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>{{ $file->taskUser->username }}'s file</h4>
-                                <div class="card-header-action">
-                                    <a data-collapse="#mycard-collapse-{{ $file->id }}" class="btn btn-icon btn-info"
-                                        href="#"><i class="fas fa-plus"></i></a>
+                    @if (session('auth.role') == 'M')
+                        @forelse ($task->allFile as $file)
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>{{ $file->taskUser->username }}'s file</h4>
+                                    <div class="card-header-action">
+                                        <a data-collapse="#mycard-collapse-{{ $file->id }}"
+                                            class="btn btn-icon btn-info" href="#"><i class="fas fa-plus"></i></a>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="mycard-collapse-{{ $file->id }}">
+                                    <div class="card-body">
+                                        <p class="task-collection">
+                                            Task collection on
+                                            {{ now()->parse(explode('.000', $file->created_at)[0], 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}
+                                        </p>
+                                    </div>
+                                    <div class="card-footer bg-whitesmoke">
+                                        @if ($file->link != null)
+                                            <a href="https://github.com/{{ $file->like }}.git" target="_blank">Github
+                                                page</a>
+                                        @else
+                                            <a href="{{ route('user.todo.download', $file->id) }}"
+                                                target="_blank">Download
+                                                File</a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                            <div class="collapse" id="mycard-collapse-{{ $file->id }}">
-                                <div class="card-body">
-                                    <p class="task-collection">
-                                        Task collection on
-                                        {{ now()->parse(explode('.000', $file->created_at)[0], 'Asia/Jakarta')->longRelativeDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}
-                                    </p>
+                        @empty
+                            Empty File
+                        @endforelse
+                    @else
+                        <div class="activities">
+                            @forelse ($activity_task as $activity)
+                                <div class="activity">
+                                    <div class="activity-icon bg-primary text-white shadow-primary">
+                                        @if ($activity->status == 'Shared')
+                                            <i class="fas fa-share"></i>
+                                        @elseif ($activity->status == 'Started')
+                                            <i class="fas fa-play"></i>
+                                        @elseif ($activity->status == 'Analysis')
+                                            <i class="fas fa-search"></i>
+                                        @elseif ($activity->status == 'Development')
+                                            <i class="fas fa-code"></i>
+                                        @elseif ($activity->status == 'Done')
+                                            <i class="fas fa-check"></i>
+                                        @endif
+                                    </div>
+                                    <div class="activity-detail">
+                                        <div class="mb-2">
+                                            <span
+                                                class="text-job {{ $loop->first ? 'text-primary' : '' }}">{{ now()->parse(implode('', explode('.000', $activity->created_at)), 'Asia/Jakarta')->longAbsoluteDiffForHumans(now('Asia/Jakarta')->format('Y-m-d H:i:s')) }}</span>
+                                        </div>
+                                        <p>{{ $activity->description }}</p>
+                                    </div>
                                 </div>
-                                <div class="card-footer bg-whitesmoke">
-                                    @if ($file->link != null)
-                                        <a href="https://github.com/{{ $file->like }}.git" target="_blank">Github
-                                            page</a>
-                                    @else
-                                        <a href="{{ route('user.todo.download', $file->id) }}" target="_blank">Download
-                                            File</a>
-                                    @endif
-                                </div>
-                            </div>
+                            @empty
+                            @endforelse
                         </div>
-                    @empty
-                        Empty File
-                    @endforelse
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>
@@ -245,8 +276,8 @@
                     x = moment();
                     duration = moment.duration(y.diff(x));
                     $($('.task-collection')[index]).html(
-                        `Task collection on ${getMoment('y',duration)} ${getMoment('M',duration)} ${getMoment('d',duration)} ${getMoment('h', duration)} ${getMoment('m',duration)} ${getMoment('s',duration)} ago`
-                    )
+                        `Task collection on ${getMoment('y',duration, true)} ${getMoment('M',duration, true)} ${getMoment('d',duration, true)} ${getMoment('h', duration, true)} ${getMoment('m',duration, true)} ${getMoment('s',duration, true)} ago`
+                    );
                 });
             }, 1000);
         }
@@ -340,7 +371,7 @@
                             user_id: `{{ session('auth.id') }}`,
                             task_id: `{{ $task->id }}`,
                             status: `Started`,
-                            description: `{{ session('auth.first_name') }} start task {{ $task->title }}`,
+                            description: `{{ session('auth.first_name') . ' ' . session('auth.last_name') }} start task {{ $task->title }}`,
                         },
                         dataType: "json",
                         success: function(response) {

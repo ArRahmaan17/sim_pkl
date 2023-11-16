@@ -9,7 +9,7 @@
 function alertClose() {
     swal.close();
 }
-function getMoment(status = "y", duration) {
+function getMoment(status = "y", duration, abs = false) {
     let des = '';
     if (status == 'y') {
         des = 'year';
@@ -24,8 +24,13 @@ function getMoment(status = "y", duration) {
     } else if (status == 's') {
         des = 'second';
     }
-    return (duration.get(status) != 0) ? duration.get(status) > 1 ? `${duration.get(status)} ${des}s` :
-        `${duration.get(status)} ${des}` : ''
+    if (abs) {
+        return (Math.abs(duration.get(status)) != 0) ? Math.abs(duration.get(status)) > 1 ? `${Math.abs(duration.get(status))} ${des}s` :
+            `${Math.abs(duration.get(status))} ${des}` : ''
+    } else {
+        return (duration.get(status) != 0) ? duration.get(status) > 1 ? `${duration.get(status)} ${des}s` :
+            `${duration.get(status)} ${des}` : ''
+    }
 }
 
 function chunkArray(array, size = 5) {
