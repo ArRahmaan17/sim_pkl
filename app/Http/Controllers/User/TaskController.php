@@ -131,7 +131,13 @@ class TaskController extends Controller
                 $data['cluster_id'] = session('auth.cluster_id');
                 Todo::insert($data);
                 DB::commit();
-                return Response()->json(['message' => "Activity Updated, We wait for your next update activity"], 200);
+                return Response()->json([
+                    'message' => "Activity Updated, We wait for your next update activity",
+                    'activities_data' => Todo::where([
+                        'task_id' => $request->task_id,
+                        'user_id' => $request->user_id
+                    ])->orderBy('id', 'desc')->get()
+                ], 200);
             } catch (\Throwable $th) {
                 DB::rollBack();
                 //throw $th;

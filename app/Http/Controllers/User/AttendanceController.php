@@ -21,7 +21,7 @@ class AttendanceController extends Controller
                 (intval(date('H', time() + 7 * 60 * 60)) < 15 &&
                     intval(date('H', time() + 7 * 60 * 60)) > 18)
             ) {
-                return redirect()->route('home.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for absenteeism');
+                return redirect()->route('home.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for attendance');
             }
         }
         $user = User::find(session('auth.id'));

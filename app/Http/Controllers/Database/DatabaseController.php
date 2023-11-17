@@ -36,7 +36,7 @@ class DatabaseController extends Controller
                 return $task;
             });
         } else {
-            $tasks = Task::whereJsonContains('group', ["" . $cluster_id])->orderBy('created_at')->get()->map(function ($task, $index) {
+            $tasks = Task::with('last_activity')->whereJsonContains('group', ["" . $cluster_id])->orderBy('created_at')->get()->map(function ($task, $index) {
                 $task->thumbnail = tasks_asset($task->thumbnail);
                 return $task;
             });

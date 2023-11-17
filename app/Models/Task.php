@@ -27,4 +27,8 @@ class Task extends Model
     {
         return $this->hasMany(TaskFile::class, 'task_id', 'id');
     }
+    public function last_activity()
+    {
+        return $this->hasOneThrough(Todo::class, User::class, 'id', 'task_id', 'id', 'id')->where('todos.user_id', session('auth.id'))->orderByDesc('todos.id');
+    }
 }
