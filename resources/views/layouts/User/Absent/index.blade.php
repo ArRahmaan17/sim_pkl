@@ -52,7 +52,8 @@
                     <div id="results"><img src="" alt=""></div>
                     <input id="result-data" name="photo" type="hidden">
                 </div>
-                <button class="btn btn-success" type="submit"><i class="fas fa-fingerprint"></i> Absent</button>
+                <button class="btn btn-success" disabled type="submit"><i class="fas fa-fingerprint"></i> Loading
+                    Get Location</button>
             </form>
         </div>
     </div>
@@ -61,9 +62,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
         $(function() {
+            $('button[type=submit]').attr('disabled');
             navigator.geolocation.getCurrentPosition(function(location) {
-                $("input[name=location]").val(location.coords.latitude + ',' + location.coords.longitude);
+                $("input[name=location]").val(location.coords.latitude + ',' + location.coords.longitude)
+                    .trigger('change');
             });
+            $("input[name=location]").change(function() {
+                $('button[type=submit]').removeAttr('disabled');
+                $('button[type=submit]').html('<i class="fas fa-fingerprint"></i> Absent');
+            })
             get_ready();
         });
 
@@ -94,7 +101,6 @@
         }
 
         function take_picture() {
-
             Webcam.snap(function(picture_data) {
                 document.getElementById('results').innerHTML =
                     '<img src="' + picture_data + '"/>';

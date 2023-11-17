@@ -31,7 +31,7 @@ class DatabaseController extends Controller
     public function all_student_task($role, $cluster_id)
     {
         if ($role == "M") {
-            $tasks = Task::orderBy('created_at')->get()->map(function ($task, $index) {
+            $tasks = Task::with('last_activity')->orderBy('created_at')->get()->map(function ($task, $index) {
                 $task->thumbnail = tasks_asset($task->thumbnail);
                 return $task;
             });
