@@ -121,11 +121,11 @@
                     datas[data.indexPage].forEach((element, index) => {
                         let status = '';
                         if (element.status == "Pending") {
-                            status = `<div class="text-warning">${element.status}</div>`;
+                            status = `<div class="text-warning">Task status : ${element.status}</div>`;
                         } else if (element.status == "Progress") {
-                            status = `<div class="text-success">${element.status}</div>`;
+                            status = `<div class="text-success">Task status : ${element.status}</div>`;
                         } else {
-                            status = `<div class="text-danger">${element.status}</div>`;
+                            status = `<div class="text-danger">Task status : ${element.status}</div>`;
                         }
                         if (data.status != "All") {
                             if (data.status != element.status) {
@@ -159,7 +159,8 @@
                                                         <p><a href="{{ route('user.todo.show') }}/${element.id}">${element.title}</a></p>
                                                         <div class="article-user-details">
                                                             <div>${status}</div>
-                                                           <div class="progress mb-3">
+                                                            <p class="text-muted">your task progress</p>
+                                                            <div class="progress mb-3">
                                                                 <div class="progress-bar ${class_progress}" role="progressbar" style="width:${element.last_activity.progress}%">${element.last_activity.progress}%</div>
                                                             </div>
                                                         </div>
