@@ -79,7 +79,13 @@ class TaskController extends Controller
             $data['progress'] = 10;
             Todo::insert($data);
             DB::commit();
-            return Response()->json(['message' => "Task Started, Please store your work files before " . $task->deadline_date . ' 23:59:59']);
+            return Response()->json([
+                'message' => "Task Started, Please store your work files before " . $task->deadline_date . ' 23:59:59',
+                'activities_data' => Todo::where([
+                    'task_id' => $request->task_id,
+                    'user_id' => $request->user_id
+                ])->orderBy('id', 'desc')->get()
+            ]);
         } catch (\Throwable $th) {
             DB::rollBack();
             //throw $th;

@@ -239,6 +239,37 @@
         let interval;
         Dropzone.autoDiscover = false;
 
+        function loadActivity(data) {
+            $('.activities').html('');
+            data.forEach((activity, index) => {
+                let icon = ``;
+                if (activity.status == 'Shared') {
+                    icon = `<i class="fas fa-share"></i>`
+                } else if (activity.status == 'Started') {
+                    icon = `<i class="fas fa-play"></i>`
+                } else if (activity.status == 'Analysis') {
+                    icon = `<i class="fas fa-search"></i>`
+                } else if (activity.status == 'Development') {
+                    icon = `<i class="fas fa-code"></i>`
+                } else if (activity.status == 'Done') {
+                    icon = `<i class="fas fa-check"></i>`
+                }
+                $('.activities').append(
+                    `<div class="activity">
+                        <div class="activity-icon bg-primary text-white shadow-primary">
+                            ${icon}
+                        </div>
+                        <div class="activity-detail">
+                            <div class="mb-2">
+                                <span
+                                    class="text-job ${index == 0 ? 'text-primary' : ''}">${moment(activity.created_at)}</span>
+                            </div>
+                            <p>${activity.description}</p>
+                        </div>
+                    </div>`);
+            })
+        }
+
         function countdown(counter = parseInt(`{{ $countStartTask }}`)) {
             clearInterval(interval);
             interval = setInterval(() => {
@@ -379,9 +410,14 @@
                                 icon: 'success',
                             });
                             $('.article-cta').html(
-                                `<button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"></button>`
-                            );
+                                `<button type="button" onclick="showFormStoreTask()" class="btn btn-success time-count"></button> <button class="btn btn-info" onclick="showAllFilesUploaded()"><i class="fas fa-file"></i>
+                            {{ session('auth.role') == 'M' ? 'All file' : 'Your Activity' }}</button>`);
                             countdown(1);
+                            if (`{{ session('auth.role') }}` == 'M') {
+                                loadActivity(response.files_data);
+                            } else {
+                                loadActivity(response.activities_data);
+                            }
                         },
                         error: function(error) {
                             alertClose();
