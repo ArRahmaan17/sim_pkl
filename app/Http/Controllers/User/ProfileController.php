@@ -10,13 +10,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
     public function index()
     {
         $user = User::find(session('auth.id'));
+        // dd($user);
         return view('layouts.User.Profile.index', compact('user'));
+    }
+
+    public function update_profile_picture(Request $request)
+    {
+        $profile_picture = $request->file('file');
+        $filename = session('auth.username') . '/' . session('auth.first_name') . session('auth.last_name') . '.' . $profile_picture->getClientOriginalExtension();
+        if (Storage::disk('profile-picture')->exists('/')) {
+            Storage::disk('profile-picture')->makeDirectory('/');
+        }
+        DB::beginTransaction();
+        try {
+            Storage::disk('profile-picture')->put($filename, $profile_picture->getContent());
+            User::find(session('auth.id'))->update([
+                'profile_picture' => $filename
+            ]);
+            DB::commit();
+            return Response()->json([
+                'message' => 'Profile picture update successfully',
+                'profile_picture' => 'data:image/png;base64,' . profile_asset($filename)
+            ], 200);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            dd($th);
+            return Response()->json([
+                'message' => 'Failed to update profile picture'
+            ], 500);
+        }
     }
 
     public function last_change_password($id)
@@ -40,6 +69,7 @@ class ProfileController extends Controller
             return Response()->json(['message' => 'Failed update last reset password'], 500);
         }
     }
+
     public function change_password()
     {
         $user = User::find(session('auth.id'));

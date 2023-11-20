@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'address',
         'phone_number',
+        'profile_picture',
         'gender',
         'last_reset_password',
         'cluster_id'

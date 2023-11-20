@@ -1,4 +1,7 @@
 @extends('main')
+@section('css')
+    <link rel="stylesheet" href="{{ asset('modules/dropzonejs/min/basic.min.css') }}">
+@endsection
 @section('content')
     <div class="pt-1 row">
         @if (session('try_again'))
@@ -18,8 +21,8 @@
         <div class="col-12 col-md-12 col-lg-5">
             <div class="card profile-widget">
                 <div class="profile-widget-header">
-                    <img alt="image"
-                        src="{{ $user->profile_picture != null ? asset($user->profile_picture) : asset('img/avatar/avatar-1.png') }}"
+                    <img alt="image-picture"
+                        src="{{ $user->profile_picture != null ? 'data:image/png;base64,' . profile_asset($user->profile_picture) : asset('img/avatar/avatar-1.png') }}"
                         class="rounded-circle profile-widget-picture">
                     <div class="profile-widget-items">
                         <div class="profile-widget-item">
@@ -42,11 +45,11 @@
                             <div class="slash"></div> {{ $user->role == 'M' ? 'Mentor' : 'Student' }}
                         </div>
                     </div>
-                    Ujang maman is a superhero name in <b>Indonesia</b>, especially in my family. He is not a fictional
-                    character but an original hero in my family, a hero for his children and for his wife. So, I use the
-                    name as
-                    a user in this template. Not a tribute, I'm just bored with <b>'John Doe'</b>.
                 </div>
+            </div>
+            <div class="card rounded p-3">
+                <h4>Update Profile Picture</h4>
+                <div id="update-profile-picture" class="dropzone rounded"></div>
             </div>
         </div>
         <div class="col-12 col-md-12 col-lg-7">
@@ -61,7 +64,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <div class="row">
                             <div class="form-group col-12 col-md-6">
-                                <label>Student Indentification Number</label>
+                                <label>NIS</label>
                                 <input type="text" name="student_identification_number" class="form-control"
                                     value="{{ $user->student_identification_number }}" disabled>
                             </div>
@@ -138,11 +141,39 @@
 @endsection
 @section('script')
     <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('modules/dropzonejs/min/dropzone.min.js') }}"></script>
     <script>
-        $(document).ready(function() {
+        Dropzone.autoDiscover = false;
+        $(function() {
+            let profilePictureDropzone = new Dropzone('#update-profile-picture', {
+                url: `{{ route('user.profile.update-profile-picture') }}`,
+                method: "POST",
+                paramName: 'file',
+                acceptedFiles: '.png, .jpeg, .jpg',
+                addRemoveLinks: true,
+                maxFiles: 1,
+                timeout: -1,
+                autoProcessQueue: false,
+                maxFilesize: 5,
+                headers: {
+                    "X-CSRF-TOKEN": `{{ csrf_token() }}`
+                }
+            });
+            profilePictureDropzone.on('error', function(file, message) {
+                swal(message, {
+                    icon: 'error'
+                });
+                profilePictureDropzone.removeFile(file)
+            });
+            profilePictureDropzone.on('success', function(file, response) {
+                profilePictureDropzone.removeFile(file);
+                $('img[alt=image-picture]').attr('src', response.profile_picture)
+                    .css('background-position', 'center center').css('background-size', '500px');
+            })
             $("#update-profile").click(function() {
+                profilePictureDropzone.processQueue();
                 let post_data = serializeObject($("#profile-update"));
-                $('.is-invalid').removeClass('is-invalid')
+                $('.is-invalid').removeClass('is-invalid');
                 $.ajax({
                     type: "PUT",
                     url: `{{ route('user.profile.update') }}`,

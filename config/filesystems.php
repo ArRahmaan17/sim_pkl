@@ -62,6 +62,11 @@ return [
             'root' => storage_path('app/task-file'),
             'url' => env('APP_URL') . '/task-file',
         ],
+        'profile-picture' => [
+            'driver' => 'local',
+            'root' => storage_path('app/profile-picture'),
+            'url' => env('APP_URL') . '/profile-picture',
+        ],
         'task-activity' => [
             'driver' => 'local',
             'root' => storage_path('app/task-activity'),

@@ -41,6 +41,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/calendar', [AttendanceController::class, 'all'])->name('attendance.calendar');
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile.index')->middleware([CompletedProfile::class]);
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/user/profile/update-profile-picture', [ProfileController::class, 'update_profile_picture'])->name('profile.update-profile-picture');
         Route::get('/user/profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
         Route::post('/user/profile/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('profile.last-change-password');
         Route::post('/user/profile/changing-password', [ProfileController::class, 'changing_password'])->name('profile.changing-password');
