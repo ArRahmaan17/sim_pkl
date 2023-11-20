@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phone_number',
         'profile_picture',
         'gender',
+        'last_login',
         'last_reset_password',
         'cluster_id'
     ];

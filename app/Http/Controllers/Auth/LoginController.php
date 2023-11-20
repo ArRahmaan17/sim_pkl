@@ -27,6 +27,7 @@ class LoginController extends Controller
         );
         $user = User::where('username', $request->credential)->orWhere('email', $request->credential);
         if ($user->count() == 1 && Hash::check($request->password, $user->first()->password)) {
+            User::find($user->first()->id)->update(['last_login' => now('Asia/Jakarta')]);
             $data['auth'] = $user->first();
             $data['auth']['logged'] = true;
             session($data);

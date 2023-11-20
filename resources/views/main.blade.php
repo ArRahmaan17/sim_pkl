@@ -91,17 +91,6 @@
     <!-- Template JS File -->
     <script src="{{ asset('js/scripts.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
-
-    <script>
-        $(document).ready(function() {
-            $(window).focus(function() {
-                console.log('test')
-            });
-            $(window).blur(function() {
-                console.log('test neh')
-            });
-        });
-    </script>
 </body>
 
 </html>

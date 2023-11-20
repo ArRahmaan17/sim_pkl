@@ -17,7 +17,6 @@ class ProfileController extends Controller
     public function index()
     {
         $user = User::find(session('auth.id'));
-        // dd($user);
         return view('layouts.User.Profile.index', compact('user'));
     }
 
