@@ -263,7 +263,7 @@
                         <div class="activity-detail">
                             <div class="mb-2">
                                 <span
-                                    class="text-job ${index == 0 ? 'text-primary' : ''}">in ${moment.duration(moment().diff(created_at)).humanize(true, {d: 7, w: 4})}</span>
+                                    class="text-job ${index == 0 ? 'text-primary' : ''}">${moment.duration(moment().diff(created_at)).humanize(true, {d: 7, w: 4})}</span>
                             </div>
                             <p>${activity.description}</p>
                         </div>
@@ -355,7 +355,8 @@
                         icon: 'success',
                     });
                     $('#modal-store-task').modal('hide');
-                    $('.time-count').attr('disabled', true)
+                    $('.time-count').attr('disabled', true);
+                    loadActivity(response.activities_data);
                 },
                 error: function(error) {
                     $('#save-file-task').removeClass('disabled');

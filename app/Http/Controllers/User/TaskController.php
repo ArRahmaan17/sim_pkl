@@ -58,7 +58,14 @@ class TaskController extends Controller
                 unset($data['file'], $data['link']);
                 Todo::insert($data);
                 DB::commit();
-                return Response()->json(['message' => "Task Updated, You successfully collected the task", 'data' => TaskFile::all()]);
+                return Response()->json([
+                    'message' => "Task Updated, You successfully collected the task",
+                    'data' => TaskFile::all(),
+                    'activities_data' => Todo::where([
+                        'task_id' => $request->task_id,
+                        'user_id' => $request->user_id
+                    ])->orderBy('id', 'desc')->get()
+                ]);
             } catch (\Throwable $th) {
                 DB::rollBack();
                 //throw $th;
