@@ -57,6 +57,10 @@
             params.datas = chunkArray((params.searchkey == '') ? params.datas.flat() : params.datas, params.rowsCount);
 
             let html = '';
+            if (params.datas.length == 0) {
+                $(params.element).html(html);
+                return
+            }
             params.datas[params.indexStudent].forEach((element, index) => {
                 html += `<tr>
                             <td>${(params.rowsCount * params.indexStudent+1)+index}</td>
@@ -91,18 +95,21 @@
                 });
             }
             params.datas = chunkArray((params.searchkey == '') ? params.datas.flat() : params.datas, params.rowsCount);
-            params.datas.forEach((element, index) => {
-                if (index == params.indexStudent || index == (params.indexStudent - 1) || index == (params
-                        .indexStudent + 1)) {
-                    number +=
-                        `<li class="page-item ${params.indexStudent == index ? 'active' : ''}"><a class="page-link" onclick="creatingPagination({datas: chunkResolver(window.students), element: '.pagination', indexStudent: ${index}, rowsCount: parseInt($('#student-show').val()), searchkey: $('#student-search').val()})">${index+1}</a></li>`
-                }
-            });
+            console.log((params.datas.length - 1), params.indexStudent);
+            if (params.datas.length > 0) {
+                params.datas.forEach((element, index) => {
+                    if (index == params.indexStudent || index == (params.indexStudent - 1) || index == (params
+                            .indexStudent + 1)) {
+                        number +=
+                            `<li class="page-item ${params.indexStudent == index ? 'active' : ''}"><a class="page-link" onclick="creatingPagination({datas: chunkResolver(window.students), element: '.pagination', indexStudent: ${index}, rowsCount: parseInt($('#student-show').val()), searchkey: $('#student-search').val()})">${index+1}</a></li>`
+                    }
+                });
+            }
             let html = `<li class="page-item ${params.indexStudent == 0 ? 'disabled' : ''}">
                             <a class="page-link" onclick="creatingPagination({datas: chunkResolver(window.students), element: '.pagination', indexStudent: ${params.indexStudent-1},rowsCount: parseInt($('#student-show').val()),searchkey: $('#student-search').val()})"><i class="fas fa-chevron-left"></i></a>
                         </li>
                         ${number}
-                        <li class="page-item ${(params.datas.length-1) == params.indexStudent ? 'disabled' : ''}">
+                        <li class="page-item ${(params.datas.length > 0 ? params.datas.length-1 : params.datas.length) == params.indexStudent ? 'disabled' : ''}">
                             <a class="page-link" onclick="creatingPagination({datas: chunkResolver(window.students), element: '.pagination', indexStudent: ${params.indexStudent+1},rowsCount: parseInt($('#student-show').val()),searchkey: $('#student-search').val()})"><i class="fas fa-chevron-right"></i></a>
                         </li>`;
             $(params.element).html(html);
