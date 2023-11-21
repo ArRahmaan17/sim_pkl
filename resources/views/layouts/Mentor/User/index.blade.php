@@ -51,7 +51,9 @@
         }) {
             if (params.searchkey != '') {
                 params.datas = params.datas.flat().filter((data, index) => {
-                    return data.first_name.split(params.searchkey).length > 1;
+                    return data.first_name.toLowerCase().split(params.searchkey.toLowerCase()).length > 1 || data
+                        .last_name.toLowerCase().split(params.searchkey.toLowerCase()).length > 1 || data
+                        .username.toLowerCase().split(params.searchkey.toLowerCase()).length > 1;
                 });
             }
             params.datas = chunkArray((params.searchkey == '') ? params.datas.flat() : params.datas, params.rowsCount);
@@ -91,7 +93,9 @@
             let number = ``;
             if (params.searchkey != '') {
                 params.datas = params.datas.flat().filter((data, index) => {
-                    return data.first_name.split(params.searchkey).length > 1;
+                    return data.first_name.toLowerCase().split(params.searchkey.toLowerCase()).length > 1 || data
+                        .last_name.toLowerCase().split(params.searchkey.toLowerCase()).length > 1 || data
+                        .username.toLowerCase().split(params.searchkey.toLowerCase()).length > 1;
                 });
             }
             params.datas = chunkArray((params.searchkey == '') ? params.datas.flat() : params.datas, params.rowsCount);
