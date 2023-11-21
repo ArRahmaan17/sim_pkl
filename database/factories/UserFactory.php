@@ -34,7 +34,7 @@ class UserFactory extends Factory
                 'assets/img/avatar/avatar-4.png'
             ]),
             'gender' => 'M',
-            'role' => 'M',
+            'role' => 'S',
         ];
     }
 }

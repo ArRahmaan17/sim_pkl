@@ -9,6 +9,22 @@
 function alertClose() {
     swal.close();
 }
+function throttle(func, delay) {
+    let timeoutId;
+
+    return function () {
+        const context = this;
+        const args = arguments;
+
+        if (!timeoutId) {
+            func.apply(context, args);
+
+            timeoutId = setTimeout(function () {
+                timeoutId = null;
+            }, delay);
+        }
+    };
+}
 function getMoment(status = "y", duration, abs = false) {
     let des = '';
     if (status == 'y') {
@@ -49,6 +65,7 @@ function chunkResolver(data = window.tasks) {
     });
     return data;
 }
+
 function serializeObject(node) {
     var o = {};
     var a = node.serializeArray();

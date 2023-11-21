@@ -6,6 +6,7 @@ use App\Http\Controllers\Database\DatabaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
+use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Mentor\TaskController;
 use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Controllers\User\AttendanceController;
@@ -32,6 +33,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
     Route::name('database.')->group(function () {
         Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
+        Route::get('/database/user/all', [DatabaseController::class, 'users_all'])->name('user.all');
         Route::get('/database/task/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
         Route::get('/database/task/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
     });
@@ -62,6 +64,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/mentor/task/show/{id?}', [TaskController::class, 'show'])->name('task.show');
         Route::post('/mentor/task/update/{id?}', [TaskController::class, 'update'])->name('task.update');
         Route::delete('/mentor/task/delete/{id?}', [TaskController::class, 'delete'])->name('task.delete');
+        Route::get('/mentor/students', [UserController::class, 'index'])->name('students')->middleware([CompletedProfile::class]);
     });
     Route::name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus.index')->middleware([CompletedProfile::class]);
