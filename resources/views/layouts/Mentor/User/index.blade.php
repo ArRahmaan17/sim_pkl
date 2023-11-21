@@ -135,7 +135,7 @@
                 ready();
             },
             error: function(error) {
-                window.students = response.data;
+                window.students = error.responseJSON.data;
                 ready();
             }
         });
