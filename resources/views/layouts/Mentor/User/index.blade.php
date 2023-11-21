@@ -95,7 +95,6 @@
                 });
             }
             params.datas = chunkArray((params.searchkey == '') ? params.datas.flat() : params.datas, params.rowsCount);
-            console.log((params.datas.length - 1), params.indexStudent);
             if (params.datas.length > 0) {
                 params.datas.forEach((element, index) => {
                     if (index == params.indexStudent || index == (params.indexStudent - 1) || index == (params
