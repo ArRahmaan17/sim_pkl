@@ -34,6 +34,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::name('database.')->group(function () {
         Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
         Route::get('/database/user/all', [DatabaseController::class, 'users_all'])->name('user.all');
+        Route::get('/database/user/{id?}', [DatabaseController::class, 'detail_user'])->name('user.detail');
         Route::get('/database/task/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
         Route::get('/database/task/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
     });

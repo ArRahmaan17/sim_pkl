@@ -14,19 +14,22 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        if (session('auth.role') == 'S') {
+        if (session('auth.id') == "S") {
             if (
-                !(intval(date('H', time() + 7 * 60 * 60)) < 8 &&
-                    intval(date('H', time() + 7 * 60 * 60)) > 9) ||
-                (intval(date('H', time() + 7 * 60 * 60)) < 15 &&
-                    intval(date('H', time() + 7 * 60 * 60)) > 18)
+                (intval(date('H', time() + 7 * 60 * 60)) == 8) ||
+                (intval(date('H', time() + 7 * 60 * 60)) == 16)
             ) {
+                $user = User::find(session('auth.id'));
+                $history = Attendance::attendance_history(session('auth.id'));
+                return view('layouts.User.Absent.index', compact('user', 'history'));
+            } else {
                 return redirect()->route('home.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> This is not the time for attendance');
             }
+        } else {
+            $user = User::find(session('auth.id'));
+            $history = Attendance::attendance_history(session('auth.id'));
+            return view('layouts.User.Absent.index', compact('user', 'history'));
         }
-        $user = User::find(session('auth.id'));
-        $history = Attendance::attendance_history(session('auth.id'));
-        return view('layouts.User.Absent.index', compact('user', 'history'));
     }
     public function store(Request $request)
     {

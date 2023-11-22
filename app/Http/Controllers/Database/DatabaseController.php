@@ -26,9 +26,19 @@ class DatabaseController extends Controller
         $users = User::where(['role' => 'S'])->get();
         $users = collect($users)->chunk(5);
         if (count($users) == 0) {
-            return Response()->json(['message' => 'Tasks record not found', 'data' => $users], 404);
+            return Response()->json(['message' => 'Users record not found', 'data' => $users], 404);
         } else {
-            return Response()->json(['message' => 'Found tasks record ', 'data' => $users], 200);
+            return Response()->json(['message' => 'Found users record ', 'data' => $users], 200);
+        }
+    }
+
+    public function detail_user($id)
+    {
+        $user = User::where(['role' => 'S', 'id' => $id])->first();
+        if (empty($user)) {
+            return Response()->json(['message' => 'User record not found', 'data' => $user], 404);
+        } else {
+            return Response()->json(['message' => 'User tasks record ', 'data' => $user], 200);
         }
     }
     public function show_task_progress($task_id)

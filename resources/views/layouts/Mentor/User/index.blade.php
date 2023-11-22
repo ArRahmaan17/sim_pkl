@@ -20,17 +20,19 @@
                     <input type="text" id="student-search">
                 </div>
             </div>
-            <table id="student-table" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Number</th>
-                        <th>Name & Username</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table id="student-table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Name & Username</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="card-footer text-right">
             <nav class="d-inline-block">
@@ -40,7 +42,26 @@
         </div>
     </div>
 @endsection
+@section('modals')
+    <div class="modal fade" id="modal-student-profile" tabindex="-1" role="dialog" data-keyboard='false'
+        data-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Profile Student</h5>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>
+                        Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 @section('script')
+    <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
     <script>
         function creatingTable(params = {
             datas: chunkResolver(window.students),
@@ -68,12 +89,29 @@
                             <td>${(params.rowsCount * params.indexStudent+1)+index}</td>
                             <td>${element.first_name} ${element.last_name} & ${element.username}</td>
                             <td>
-                                <button class="btn btn-warning" data-id="${element.id}"><i class="fas fa-eye"></i>
+                                <button class="btn btn-warning show" data-id="${element.id}"><i class="fas fa-eye"></i>
                                     Show profile</button>
                             </td>
                         </tr>`;
             });
             $(params.element).html(html);
+            $('.show').click(function() {
+                swal('Are you sure want to show profile', {
+                    buttons: ['No', 'Yes, please']
+                }).then(click => {
+                    if (click) {
+                        $.ajax({
+                            type: "GET",
+                            url: `{{ route('database.user.detail') }}/${$(this).data('id')}`,
+                            dataType: "json",
+                            success: function(response) {
+
+                            }
+                        });
+                        $('#modal-student-profile').modal('show');
+                    }
+                });
+            })
         }
 
         function creatingPagination(params = {
