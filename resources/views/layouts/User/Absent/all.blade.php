@@ -23,6 +23,7 @@
     <script>
         $(function() {
             var data = JSON.parse(`<?php echo $attendance; ?>`);
+            var todos = JSON.parse(`<?php echo $todos; ?>`);
             let modified_data = [];
             data.forEach(element => {
                 modified_data.push({
@@ -39,6 +40,22 @@
                         'OUT' ? '#FFF' : ''
                 });
             });
+            todos.forEach(element => {
+                modified_data.push({
+                    start: element.created_at.split('.000000Z').join(''),
+                    end: element.created_at.split('T')[0] + `T${element.time}`,
+                    title: element.description,
+                    overlap: true,
+                    display: 'block',
+                    color: element.status == 'IN' ? '#95f702' : element.status == 'SICK' ?
+                        '#f7de02' : element.status == 'ABSENT' ? '#f76402' : element.status ==
+                        'OUT' ? '#f70206' : '',
+                    textColor: element.status == 'IN' ? '#000' : element.status == 'SICK' ?
+                        '#000' : element.status == 'ABSENT' ? '#FFF' : element.status ==
+                        'OUT' ? '#FFF' : ''
+                });
+            })
+            console.log(modified_data);
             var calendarEl = document.getElementById('myEvent');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 dayMaxEventRows: 5,

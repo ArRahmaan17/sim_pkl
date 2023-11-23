@@ -102,7 +102,6 @@
 
         function take_picture() {
             Webcam.snap(function(picture_data) {
-                console.log(picture_data)
                 document.getElementById('results').innerHTML =
                     '<img src="' + picture_data + '"/>';
                 Webcam.reset();

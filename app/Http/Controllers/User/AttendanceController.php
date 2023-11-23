@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Todo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class AttendanceController extends Controller
 {
     public function index()
     {
-        if (session('auth.id') == "S") {
+        if (session('auth.role') == "S") {
             if (
                 (intval(date('H', time() + 7 * 60 * 60)) == 8) ||
                 (intval(date('H', time() + 7 * 60 * 60)) == 16)
@@ -62,11 +63,17 @@ class AttendanceController extends Controller
     public function all()
     {
         $attendance = Attendance::with('user')->where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth());
+        $todos = Todo::where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth());
         if (session('auth.role') == 'S') {
             $attendance = $attendance->where('user_id', session('auth.id'))->get();
+            $todos = $todos->where('user_id', session('auth.id'))->get();
         } else {
             $attendance = $attendance->get();
+            $todos = $todos->get();
         }
-        return view('layouts.User.Absent.all', ['attendance' => json_encode($attendance)]);
+        return view('layouts.User.Absent.all', [
+            'attendance' => $attendance,
+            'todos' => $todos
+        ]);
     }
 }
