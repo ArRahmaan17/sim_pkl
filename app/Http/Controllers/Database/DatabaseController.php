@@ -38,7 +38,8 @@ class DatabaseController extends Controller
         if (empty($user)) {
             return Response()->json(['message' => 'User record not found', 'data' => $user], 404);
         } else {
-            return Response()->json(['message' => 'User tasks record ', 'data' => $user], 200);
+            $user->profile_picture = 'data:image/jpeg;base64,' . profile_asset($user->profile_picture);
+            return Response()->json(['message' => 'Found user record', 'data' => $user], 200);
         }
     }
     public function show_task_progress($task_id)

@@ -11,7 +11,6 @@ function alertClose() {
 }
 function throttle(func, delay) {
     let timeoutId;
-
     return function () {
         const context = this;
         const args = arguments;

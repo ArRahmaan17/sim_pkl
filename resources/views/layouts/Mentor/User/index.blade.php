@@ -51,6 +51,51 @@
                     <h5 class="modal-title" id="exampleModalLongTitle">Profile Student</h5>
                 </div>
                 <div class="modal-body">
+                    <div class="col-12">
+                        <div class="card profile-widget">
+                            <div class="profile-widget-header">
+                                <img alt="image" name="profile_picture" src="{{ asset('img/avatar/avatar-1.png') }}"
+                                    class="rounded-circle profile-widget-picture">
+                                {{-- <div class="profile-widget-items">
+                                    <div class="profile-widget-item">
+                                        <div class="profile-widget-item-label">Posts</div>
+                                        <div class="profile-widget-item-value">187</div>
+                                    </div>
+                                    <div class="profile-widget-item">
+                                        <div class="profile-widget-item-label">Followers</div>
+                                        <div class="profile-widget-item-value">6,8K</div>
+                                    </div>
+                                    <div class="profile-widget-item">
+                                        <div class="profile-widget-item-label">Following</div>
+                                        <div class="profile-widget-item-value">2,1K</div>
+                                    </div>
+                                </div> --}}
+                            </div>
+                            <div class="profile-widget-description">
+                                <div class="row">
+                                    <div class="col-12 mt-1">
+                                        <input type="text" name="student_identification_number" class="form-control"
+                                            disabled>
+                                    </div>
+                                    <div class="col-12 mt-1">
+                                        <input type="text" name="first_name" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-12 mt-1">
+                                        <input type="text" name="email" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-12 mt-1">
+                                        <input type="text" name="phone_number" class="form-control" disabled>
+                                    </div>
+                                    <div class="col-12 mt-1">
+                                        <textarea name="address" class="form-control" disabled></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                Login As
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fas fa-times"></i>
@@ -105,7 +150,13 @@
                             url: `{{ route('database.user.detail') }}/${$(this).data('id')}`,
                             dataType: "json",
                             success: function(response) {
-
+                                $.map(response.data, (value, key) => {
+                                    if (key != 'profile_picture') {
+                                        $(`[name=${key}]`).val(value);
+                                    } else {
+                                        $(`[name=${key}]`).attr('src', value);
+                                    }
+                                })
                             }
                         });
                         $('#modal-student-profile').modal('show');
