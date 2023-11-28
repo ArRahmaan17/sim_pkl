@@ -45,7 +45,7 @@
 @section('modals')
     <div class="modal fade" id="modal-student-profile" tabindex="-1" role="dialog" data-keyboard='false'
         data-backdrop="static" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Profile Student</h5>
@@ -78,7 +78,8 @@
                                 </div>
                             </div>
                             <div class="card-footer text-center">
-                                Login As
+                                <button title="Under Development" class="btn btn-danger login-as" disabled><i
+                                        class="fas fa-sign-in-alt"></i> Login As</button>
                             </div>
                         </div>
                     </div>
@@ -136,6 +137,7 @@
                             url: `{{ route('database.user.detail') }}/${$(this).data('id')}`,
                             dataType: "json",
                             success: function(response) {
+                                $('.login-as').data('id', response.data.id)
                                 $.each(response.data, (key, value) => {
                                     if (key != 'profile_picture') {
                                         $(`[name=${key}]`).val(value);

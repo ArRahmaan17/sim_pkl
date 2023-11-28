@@ -318,7 +318,7 @@
                     <td>
                         ${group}
                     </td>
-                    <td>${moment(element.created_at).format('YYYY-MM-DD HH:mm:ss')}</td>
+                    <td>${moment(element.created_at.split('.000000Z').join('').split('T').join(' ')).format('YYYY-MM-DD HH:mm:ss')}</td>
                     <td>
                         ${status}
                     </td>
