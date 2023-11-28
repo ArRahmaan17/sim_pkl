@@ -181,12 +181,11 @@
                                     </div>
                                     <div class="card-footer bg-whitesmoke">
                                         @if ($file->link != null)
-                                            <a href="https://github.com/{{ $file->like }}.git" target="_blank">Github
+                                            <a href="https://github.com/{{ $file->link }}.git" target="_blank">Github
                                                 page</a>
                                         @else
                                             <a href="{{ route('user.todo.download', $file->id) }}"
-                                                target="_blank">Download
-                                                File</a>
+                                                target="_blank">Download File</a>
                                         @endif
                                     </div>
                                 </div>
