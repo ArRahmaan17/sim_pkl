@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Attendance;
+use App\Models\Task;
 use App\Models\Todo;
 use App\Models\User;
 use Carbon\Carbon;
@@ -73,7 +74,7 @@ class AttendanceController extends Controller
         }
         return view('layouts.User.Absent.all', [
             'attendance' => $attendance,
-            'todos' => $todos
+            'todos' => $todos,
         ]);
     }
 }

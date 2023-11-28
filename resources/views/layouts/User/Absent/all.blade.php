@@ -54,8 +54,7 @@
                         '#000' : element.status == 'ABSENT' ? '#FFF' : element.status ==
                         'OUT' ? '#FFF' : ''
                 });
-            })
-            console.log(modified_data);
+            });
             var calendarEl = document.getElementById('myEvent');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 dayMaxEventRows: 5,

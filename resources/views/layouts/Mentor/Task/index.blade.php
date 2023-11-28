@@ -712,6 +712,9 @@
                         },
                         error: function(error) {
                             if (error.responseJSON.errors != undefined) {
+                                swal(error.responseJSON.message, {
+                                    'icon': 'error'
+                                });
                                 let errors = error.responseJSON.errors;
                                 $.each(errors, function(indexInArray,
                                     valueOfElement) {
