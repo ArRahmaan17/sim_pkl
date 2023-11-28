@@ -39,7 +39,7 @@
                     <div
                         class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
                         <div class="login-brand">
-                            <img src="{{ asset('img/stisla-fill.svg') }}" alt="logo" width="100"
+                            <img src="{{ asset('img/nug.png') }}" alt="logo" width="100"
                                 class="shadow-light rounded-circle">
                         </div>
 

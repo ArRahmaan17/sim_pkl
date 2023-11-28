@@ -47,7 +47,7 @@ class TaskController extends Controller
                 $data['created_at'] = now('Asia/Jakarta');
                 TaskFile::insert($data);
                 $data['cluster_id'] = session('auth.cluster_id');
-                $data['evidence_file'] = $data['file'];
+                $data['evidence_file'] = $data['file'] ?? null;
                 $task = Task::find($request->task_id);
                 $task_activity = Todo::where(['task_id' => $request->task_id, 'user_id' => session('auth.id')])->orderBy('id', 'desc')->first();
                 $data['description'] = session('auth.first_name') . " " . session('') . " update to done task " . $task->title;

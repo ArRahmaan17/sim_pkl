@@ -485,6 +485,8 @@
                         swal('Please choose, You will collect tasks using what, link or file', {
                             icon: 'error'
                         });
+                        $('#save-file-task').removeClass('disabled');
+                        $('button[data-dissmis=modal]').addClass('disabled');
                         return
                     }
                     storeTask();
@@ -494,6 +496,14 @@
                 alertLoading();
                 $(this).addClass('disabled');
                 $('button[data-dissmis=modal]').addClass('disabled');
+                if ($('[name=description]').val() == "") {
+                    swal('Your Description not set', {
+                        icon: 'error'
+                    });
+                    $('#update-activity-task').removeClass('disabled');
+                    $('button[data-dissmis=modal]').removeClass('disabled');
+                    return
+                }
                 if (activityDropzone.getQueuedFiles().length > 0) {
                     let file_upload = new Promise((resolve, reject) => {
                         activityDropzone.processQueue();
@@ -510,7 +520,11 @@
                         alertClose();
                     });
                 } else {
-                    updateactivityTask();
+                    swal('Your evidence file is null', {
+                        icon: 'error'
+                    });
+                    $('#update-activity-task').removeClass('disabled');
+                    $('button[data-dissmis=modal]').removeClass('disabled');
                 }
             });
             countdown();
