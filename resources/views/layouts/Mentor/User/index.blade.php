@@ -59,20 +59,30 @@
                             </div>
                             <div class="profile-widget-description">
                                 <div class="row">
-                                    <div class="col-12 mt-1">
+                                    <div class="col-12 mt-1 form-group">
                                         <input type="text" name="student_identification_number" class="form-control"
                                             disabled>
                                     </div>
-                                    <div class="col-12 mt-1">
+                                    <div class="col-12 mt-1 form-group">
                                         <input type="text" name="first_name" class="form-control" disabled>
                                     </div>
-                                    <div class="col-12 mt-1">
+                                    <div class="col-12 mt-1 form-group">
                                         <input type="text" name="email" class="form-control" disabled>
                                     </div>
-                                    <div class="col-12 mt-1">
-                                        <input type="text" name="phone_number" class="form-control" disabled>
+                                    <div class="col-12 mt-1 form-group">
+                                        {{-- <div class=""> --}}
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    +62
+                                                </div>
+                                            </div>
+                                            <input type="text" name="phone_number" class="form-control phone-number"
+                                                disabled>
+                                        </div>
+                                        {{-- </div> --}}
                                     </div>
-                                    <div class="col-12 mt-1">
+                                    <div class="col-12 mt-1 form-group">
                                         <textarea name="address" class="form-control" disabled></textarea>
                                     </div>
                                 </div>

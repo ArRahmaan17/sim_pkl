@@ -102,7 +102,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">
-                                                        <i class="fas fa-phone"></i>
+                                                        +62
                                                     </div>
                                                 </div>
                                                 <input type="text" name="phone_number"
