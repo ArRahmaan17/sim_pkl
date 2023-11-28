@@ -56,20 +56,6 @@
                             <div class="profile-widget-header">
                                 <img alt="image" name="profile_picture" src="{{ asset('img/avatar/avatar-1.png') }}"
                                     class="rounded-circle profile-widget-picture">
-                                {{-- <div class="profile-widget-items">
-                                    <div class="profile-widget-item">
-                                        <div class="profile-widget-item-label">Posts</div>
-                                        <div class="profile-widget-item-value">187</div>
-                                    </div>
-                                    <div class="profile-widget-item">
-                                        <div class="profile-widget-item-label">Followers</div>
-                                        <div class="profile-widget-item-value">6,8K</div>
-                                    </div>
-                                    <div class="profile-widget-item">
-                                        <div class="profile-widget-item-label">Following</div>
-                                        <div class="profile-widget-item-value">2,1K</div>
-                                    </div>
-                                </div> --}}
                             </div>
                             <div class="profile-widget-description">
                                 <div class="row">
@@ -150,7 +136,7 @@
                             url: `{{ route('database.user.detail') }}/${$(this).data('id')}`,
                             dataType: "json",
                             success: function(response) {
-                                $.map(response.data, (value, key) => {
+                                $.each(response.data, (key, value) => {
                                     if (key != 'profile_picture') {
                                         $(`[name=${key}]`).val(value);
                                     } else {
