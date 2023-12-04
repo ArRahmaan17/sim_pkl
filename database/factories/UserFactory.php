@@ -19,19 +19,19 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'first_name' => fake('ID')->firstName(),
-            'last_name' => fake('ID')->lastName(),
-            'email' => fake('ID')->unique()->safeEmail(),
+            'first_name' => fake('id_ID')->firstName(),
+            'last_name' => fake('id_ID')->lastName(),
+            'email' => fake('id_ID')->unique()->safeEmail(),
             'student_identification_number' => fake()->unique()->randomNumber(),
-            'username' => fake('ID')->userName(),
+            'username' => fake('id_ID')->userName(),
             'password' => Hash::make('password'),
-            'phone_number' => fake('ID')->phoneNumber(),
-            'address' => fake('ID')->address(),
-            'profile_picture' => fake('ID')->randomElement([
-                'assets/img/avatar/avatar-1.png',
-                'assets/img/avatar/avatar-2.png',
-                'assets/img/avatar/avatar-3.png',
-                'assets/img/avatar/avatar-4.png'
+            'phone_number' => fake('id_ID')->phoneNumber(),
+            'address' => fake('id_ID')->address(),
+            'profile_picture' => fake('id_ID')->randomElement([
+                'img/avatar/avatar-1.png',
+                'img/avatar/avatar-2.png',
+                'img/avatar/avatar-3.png',
+                'img/avatar/avatar-4.png'
             ]),
             'gender' => 'M',
             'role' => 'S',

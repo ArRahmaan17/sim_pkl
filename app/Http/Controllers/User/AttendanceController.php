@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class AttendanceController extends Controller
@@ -55,9 +56,16 @@ class AttendanceController extends Controller
             $data['time'] = now('Asia/Jakarta')->addSecond();
             Attendance::insert($data);
             DB::commit();
+            Http::get(env('WA_SERVICES') . 'attendance-success/' . $user->phone_number . '/' . $request->status);
+            Http::attach(
+                'file_attendance',
+                Storage::get($file_path),
+                'photo.jpg'
+            )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA'));
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th);
             return redirect()->route('user.attendance.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
     }
