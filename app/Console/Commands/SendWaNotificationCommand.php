@@ -20,7 +20,7 @@ class SendWaNotificationCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Command to send wa notification to student user (type ? single : many)';
 
     /**
      * Execute the console command.
