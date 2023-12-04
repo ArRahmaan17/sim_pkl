@@ -42,6 +42,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance.index')->middleware([CompletedProfile::class]);
         Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');
         Route::get('/user/calendar', [AttendanceController::class, 'all'])->name('attendance.calendar');
+        Route::get('/user/map', [AttendanceController::class, 'map'])->name('attendance.map');
         Route::get('/user/profile', [ProfileController::class, 'index'])->name('profile.index')->middleware([CompletedProfile::class]);
         Route::put('/user/profile/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::post('/user/online/{id}', [ProfileController::class, 'online'])->name('status.online');

@@ -43,8 +43,8 @@ class AttendanceController extends Controller
             if (!Storage::exists('attendance/' . trim($user->first_name) . trim($user->last_name) . '/')) {
                 Storage::makeDirectory('attendance/' . trim($user->first_name) . trim($user->last_name) . '/');
             }
-            $file_path = 'attendance/' . trim($user->first_name) . trim($user->last_name) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
-            Storage::put($file_path, $file);
+            $file_path =  trim($user->first_name) . trim($user->last_name) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
+            Storage::disk('attendance')->put($file_path, $file);
             Attendance::where('user_id', $request->user_id)
                 ->where('status', $request->status)
                 ->where('created_at', '>', Carbon::now('Asia/Jakarta')->startOfDay())
@@ -59,7 +59,7 @@ class AttendanceController extends Controller
             Http::get(env('WA_SERVICES') . 'attendance-success/' . $user->phone_number . '/' . $request->status);
             Http::attach(
                 'file_attendance',
-                Storage::get($file_path),
+                Storage::disk('attendance')->get($file_path),
                 'photo.jpg'
             )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA'));
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
@@ -69,6 +69,26 @@ class AttendanceController extends Controller
             return redirect()->route('user.attendance.index')->with('error', '<i class="fas fa-exclamation-triangle"></i> Absent Failed, Please Try again in a while');
         }
     }
+
+    public function map()
+    {
+        $attendance = Attendance::with('user');
+        if (session('auth.role') == 'S') {
+            $attendance = $attendance->where('user_id', session('auth.id'))->get()->map(function ($absent) {
+                $absent->photo = attendance_asset($absent->photo);
+                return $absent;
+            });;
+        } else {
+            $attendance = $attendance->get()->map(function ($absent) {
+                $absent->photo = attendance_asset($absent->photo);
+                return $absent;
+            });
+        }
+        return view('layouts.User.Absent.map', [
+            'attendance' => $attendance,
+        ]);
+    }
+
     public function all()
     {
         $attendance = Attendance::with('user')->where('created_at', '>', Carbon::now()->startOfMonth())->where('created_at', '<', Carbon::now()->endOfMonth());
