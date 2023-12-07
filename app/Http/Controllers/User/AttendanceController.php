@@ -56,12 +56,14 @@ class AttendanceController extends Controller
             $data['time'] = now('Asia/Jakarta')->addSecond();
             Attendance::insert($data);
             DB::commit();
-            Http::get(env('WA_SERVICES') . 'attendance-success/' . $user->phone_number . '/' . $request->status);
-            Http::attach(
-                'file_attendance',
-                Storage::disk('attendance')->get($file_path),
-                'photo.jpg'
-            )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA'));
+            if (env('WA_SERVICES')) {
+                Http::get(env('WA_SERVICES') . 'attendance-success/' . $user->phone_number . '/' . $request->status);
+                Http::attach(
+                    'file_attendance',
+                    Storage::disk('attendance')->get($file_path),
+                    'photo.jpg'
+                )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA'));
+            }
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
