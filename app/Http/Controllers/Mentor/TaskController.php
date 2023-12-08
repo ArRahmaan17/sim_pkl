@@ -49,21 +49,22 @@ class TaskController extends Controller
             $data['group'] = json_encode($data['group']);
             $task = Task::insertGetId($data);
             $phone_numbers = [];
+            $todos = [];
             foreach (json_decode($data['group']) as $key => $group) {
                 $users = User::where(['cluster_id' => $group, 'role' => 'S'])->get();
                 foreach ($users as $key => $user) {
                     array_push($phone_numbers, implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))));
-                    $todo = [
+                    array_push($todos, [
                         'user_id' => $user->id,
                         'description' => $user->first_name . ' ' . $user->last_name . ' shared task ' . $data['title'],
                         'cluster_id' => intval($group),
                         'task_id' => $task,
                         'status' => 'Shared',
                         'created_at' => now('Asia/Jakarta')
-                    ];
-                    Todo::insert($todo);
+                    ]);
                 }
             }
+            Todo::insert($todos);
             DB::commit();
             if (!Storage::directoryExists('/task')) {
                 Storage::makeDirectory('task');

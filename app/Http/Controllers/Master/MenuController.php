@@ -115,9 +115,8 @@ class MenuController extends Controller
         }
         DB::beginTransaction();
         try {
-            foreach ($data_menus as $key => $menu) {
-                Menu::where('id', $menu['id'])->update($menu);
-            }
+            // dd($data_menus);
+            Menu::upsert($data_menus, ['id'], ['ordered']);
             DB::commit();
             return Response()->json([
                 'message' => 'Successfully Ordering Your Menu',
