@@ -14,6 +14,7 @@ use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentClusterController;
 use App\Http\Middleware\Authenticated;
 use App\Http\Middleware\CompletedProfile;
+use App\Http\Middleware\isMentor;
 use App\Http\Middleware\Unauthenticated;
 use Illuminate\Support\Facades\Route;
 
@@ -60,7 +61,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::post('/user/todo/activity-update', [userTask::class, 'activity_update'])->name('todo.activity-update');
         Route::get('/user/todo/download/{id?}', [userTask::class, 'download'])->name('todo.download');
     });
-    Route::name('mentor.')->group(function () {
+    Route::middleware([isMentor::class])->name('mentor.')->group(function () {
         Route::get('/mentor/task', [TaskController::class, 'index'])->name('task.index')->middleware([CompletedProfile::class]);
         Route::post('/mentor/task/store', [TaskController::class, 'store'])->name('task.store');
         Route::get('/mentor/task/show/{id?}', [TaskController::class, 'show'])->name('task.show');
@@ -68,7 +69,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::delete('/mentor/task/delete/{id?}', [TaskController::class, 'delete'])->name('task.delete');
         Route::get('/mentor/students', [UserController::class, 'index'])->name('students.index')->middleware([CompletedProfile::class]);
     });
-    Route::name('master.')->group(function () {
+    Route::middleware([isMentor::class])->name('master.')->group(function () {
         Route::get('/master/menus', [MenuController::class, 'index'])->name('menus.index')->middleware([CompletedProfile::class]);
         Route::get('/master/menus/all', [MenuController::class, 'all'])->name('menus.all');
         Route::post('/master/menus/sort', [MenuController::class, 'sort'])->name('menus.sort');

@@ -137,22 +137,24 @@
                         }
                         let more_element = ''
                         if (`{{ session('auth.role') }}` == "S") {
-                            let class_progress = '';
-                            if (element.last_activity.progress == '0') {
-                                class_progress = 'bg-dark';
-                            } else if (element.last_activity.progress == '10') {
-                                class_progress = 'bg-danger';
-                            } else if (element.last_activity.progress == '40') {
-                                class_progress = 'bg-warning';
-                            } else if (element.last_activity.progress == '80') {
-                                class_progress = 'bg-info';
-                            } else {
-                                class_progress = 'bg-success';
-                            }
-                            more_element = `<p class="text-muted">your task progress</p>
+                            if (element.last_activity != undefined) {
+                                let class_progress = '';
+                                if (element.last_activity.progress == '0') {
+                                    class_progress = 'bg-dark';
+                                } else if (element.last_activity.progress == '10') {
+                                    class_progress = 'bg-danger';
+                                } else if (element.last_activity.progress == '40') {
+                                    class_progress = 'bg-warning';
+                                } else if (element.last_activity.progress == '80') {
+                                    class_progress = 'bg-info';
+                                } else if (element.last_activity.progress == '100') {
+                                    class_progress = 'bg-success';
+                                }
+                                more_element = `<p class="text-muted">your task progress</p>
                                         <div class="progress mb-3">
                                             <div class="progress-bar ${class_progress}" role="progressbar" style="width:${element.last_activity.progress}%">${element.last_activity.progress}%</div>
                                         </div>`
+                            }
                         }
                         elementTasks += `<div class="col-12 col-md-4 col-lg-4">
                                             <article class="article article-style-c">

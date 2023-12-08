@@ -65,6 +65,8 @@ class DatabaseController extends Controller
                 return $task;
             });
         }
+        // dd($tasks[1]->last_activity);
+        // dd(Task::with('last_activity')->whereJsonContains('group', ["" . $cluster_id])->orderBy('created_at')->dd());
         $tasks = collect($tasks)->chunk(5);
         if (count($tasks) == 0) {
             return Response()->json(['message' => 'Tasks record not found', 'data' => $tasks], 404);

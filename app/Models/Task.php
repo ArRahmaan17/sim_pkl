@@ -29,6 +29,10 @@ class Task extends Model
     }
     public function last_activity()
     {
-        return $this->hasOneThrough(Todo::class, User::class, 'id', 'task_id', 'id', 'id')->where('todos.user_id', session('auth.id'))->orderByDesc('todos.id');
+        return $this->hasOne(
+            Todo::class,
+            foreignKey: 'task_id',
+            localKey: 'id'
+        )->where('todos.user_id', session('auth.id'))->orderByDesc('todos.id');
     }
 }
