@@ -56,8 +56,8 @@ class AttendanceController extends Controller
             $data['time'] = now('Asia/Jakarta')->addSecond();
             Attendance::insert($data);
             DB::commit();
-            if (env('WA_SERVICES')) {
-                Http::get(env('WA_SERVICES') . 'attendance-success/' . $user->phone_number . '/' . $request->status);
+            if (env('WA_SERVICES_STATUS')) {
+                Http::get(env('WA_SERVICES') . 'attendance-success/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))) . '/' . $request->status);
                 Http::attach(
                     'file_attendance',
                     Storage::disk('attendance')->get($file_path),

@@ -9,6 +9,7 @@ use App\Models\Todo;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -47,9 +48,11 @@ class TaskController extends Controller
             $data['created_at'] = now('Asia/Jakarta');
             $data['group'] = json_encode($data['group']);
             $task = Task::insertGetId($data);
+            $phone_numbers = [];
             foreach (json_decode($data['group']) as $key => $group) {
                 $users = User::where(['cluster_id' => $group, 'role' => 'S'])->get();
                 foreach ($users as $key => $user) {
+                    array_push($phone_numbers, implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))));
                     $todo = [
                         'user_id' => $user->id,
                         'description' => $user->first_name . ' ' . $user->last_name . ' shared task ' . $data['title'],
@@ -66,6 +69,16 @@ class TaskController extends Controller
                 Storage::makeDirectory('task');
             }
             Storage::disk('task')->put($filename . '.' . $extension, $request->file('image')->getContent());
+            if (env('WA_SERVICES_STATUS')) {
+                Http::attach(
+                    'task_thumbnail',
+                    Storage::disk('task')->get($filename . '.' . $extension),
+                    'photo.jpg'
+                )->post(env('WA_SERVICES') . 'task-notification', [
+                    'title' => $request->title,
+                    'phone_numbers' => json_encode($phone_numbers)
+                ]);
+            }
             return Response()->json(['message' => 'Successfully create task', 'data' => Task::orderBy('created_at')->get()->chunk(5)], 200);
         } catch (\Throwable $th) {
 
