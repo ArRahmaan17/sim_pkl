@@ -89,10 +89,10 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="mt-5 text-white text-center">
+                        {{-- <div class="mt-5 text-white text-center">
                             Don't have an account? <a class="text-white" href="{{ route('register.index') }}">Create
                                 One</a>
-                        </div>
+                        </div> --}}
                         <div class="simple-footer">
                             Copyright &copy; NUG {{ env('APP_YEAR') }}
                         </div>
