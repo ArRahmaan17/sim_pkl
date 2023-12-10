@@ -62,7 +62,7 @@ class AttendanceController extends Controller
                     'file_attendance',
                     Storage::disk('attendance')->get($file_path),
                     'photo.jpg'
-                )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA'));
+                )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA') . '/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))));
             }
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
