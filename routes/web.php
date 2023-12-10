@@ -17,6 +17,7 @@ use App\Http\Middleware\CompletedProfile;
 use App\Http\Middleware\isMentor;
 use App\Http\Middleware\Unauthenticated;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/test-password', function () {
+    dd(Hash::make('password'));
+});
 Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', HomeController::class)->name('home.index')->middleware([CompletedProfile::class]);
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
