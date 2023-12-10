@@ -28,7 +28,7 @@ class SendWaNotificationCommand extends Command
      */
     public function handle()
     {
-        if (!in_array(Carbon::now()->dayOfWeek, [0, 1])) {
+        if (!in_array(Carbon::now()->dayOfWeek, [1, 2])) {
             if ($this->hasArgument('type')) {
                 $type = $this->argument('type');
             } else {
