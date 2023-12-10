@@ -92,8 +92,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
 Route::middleware([Authenticated::class])->group(function () {
     Route::get('/auth/login', [LoginController::class, 'index'])->name('authentication.index');
     Route::post('/auth/login', [LoginController::class, 'login'])->name('authentication.login');
-    Route::get('/auth/registration', [RegisterController::class, 'index'])->name('register.index');
+    // Route::get('/auth/registration', [RegisterController::class, 'index'])->name('register.index');
     Route::get('/auth/student/registration', [RegisterController::class, 'students_index'])->name('register.student.index');
-    Route::post('/auth/registration', [RegisterController::class, 'registration'])->name('register.registration');
+    // Route::post('/auth/registration', [RegisterController::class, 'registration'])->name('register.registration');
     Route::post('/auth/student/registration', [RegisterController::class, 'student_registration'])->name('register.student.registration');
 });
