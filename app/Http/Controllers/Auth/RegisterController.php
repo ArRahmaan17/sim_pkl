@@ -49,7 +49,7 @@ class RegisterController extends Controller
         $request->validate([
             'first_name' => 'required|regex:/[^0-9]+/|max:15',
             'last_name' => 'required|regex:/[^0-9]+/|max:15',
-            'student_identification_number' => 'required|max:15',
+            'student_identification_number' => 'required|max:15|unique:users,student_identification_number',
             'phone_number' => 'required|max:13',
             'address' => 'required',
             'gender' => 'required',
@@ -74,6 +74,7 @@ class RegisterController extends Controller
             DB::commit();
             return redirect()->route('authentication.index');
         } catch (\Throwable $th) {
+            dd($th);
             DB::rollBack();
             return redirect()->route('register.index', ['action' => base64_encode('Failed To Registration')]);
         }
