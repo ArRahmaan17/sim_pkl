@@ -78,14 +78,18 @@
             let width = 240;
             let height = 180;
             if ($(window).innerWidth() < 768) {
-                width = 240;
-                height = 180;
+                // width = 240;
+                //height = 180;
+                width = 180;
+                height = 480;
             } else if ($(window).innerWidth() < 1200) {
+                // width = 480;
+                // height = 360;
                 width = 480;
-                height = 360;
+                height = 560;
             } else {
-                width = 540;
-                height = 405;
+                width = 560;
+                height = 640;
             }
             Webcam.set({
                 width: width,
