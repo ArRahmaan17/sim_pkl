@@ -43,7 +43,7 @@ class AttendanceController extends Controller
             if (!Storage::exists('attendance/' . trim($user->first_name) . trim($user->last_name) . '/')) {
                 Storage::makeDirectory('attendance/' . trim($user->first_name) . trim($user->last_name) . '/');
             }
-            $file_path =  trim($user->first_name) . trim($user->last_name) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
+            $file_path =  trim(str()->slug($user->first_name)) . trim(str()->slug($user->last_name)) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
             Storage::disk('attendance')->put($file_path, $file);
             Attendance::where('user_id', $request->user_id)
                 ->where('status', $request->status)
