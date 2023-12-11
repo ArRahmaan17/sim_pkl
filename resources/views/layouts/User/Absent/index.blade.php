@@ -61,6 +61,8 @@
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
     <script>
+        let width;
+        let height;
         $(function() {
             $('button[type=submit]').attr('disabled');
             navigator.geolocation.getCurrentPosition(function(location) {
@@ -75,8 +77,6 @@
         });
 
         function get_ready() {
-            let width = 240;
-            let height = 180;
             if ($(window).innerWidth() < 768) {
                 // width = 240;
                 //height = 180;
@@ -107,7 +107,7 @@
         function take_picture() {
             Webcam.snap(function(picture_data) {
                 document.getElementById('results').innerHTML =
-                    '<img src="' + picture_data + '"/>';
+                    `<img style="width: ${width}; height: ${height};" src="${picture_data}"/>`;
                 Webcam.reset();
                 $('#camera').addClass('d-none');
                 $('#btn-shot').addClass('d-none');
