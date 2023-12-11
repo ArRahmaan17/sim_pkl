@@ -40,10 +40,10 @@ class AttendanceController extends Controller
         try {
             $user = User::find($request->user_id);
             $file = base64_decode($request->photo);
-            if (!Storage::exists('attendance/' . trim(str()->slug($user->first_name)) . trim(str()->slug($user->last_name)) . '/')) {
-                Storage::makeDirectory('attendance/' . trim(str()->slug($user->first_name)) . trim(str()->slug($user->last_name)) . '/');
+            if (!Storage::exists('attendance/' . $user->id . '/')) {
+                Storage::makeDirectory('attendance/' . $user->id . '/');
             }
-            $file_path =  trim(str()->slug($user->first_name)) . trim(str()->slug($user->last_name)) . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
+            $file_path =  $user->id . '/attendance_' . $request->status . '_' . date('Y-m-d', time() + 7 * 60 * 60) . '.jpeg';
             Storage::disk('attendance')->put($file_path, $file);
             Attendance::where('user_id', $request->user_id)
                 ->where('status', $request->status)
