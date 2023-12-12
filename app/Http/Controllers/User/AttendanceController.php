@@ -57,12 +57,11 @@ class AttendanceController extends Controller
             Attendance::insert($data);
             DB::commit();
             if (env('WA_SERVICES_STATUS')) {
-                Http::get(env('WA_SERVICES') . 'attendance-success/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))) . '/' . $request->status);
                 Http::attach(
                     'file_attendance',
                     Storage::disk('attendance')->get($file_path),
                     'photo.jpg'
-                )->post(env('WA_SERVICES') . 'attendance-notification/' . env('MENTOR_WA') . '/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))));
+                )->post(env('WA_SERVICES') . 'attendance-success/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))) . '/' . $request->status);
             }
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {

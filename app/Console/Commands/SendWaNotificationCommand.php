@@ -42,7 +42,7 @@ class SendWaNotificationCommand extends Command
                     });
                 }
                 foreach ($phone_numbers as $key => $value) {
-                    Http::get(env('WA_SERVICES') . 'attendance-warning/' . $value);
+                    // Http::get(env('WA_SERVICES') . 'attendance-warning/' . $value);
                 }
             } else {
                 $phone_number = User::leftJoin('attendances as a', 'users.id', '!=', 'a.user_id')->where(['role' => 'S'])->where('a.created_at', '>', now()->startOfDay())->where('a.created_at', '<', now()->endOfDay())->get()->map(function ($user) {
