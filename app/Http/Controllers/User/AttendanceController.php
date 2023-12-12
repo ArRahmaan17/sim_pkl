@@ -9,6 +9,7 @@ use App\Models\Todo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -54,15 +55,9 @@ class AttendanceController extends Controller
             $data['photo'] = $file_path;
             $data['created_at'] = now('Asia/Jakarta');
             $data['time'] = now('Asia/Jakarta')->addSecond();
-            Attendance::insert($data);
+            $attendance = Attendance::insertGetId($data);
             DB::commit();
-            if (env('WA_SERVICES_STATUS')) {
-                Http::attach(
-                    'file_attendance',
-                    Storage::disk('attendance')->get($file_path),
-                    'photo.jpg'
-                )->post(env('WA_SERVICES') . 'attendance-success/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))) . '/' . $request->status);
-            }
+            Artisan::call('app:send-attendance-success-notification', ['attendance-id' => $attendance]);
             return redirect()->route('home.index')->with('success', '<i class="fas fa-info"></i> &nbsp; Successfully Absent For This Day');
         } catch (\Throwable $th) {
             DB::rollBack();
