@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group">
                     <label>Result</label>
-                    <div id="results" class="col-12 col-sm-8 col-md-6 "></div>
+                    <div id="results" class="col-12 col-sm-8 col-md-6"></div>
                     <input id="result-data" name="photo" type="hidden">
                 </div>
                 <button class="btn btn-success" disabled type="submit"><i class="fas fa-fingerprint"></i> Loading
@@ -76,24 +76,27 @@
             get_ready();
         });
 
-        function get_ready() {
+        async function get_ready() {
+            let stream = await navigator.mediaDevices.getUserMedia({
+                video: true
+            })
+            width = stream.getVideoTracks()[0].getSettings().width;
+            height = stream.getVideoTracks()[0].getSettings().height;
             if ($(window).innerWidth() < 768) {
-                // width = 240;
-                //height = 180;
-                width = 180;
-                height = 480;
+                width = width / 2;
+                height = height / 2;
             } else if ($(window).innerWidth() < 1200) {
-                // width = 480;
-                // height = 360;
-                width = 480;
-                height = 560;
+                width = width / (1.5);
+                height = height / (1.5);
             } else {
-                width = 560;
-                height = 640;
+                width = width / (.9);
+                height = height / (.9);
             }
             Webcam.set({
                 width: width,
                 height: height,
+                dest_width: width,
+                dest_height: height,
                 image_format: 'jpeg',
                 jpeg_quality: 100
             });
@@ -107,7 +110,7 @@
         function take_picture() {
             Webcam.snap(function(picture_data) {
                 document.getElementById('results').innerHTML =
-                    `<img style="width: 100%; height: 100%; object-fit: cover" src="${picture_data}"/>`;
+                    `<div class="p-4" style="width: ${width+40}px;"><img src="${picture_data}"/></div>`;
                 Webcam.reset();
                 $('#camera').addClass('d-none');
                 $('#btn-shot').addClass('d-none');
