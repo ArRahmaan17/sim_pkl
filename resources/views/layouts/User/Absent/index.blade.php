@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group">
                     <label>Result</label>
-                    <div id="results"><img src="" alt=""></div>
+                    <div id="results" class="col-12 col-sm-8 col-md-6 "></div>
                     <input id="result-data" name="photo" type="hidden">
                 </div>
                 <button class="btn btn-success" disabled type="submit"><i class="fas fa-fingerprint"></i> Loading
@@ -107,7 +107,7 @@
         function take_picture() {
             Webcam.snap(function(picture_data) {
                 document.getElementById('results').innerHTML =
-                    `<img style="width: ${width}; height: ${height};" src="${picture_data}"/>`;
+                    `<img style="width: 100%; height: 100%; object-fit: cover" src="${picture_data}"/>`;
                 Webcam.reset();
                 $('#camera').addClass('d-none');
                 $('#btn-shot').addClass('d-none');
