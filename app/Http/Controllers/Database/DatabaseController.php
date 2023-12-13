@@ -38,7 +38,7 @@ class DatabaseController extends Controller
         if (empty($user)) {
             return Response()->json(['message' => 'User record not found', 'data' => $user], 404);
         } else {
-            $user->profile_picture = ($user->profile_picture != null) ? 'data:image/jpeg;base64,' . profile_asset($user->profile_picture) : 'data:image/jpeg;base64,' . base64_encode(asset('img/avatar/avatar-2.png'));
+            $user->profile_picture = ($user->profile_picture != null) ? 'data:image/jpeg;base64,' . profile_asset($user->profile_picture) : 'data:image/png;base64,' . base64_encode(asset('img/avatar/avatar-2.png'));
             return Response()->json(['message' => 'Found user record', 'data' => $user], 200);
         }
     }
