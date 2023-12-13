@@ -110,7 +110,7 @@
         function take_picture() {
             Webcam.snap(function(picture_data) {
                 document.getElementById('results').innerHTML =
-                    `<div class="p-4" style="width: ${width+40}px;"><img src="${picture_data}"/></div>`;
+                    `<img src="${picture_data}"/>`;
                 Webcam.reset();
                 $('#camera').addClass('d-none');
                 $('#btn-shot').addClass('d-none');
