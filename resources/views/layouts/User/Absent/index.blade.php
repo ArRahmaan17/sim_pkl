@@ -89,8 +89,8 @@
                 width = width / (1.5);
                 height = height / (1.5);
             } else {
-                width = width / (.9);
-                height = height / (.9);
+                width = width;
+                height = height;
             }
             Webcam.set({
                 width: width,
