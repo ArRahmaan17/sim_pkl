@@ -20,7 +20,7 @@ class AttendanceController extends Controller
     {
         if (session('auth.role') == "S") {
             if (
-                (intval(date('H', time() + 7 * 60 * 60)) == 7 || intval(date('H', time() + 7 * 60 * 60)) == 8 || intval(date('H', time() + 7 * 60 * 60)) == 9) ||
+                (intval(date('H', time() + 7 * 60 * 60)) == 7) ||
                 (intval(date('H', time() + 7 * 60 * 60)) == 16)
             ) {
                 $user = User::find(session('auth.id'));
