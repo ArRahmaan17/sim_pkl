@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -29,7 +28,7 @@ class SendWaNotificationCommand extends Command
      */
     public function handle()
     {
-        if (!in_array(Carbon::now()->dayOfWeek, [0, 1])) {
+        if (!in_array(now('Asia/Jakarta')->dayOfWeek, [0, 1])) {
             if ($this->hasArgument('type')) {
                 $type = $this->argument('type');
             } else {
