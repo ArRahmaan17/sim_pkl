@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('filename');
             $table->enum('type', ['docs', 'video']);
-            $table->bigInteger('user_id');
+            $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->on('users')->references('id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
