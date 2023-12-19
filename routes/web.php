@@ -10,6 +10,7 @@ use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Mentor\TaskController;
 use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Controllers\User\AttendanceController;
+use App\Http\Controllers\User\Materi;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentClusterController;
 use App\Http\Middleware\Authenticated;
@@ -45,6 +46,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::get('/database/task/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
     });
     Route::name('user.')->group(function () {
+        Route::get('/user/learning-materials', [Materi::class, 'index'])->name('learning-materials.index')->middleware([CompletedProfile::class]);
+        Route::get('/user/learning-materials/{id}', [Materi::class, 'download'])->name('learning-materials.download')->middleware([CompletedProfile::class]);
         Route::get('/user/attendance', [AttendanceController::class, 'index'])->name('attendance.index')->middleware([CompletedProfile::class]);
         Route::post('/user/attendance', [AttendanceController::class, 'store'])->name('attendance.process');
         Route::get('/user/calendar', [AttendanceController::class, 'all'])->name('attendance.calendar');

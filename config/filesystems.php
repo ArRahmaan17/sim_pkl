@@ -43,6 +43,13 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
+        'learning-materials' => [
+            'driver' => 'local',
+            'root' => storage_path('app/learning-materials'),
+            'url' => env('APP_URL') . '/learning-materials',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
         'attendance' => [
             'driver' => 'local',
             'root' => storage_path('app/attendance'),
