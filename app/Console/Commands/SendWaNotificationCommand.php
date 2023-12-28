@@ -45,7 +45,7 @@ class SendWaNotificationCommand extends Command
                     // Http::get(env('WA_SERVICES') . 'attendance-warning/' . $value);
                 }
             } else {
-                if (now('Asia/Jakarta')->hour === 8) {
+                if (now('Asia/Jakarta')->hour === 6) {
                     $where = "and status = 'IN'";
                 } else {
                     $where = "and status = 'OUT'";
