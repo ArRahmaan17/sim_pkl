@@ -45,12 +45,12 @@ class SendWaNotificationCommand extends Command
                     // Http::get(env('WA_SERVICES') . 'attendance-warning/' . $value);
                 }
             } else {
-                if (now('Asia/Jakarta')->hour === 6) {
+                if (now('Asia/Jakarta')->hour === 8) {
                     $where = "and status = 'IN'";
                 } else {
                     $where = "and status = 'OUT'";
                 }
-                $phone_number = DB::table('users')->whereRaw("role = 'S' and id not in (select user_id from attendances where created_at > '" . now()->startOfDay() . "' " . $where . " )")->get()->map(function ($user) {
+                $phone_number = DB::table('users')->whereRaw("role = 'S' and id not in (select user_id from attendances where created_at > '" . now('Asia/Jakarta')->startOfDay() . "' " . $where . " )")->get()->map(function ($user) {
                     return implode('', explode('(+62)', implode('', explode(' ', $user->phone_number))));
                 });
                 if ($phone_number->count() == 0) {
