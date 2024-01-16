@@ -8,6 +8,7 @@ use App\Http\Controllers\Master\ClusterController;
 use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Mentor\TaskController;
+use App\Http\Controllers\Report\DailyReportController;
 use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\Materi;
@@ -68,6 +69,9 @@ Route::middleware([Unauthenticated::class])->group(function () {
         Route::post('/user/todo/start', [userTask::class, 'start'])->name('todo.start');
         Route::post('/user/todo/activity-update', [userTask::class, 'activity_update'])->name('todo.activity-update');
         Route::get('/user/todo/download/{id?}', [userTask::class, 'download'])->name('todo.download');
+    });
+    Route::name('report.')->group(function () {
+        Route::get('/report/daily-progress', [DailyReportController::class, 'index'])->name('daily-progress');
     });
     Route::middleware([isMentor::class])->name('mentor.')->group(function () {
         Route::get('/mentor/task', [TaskController::class, 'index'])->name('task.index')->middleware([CompletedProfile::class]);

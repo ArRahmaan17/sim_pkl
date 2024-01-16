@@ -98,7 +98,8 @@
                 dest_width: width,
                 dest_height: height,
                 image_format: 'jpeg',
-                jpeg_quality: 100
+                jpeg_quality: 100,
+                flip_horiz: true
             });
 
             Webcam.attach('#camera');
