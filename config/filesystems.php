@@ -39,40 +39,40 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL') . '/storage',
+            'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
         'learning-materials' => [
             'driver' => 'local',
             'root' => storage_path('app/learning-materials'),
-            'url' => env('APP_URL') . '/learning-materials',
+            'url' => env('APP_URL').'/learning-materials',
             'visibility' => 'public',
             'throw' => false,
         ],
         'attendance' => [
             'driver' => 'local',
             'root' => storage_path('app/attendance'),
-            'url' => env('APP_URL') . '/attendance',
+            'url' => env('APP_URL').'/attendance',
             'visibility' => 'public',
             'throw' => false,
         ],
         'task' => [
             'driver' => 'local',
             'root' => storage_path('app/task'),
-            'url' => env('APP_URL') . '/task',
+            'url' => env('APP_URL').'/task',
             'visibility' => 'public',
             'throw' => false,
         ],
         'task-file' => [
             'driver' => 'local',
             'root' => storage_path('app/task-file'),
-            'url' => env('APP_URL') . '/task-file',
+            'url' => env('APP_URL').'/task-file',
         ],
         'profile-picture' => [
             'driver' => 'local',
             'root' => storage_path('app/profile-picture'),
-            'url' => env('APP_URL') . '/profile-picture',
+            'url' => env('APP_URL').'/profile-picture',
         ],
         'seeder-picture' => [
             'driver' => 'local',
@@ -81,7 +81,7 @@ return [
         'task-activity' => [
             'driver' => 'local',
             'root' => storage_path('app/task-activity'),
-            'url' => env('APP_URL') . '/task-activity',
+            'url' => env('APP_URL').'/task-activity',
         ],
         's3' => [
             'driver' => 's3',

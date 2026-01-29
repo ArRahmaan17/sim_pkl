@@ -13,7 +13,9 @@
                     <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
                         <x-brand-icon />
                         @yield('content')
-                        <x-footer-single-page />
+                        <div class="simple-footer" role="contentinfo">
+                            <x-footer-single-page />
+                        </div>
                     </div>
                 </div>
             </div>

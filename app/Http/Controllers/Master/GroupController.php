@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
-class ClusterController extends Controller
+class GroupController extends Controller
 {
     /**
      * Display a listing of the resource.

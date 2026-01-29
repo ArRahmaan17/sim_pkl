@@ -17,8 +17,8 @@ class GenderFactory extends Factory
     public function definition(): array
     {
         return [
-           'name' => fake('id_ID')->name(),
-           'description' => fake('id_ID')->userName()
+            'name' => fake('id_ID')->name(),
+            'description' => fake('id_ID')->userName(),
         ];
     }
 }

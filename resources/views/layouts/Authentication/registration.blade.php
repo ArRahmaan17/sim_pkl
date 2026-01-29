@@ -83,11 +83,3 @@
         </div>
     </div>
 @endsection
-@push('vendor-js')
-    <script>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            const now = new Date().getFullYear();
-            document.querySelector('#year-now').setHTMLUnsafe(`${now}`);
-        })
-    </script>
-@endpush
