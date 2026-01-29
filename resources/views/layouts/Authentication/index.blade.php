@@ -3,21 +3,32 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="description" content="A concise, compelling description of your page content (approx. 150-160 characters) to improve click-through rates.">
+    <link rel="canonical" href="{{ env('APP_URL') }}">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Descriptive Page Title">
+    <meta property="og:description" content="A concise description for social media sharing.">
+    <meta property="og:image" content="https://www.example.com/image.webp">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Descriptive Page Title">
+    <meta name="twitter:description" content="A concise description for Twitter.">
     <title>{{ env('APP_NAME') }}</title>
 
     <!-- General CSS Files -->
     <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}"> --}}
 
     <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('assets/modules/jquery-selectric/selectric.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('assets/modules/jquery-selectric/selectric.css') }}"> --}}
 
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
     <!-- Start GA -->
-    
+
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -34,16 +45,11 @@
 <body>
     <div id="app">
         <section class="section">
-            <div class="container mt-5">
+            <div class="container mt-5 align-item-center">
                 <div class="row">
-                    <div
-                        class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
-                        <div class="login-brand">
-                            <img src="{{ asset('assets/img/nug.png') }}" alt="logo" width="100"
-                                class="shadow-light rounded-circle">
-                        </div>
-
-                        <div class="card card-primary">
+                    <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-10 offset-lg-1 col-xl-8 offset-xl-2">
+                        <x-brand-icon />
+                        <div class="card card-primary" role="main">
                             <div class="card-header">
                                 <h4>Login</h4>
                             </div>
@@ -53,8 +59,7 @@
                                     @csrf
                                     <div class="form-group">
                                         <label for="credential">Email/Username</label>
-                                        <input id="credential" type="text"
-                                            class="form-control @error('credential') is-invalid @enderror"
+                                        <input id="credential" type="text" class="form-control @error('credential') is-invalid @enderror"
                                             name="credential" tabindex="1" autofocus>
                                         @error('credential')
                                             <div class="invalid-feedback">
@@ -72,8 +77,7 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <input id="password" type="password"
-                                            class="form-control @error('password') is-invalid @enderror" name="password"
+                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"
                                             tabindex="2">
                                         @error('password')
                                             <div class="invalid-feedback">
@@ -85,17 +89,14 @@
                                         <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
                                             Login
                                         </button>
+                                        <div class="text-center mt-1">
+                                            Don't have an account? <a href="{{ route('register.index') }}">Create One</a>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                        {{-- <div class="mt-5 text-white text-center">
-                            Don't have an account? <a class="text-white" href="{{ route('register.index') }}">Create
-                                One</a>
-                        </div> --}}
-                        <div class="simple-footer">
-                            Copyright &copy; NUG {{ env('APP_YEAR') }}
-                        </div>
+                        <x-footer-single-page />
                     </div>
                 </div>
             </div>
@@ -118,6 +119,12 @@
     <!-- Template JS File -->
     <script src="{{ asset('assets/js/scripts.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const now = new Date().getFullYear();
+            document.querySelector('#year-now').setHTMLUnsafe(`${now}`);
+        })
+    </script>
 </body>
 
 </html>

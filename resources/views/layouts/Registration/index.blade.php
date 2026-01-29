@@ -7,17 +7,17 @@
     <title>{{ env('APP_NAME') }}</title>
 
     <!-- General CSS Files -->
-    <link rel="stylesheet" href="{{ asset('modules/bootstrap/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('modules/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/modules/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/modules/fontawesome/css/all.min.css') }}">
 
     <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('modules/jquery-selectric/selectric.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/modules/jquery-selectric/selectric.css') }}">
 
     <!-- Template CSS -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/components.css') }}">
     <!-- Start GA -->
-    
+
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -36,12 +36,8 @@
         <section class="section">
             <div class="container mt-5">
                 <div class="row">
-                    <div
-                        class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
-                        <div class="login-brand">
-                            <img src="{{ asset('img/nug.png') }}" alt="logo" width="100"
-                                class="shadow-light rounded-circle">
-                        </div>
+                    <div class="col-12 col-sm-10 offset-sm- col-md-8 offset-md-1 col-lg-10 offset-lg-1 col-xl-12 offset-xl-0">
+                        <x-brand-icon />
 
                         <div class="card card-primary">
                             <div class="card-header">
@@ -62,9 +58,7 @@
                                     @csrf
                                     <div class="form-group">
                                         <label for="username">Username</label>
-                                        <input id="username" type="text"
-                                            class="form-control @error('username') is-invalid  @enderror"
-                                            name="username">
+                                        <input id="username" type="text" class="form-control @error('username') is-invalid  @enderror" name="username">
                                         @error('username')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -74,8 +68,7 @@
 
                                     <div class="form-group">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email"
-                                            class="form-control @error('email') is-invalid @enderror" name="email">
+                                        <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email">
                                         @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -86,8 +79,7 @@
                                     <div class="row">
                                         <div class="form-group col-6">
                                             <label for="password" class="d-block">Password</label>
-                                            <input id="password" type="password"
-                                                class="form-control @error('password') is-invalid @enderror pwstrength"
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror pwstrength"
                                                 data-indicator="pwindicator" name="password">
                                             @error('password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -100,8 +92,7 @@
                                         <div class="form-group col-6">
                                             <label for="confirm_password" class="d-block">Password Confirmation</label>
                                             <input id="confirm_password" type="password"
-                                                class="form-control @error('confirm_password') is-invalid @enderror"
-                                                name="password_confirm">
+                                                class="form-control @error('confirm_password') is-invalid @enderror" name="password_confirm">
                                             @error('confirm_password')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -110,8 +101,7 @@
 
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="agree"
-                                                class="custom-control-input @error('agree') is-invalid @enderror"
+                                            <input type="checkbox" name="agree" class="custom-control-input @error('agree') is-invalid @enderror"
                                                 id="agree">
                                             <label class="custom-control-label" for="agree">I agree with the terms
                                                 and conditions</label>
@@ -126,9 +116,7 @@
                                 </form>
                             </div>
                         </div>
-                        <div class="simple-footer">
-                            Copyright &copy; NUG {{ env('APP_YEAR') }}
-                        </div>
+                        <x-footer-single-page />
                     </div>
                 </div>
             </div>
@@ -136,23 +124,23 @@
     </div>
 
     <!-- General JS Scripts -->
-    <script src="{{ asset('modules/jquery.min.js') }}"></script>
-    <script src="{{ asset('modules/popper.js') }}"></script>
-    <script src="{{ asset('modules/tooltip.js') }}"></script>
-    <script src="{{ asset('modules/bootstrap/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
-    <script src="{{ asset('modules/moment.min.js') }}"></script>
-    <script src="{{ asset('js/stisla.js') }}"></script>
+    <script src="{{ asset('assets/modules/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/modules/popper.js') }}"></script>
+    <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
+    <script src="{{ asset('assets/modules/bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/modules/nicescroll/jquery.nicescroll.min.js') }}"></script>
+    <script src="{{ asset('assets/modules/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/js/stisla.js') }}"></script>
 
     <!-- JS Libraies -->
-    <script src="{{ asset('modules/jquery-pwstrength/jquery.pwstrength.min.js') }}"></script>
+    <script src="{{ asset('assets/modules/jquery-pwstrength/jquery.pwstrength.min.js') }}"></script>
 
     <!-- Page Specific JS File -->
-    <script src="{{ asset('js/page/auth-register.js') }}"></script>
+    <script src="{{ asset('assets/js/page/auth-register.js') }}"></script>
 
     <!-- Template JS File -->
-    <script src="{{ asset('js/scripts.js') }}"></script>
-    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('assets/js/scripts.js') }}"></script>
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
 </body>
 
 </html>

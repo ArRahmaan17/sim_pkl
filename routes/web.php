@@ -39,12 +39,16 @@ Route::get('/test-password', function () {
 Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', HomeController::class)->name('home.index')->middleware([CompletedProfile::class]);
     Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
-    Route::name('database.')->group(function () {
-        Route::get('/database/task/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
-        Route::get('/database/user/all', [DatabaseController::class, 'users_all'])->name('user.all');
-        Route::get('/database/user/{id?}', [DatabaseController::class, 'detail_user'])->name('user.detail');
-        Route::get('/database/task/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
-        Route::get('/database/task/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
+    Route::name('data.')->prefix('data')->group(function () {
+        Route::name('tasks.')->prefix('tasks')->group(function () {
+            Route::get('/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
+            Route::get('/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
+            Route::get('/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
+        });
+        Route::name('tasks.')->prefix('tasks')->group(function () {
+            Route::get('/user/all', [DatabaseController::class, 'users_all'])->name('user.all');
+            Route::get('/user/{id?}', [DatabaseController::class, 'detail_user'])->name('user.detail');
+        });
     });
     Route::name('user.')->group(function () {
         Route::get('/user/learning-materials', [Materi::class, 'index'])->name('learning-materials.index')->middleware([CompletedProfile::class]);
@@ -99,8 +103,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
 Route::middleware([Authenticated::class])->group(function () {
     Route::get('/auth/login', [LoginController::class, 'index'])->name('authentication.index');
     Route::post('/auth/login', [LoginController::class, 'login'])->name('authentication.login');
-    // Route::get('/auth/registration', [RegisterController::class, 'index'])->name('register.index');
+    Route::get('/auth/registration', [RegisterController::class, 'index'])->name('register.index');
     Route::get('/auth/student/registration', [RegisterController::class, 'students_index'])->name('register.student.index');
-    // Route::post('/auth/registration', [RegisterController::class, 'registration'])->name('register.registration');
+    Route::post('/auth/registration', [RegisterController::class, 'registration'])->name('register.registration');
     Route::post('/auth/student/registration', [RegisterController::class, 'student_registration'])->name('register.student.registration');
 });
