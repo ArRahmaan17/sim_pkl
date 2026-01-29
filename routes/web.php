@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Database\DatabaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Master\ClusterController;
@@ -9,16 +8,15 @@ use App\Http\Controllers\Master\MenuController;
 use App\Http\Controllers\Master\UserController;
 use App\Http\Controllers\Mentor\TaskController;
 use App\Http\Controllers\Report\DailyReportController;
-use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Controllers\User\AttendanceController;
 use App\Http\Controllers\User\Materi;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\StudentClusterController;
+use App\Http\Controllers\User\TaskController as userTask;
 use App\Http\Middleware\Authenticated;
 use App\Http\Middleware\CompletedProfile;
 use App\Http\Middleware\isMentor;
 use App\Http\Middleware\Unauthenticated;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
@@ -38,16 +36,16 @@ Route::get('/test-password', function () {
 });
 Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/', HomeController::class)->name('home.index')->middleware([CompletedProfile::class]);
-    Route::get('/logout', [LoginController::class, 'logout'])->name('authentication.logout');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('authentication.logout');
     Route::name('data.')->prefix('data')->group(function () {
         Route::name('tasks.')->prefix('tasks')->group(function () {
             Route::get('/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
             Route::get('/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
             Route::get('/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
         });
-        Route::name('tasks.')->prefix('tasks')->group(function () {
-            Route::get('/user/all', [DatabaseController::class, 'users_all'])->name('user.all');
-            Route::get('/user/{id?}', [DatabaseController::class, 'detail_user'])->name('user.detail');
+        Route::name('users.')->prefix('users')->group(function () {
+            Route::get('/all', [DatabaseController::class, 'users_all'])->name('all');
+            Route::get('/{id?}', [DatabaseController::class, 'detail_user'])->name('detail');
         });
     });
     Route::name('user.')->group(function () {
@@ -101,10 +99,8 @@ Route::middleware([Unauthenticated::class])->group(function () {
     });
 });
 Route::middleware([Authenticated::class])->group(function () {
-    Route::get('/auth/login', [LoginController::class, 'index'])->name('authentication.index');
-    Route::post('/auth/login', [LoginController::class, 'login'])->name('authentication.login');
-    Route::get('/auth/registration', [RegisterController::class, 'index'])->name('register.index');
-    Route::get('/auth/student/registration', [RegisterController::class, 'students_index'])->name('register.student.index');
-    Route::post('/auth/registration', [RegisterController::class, 'registration'])->name('register.registration');
-    Route::post('/auth/student/registration', [RegisterController::class, 'student_registration'])->name('register.student.registration');
+    Route::get('/auth/login', [AuthController::class, 'index'])->name('authentication.index');
+    Route::post('/auth/login', [AuthController::class, 'login'])->name('authentication.login');
+    Route::get('/auth/registration', [AuthController::class, 'registration'])->name('authentication.registration');
+    Route::post('/auth/registration', [AuthController::class, 'registing'])->name('authentication.registing');
 });

@@ -17,13 +17,14 @@ class ProfileController extends Controller
     public function index()
     {
         $user = User::find(session('auth.id'));
+
         return view('layouts.User.Profile.index', compact('user'));
     }
 
     public function update_profile_picture(Request $request)
     {
         $profile_picture = $request->file('file');
-        $filename = session('auth.username') . '/' . session('auth.first_name') . session('auth.last_name') . '.' . $profile_picture->getClientOriginalExtension();
+        $filename = session('auth.username').'/'.session('auth.first_name').session('auth.last_name').'.'.$profile_picture->getClientOriginalExtension();
         if (Storage::disk('profile-picture')->exists('/')) {
             Storage::disk('profile-picture')->makeDirectory('/');
         }
@@ -31,18 +32,20 @@ class ProfileController extends Controller
         try {
             Storage::disk('profile-picture')->put($filename, $profile_picture->getContent());
             User::find(session('auth.id'))->update([
-                'profile_picture' => $filename
+                'profile_picture' => $filename,
             ]);
             DB::commit();
+
             return Response()->json([
                 'message' => 'Profile picture update successfully',
-                'profile_picture' => 'data:image/png;base64,' . profile_asset($filename)
+                'profile_picture' => 'data:image/png;base64,'.profile_asset($filename),
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th);
+
             return Response()->json([
-                'message' => 'Failed to update profile picture'
+                'message' => 'Failed to update profile picture',
             ], 500);
         }
     }
@@ -54,17 +57,20 @@ class ProfileController extends Controller
             $user = User::find($id);
             if ($user->last_reset_password == date('Y-m-d')) {
                 session(['handle.counter_change_password' => 1]);
+
                 return Response()->json(['message' => 'Good Skill, But not this time'], 500);
             }
             session(['handle.counter_change_password' => null]);
             $user->update([
                 'last_reset_password' => now('Asia/Jakarta'),
-                'updated_at' => now('Asia/Jakarta')
+                'updated_at' => now('Asia/Jakarta'),
             ]);
             DB::commit();
+
             return Response()->json(['message' => 'Successfully update last reset password']);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return Response()->json(['message' => 'Failed update last reset password'], 500);
         }
     }
@@ -75,6 +81,7 @@ class ProfileController extends Controller
         if (session('handle.counter_change_password') != null) {
             return redirect()->route('user.profile.index')->with('try_again', 'Really Bro You Try Again?');
         }
+
         return view('layouts.User.Profile.change-password');
     }
 
@@ -95,6 +102,7 @@ class ProfileController extends Controller
                 ->send(new ChangePasswordMail(User::where('email', $request->email)->first()));
             ChangePassword::where('email', $request->email)->update(['mailed' => true]);
             DB::commit();
+
             return redirect()->route('user.profile.index')->with('email', 'Check your email to complete process change password');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -109,7 +117,7 @@ class ProfileController extends Controller
             $request_change_password = ChangePassword::where([
                 'email' => base64_decode($request->action),
                 'mailed' => 1,
-                'changed' => 0
+                'changed' => 0,
             ]);
             if (
                 $request->validation == env('APP_VALIDATION') &&
@@ -121,10 +129,12 @@ class ProfileController extends Controller
                 $message = ['error', 'Your Validation Key Is invalid'];
             }
             DB::commit();
+
             return redirect()->route('user.profile.index')->with($message[0], $message[1]);
         } catch (\Throwable $th) {
             DB::rollBack();
             $message = ['error', 'Unexpected Error on change password process'];
+
             return redirect()->route('user.profile.index')->with($message[0], $message[1]);
         }
     }
@@ -132,11 +142,11 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'username' => 'required|alpha_num|unique:users,username,' . session('auth.id') . '',
+            'username' => 'required|alpha_num|unique:users,username,'.session('auth.id').'',
             'first_name' => 'required|regex:/[^0-9]+/',
             'last_name' => 'required|regex:/[^0-9]+/',
             'address' => 'required',
-            'email' => 'required|unique:users,email,' . session('auth.id') . '',
+            'email' => 'required|unique:users,email,'.session('auth.id').'',
             'phone_number' => 'required|numeric',
             'gender' => 'required',
         ]);
@@ -147,11 +157,13 @@ class ProfileController extends Controller
             $data['auth'] = User::find(session('auth.id'));
             $data['auth']['logged'] = true;
             session($data);
+
             return Response()->json([
                 'message' => 'Successfully update your profile',
             ], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return Response()->json([
                 'message' => 'Failed update your profile',
             ], 500);

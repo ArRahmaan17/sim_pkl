@@ -16,7 +16,7 @@ class CompletedProfile
     public function handle(Request $request, Closure $next): Response
     {
         session('auth');
-        if (null != session('auth.first_name')) {
+        if (session('auth.first_name') != null) {
             return $next($request);
         } else {
             return redirect()->route('user.profile.index')->with('error', 'Please Complete Your Profile First');

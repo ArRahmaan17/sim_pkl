@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Cluster;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +25,7 @@ class TaskFactory extends Factory
             'thumbnail' => 'task-2023-12-11.png',
             'status' => 'Pending',
             'created_at' => now('Asia/Jakarta'),
-            'updated_at' => now('Asia/Jakarta')
+            'updated_at' => now('Asia/Jakarta'),
         ];
     }
 }

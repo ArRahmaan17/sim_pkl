@@ -23,8 +23,10 @@ class MenuController extends Controller
                 return $route;
             }
         });
+
         return view('layouts.Masters.Menu.index', compact('allMenus', 'routeCollection'));
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -43,7 +45,7 @@ class MenuController extends Controller
         );
         $data = $request->except('_token');
         if (count($request->access_to) > 1) {
-            $data['access_to'] = "All";
+            $data['access_to'] = 'All';
         } else {
             $data['access_to'] = $request->access_to[0];
         }
@@ -52,19 +54,21 @@ class MenuController extends Controller
         try {
             Menu::insert($data);
             DB::commit();
+
             return Response()
                 ->json(
                     [
-                        'message' => 'Menu ' . $data['name'] . ' Successfully Created',
+                        'message' => 'Menu '.$data['name'].' Successfully Created',
                         'records' => Menu::with('child')->orderByRaw('ordered,position')->get(),
                     ],
                     200
                 );
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return Response()
                 ->json(
-                    ['message' => 'Menu ' . $data['name'] . ' Failed Created'],
+                    ['message' => 'Menu '.$data['name'].' Failed Created'],
                     500
                 );
         }
@@ -118,14 +122,16 @@ class MenuController extends Controller
             // dd($data_menus);
             Menu::upsert($data_menus, ['id'], ['ordered']);
             DB::commit();
+
             return Response()->json([
                 'message' => 'Successfully Ordering Your Menu',
-                'records' => Menu::with('child')->orderByRaw('ordered,position')->get()
+                'records' => Menu::with('child')->orderByRaw('ordered,position')->get(),
             ]);
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return Response()->json([
-                'message' => 'Failed Ordering Your Menu', 'records' => Menu::all()
+                'message' => 'Failed Ordering Your Menu', 'records' => Menu::all(),
             ], 500);
         }
     }
@@ -136,15 +142,16 @@ class MenuController extends Controller
         if ($data == null) {
             return Response()->json([
                 'message' => 'We Failed Found Your Data',
-                'record' => []
+                'record' => [],
             ]);
         } else {
             return Response()->json([
                 'message' => 'We Found Your Data',
-                'record' => $data
+                'record' => $data,
             ]);
         }
     }
+
     /**
      * Display the specified resource.
      */
@@ -154,12 +161,12 @@ class MenuController extends Controller
         if ($data == null) {
             return Response()->json([
                 'message' => 'We Failed Found Your Data',
-                'record' => []
+                'record' => [],
             ]);
         } else {
             return Response()->json([
                 'message' => 'We Found Your Data',
-                'record' => $data
+                'record' => $data,
             ]);
         }
     }
@@ -180,7 +187,7 @@ class MenuController extends Controller
         ]);
         $data = $request->except('_token', 'id');
         if (count($request->access_to) > 1) {
-            $data['access_to'] = "All";
+            $data['access_to'] = 'All';
         } else {
             $data['access_to'] = $request->access_to[0];
         }
@@ -189,19 +196,21 @@ class MenuController extends Controller
         try {
             Menu::find($id)->update($data);
             DB::commit();
+
             return Response()
                 ->json(
                     [
-                        'message' => 'Menu ' . $data['name'] . ' Updated Successfully',
+                        'message' => 'Menu '.$data['name'].' Updated Successfully',
                         'records' => Menu::all(),
                     ],
                     200
                 );
         } catch (\Throwable $th) {
             DB::rollBack();
+
             return Response()
                 ->json(
-                    ['message' => 'Menu ' . $data['name'] . ' Failed to Updated'],
+                    ['message' => 'Menu '.$data['name'].' Failed to Updated'],
                     500
                 );
         }
@@ -221,13 +230,15 @@ class MenuController extends Controller
             } else {
                 Menu::find($id)->delete();
                 DB::commit();
-                return Response()->json(['message' => "Successfully Deleted Menu"], 200);
+
+                return Response()->json(['message' => 'Successfully Deleted Menu'], 200);
             }
         } catch (\Throwable $th) {
             DB::rollBack();
-            //throw $th;
+
+            // throw $th;
             return Response()->json([
-                'message' => "Failed Delete Menu",
+                'message' => 'Failed Delete Menu',
             ], 500);
         }
     }

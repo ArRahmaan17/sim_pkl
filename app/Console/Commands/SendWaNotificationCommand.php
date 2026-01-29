@@ -28,7 +28,7 @@ class SendWaNotificationCommand extends Command
      */
     public function handle()
     {
-        if (!in_array(now('Asia/Jakarta')->dayOfWeek, [0, 1])) {
+        if (! in_array(now('Asia/Jakarta')->dayOfWeek, [0, 1])) {
             if ($this->hasArgument('type')) {
                 $type = $this->argument('type');
             } else {
@@ -37,7 +37,7 @@ class SendWaNotificationCommand extends Command
             if ($type == 'single') {
                 $phone_numbers = User::join('attendances as a', 'users.id', '!=', 'a.user_id')->where('role', 'S')->where(['role' => 'S'])->where('a.created_at', '>', now()->startOfDay())->where('a.created_at', '<', now()->endOfDay())->get();
                 if ($phone_numbers->count() == 0) {
-                    $phone_numbers =  User::where(['role' => 'S'])->get()->map(function ($user) {
+                    $phone_numbers = User::where(['role' => 'S'])->get()->map(function ($user) {
                         return implode('', explode('(+62)', implode('', explode(' ', $user->phone_number))));
                     });
                 }
@@ -50,15 +50,15 @@ class SendWaNotificationCommand extends Command
                 } else {
                     $where = "and status = 'OUT'";
                 }
-                $phone_number = DB::table('users')->whereRaw("role = 'S' and id not in (select user_id from attendances where created_at > '" . now('Asia/Jakarta')->startOfDay() . "' " . $where . " )")->get()->map(function ($user) {
+                $phone_number = DB::table('users')->whereRaw("role = 'S' and id not in (select user_id from attendances where created_at > '".now('Asia/Jakarta')->startOfDay()."' ".$where.' )')->get()->map(function ($user) {
                     return implode('', explode('(+62)', implode('', explode(' ', $user->phone_number))));
                 });
                 if ($phone_number->count() == 0) {
-                    $phone_number =  User::where(['role' => 'S'])->get()->map(function ($user) {
+                    $phone_number = User::where(['role' => 'S'])->get()->map(function ($user) {
                         return implode('', explode('(+62)', implode('', explode(' ', $user->phone_number))));
                     });
                 }
-                Http::post(env('WA_SERVICES') . 'attendance-warning', ['phone_number' => json_encode($phone_number)]);
+                Http::post(env('WA_SERVICES').'attendance-warning', ['phone_number' => json_encode($phone_number)]);
             }
         }
     }

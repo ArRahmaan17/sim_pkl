@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->addColumn('bigInteger', 'cluster_id',)->nullable()->unsigned();
-            $table->foreign('cluster_id')
+            $table->addColumn('bigInteger', 'group_id')->nullable()->unsigned();
+            $table->foreign('group_id')
                 ->references('id')
-                ->on('clusters')
+                ->on('groups')
                 ->cascadeOnUpdate()
                 ->nullOnDelete();
         });
@@ -27,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('cluster_id')->nullable();
+            $table->dropColumn('group_id')->nullable();
         });
     }
 };

@@ -28,7 +28,7 @@ class User extends Authenticatable
         'gender',
         'last_login',
         'last_reset_password',
-        'cluster_id'
+        'group_id',
     ];
 
     /**

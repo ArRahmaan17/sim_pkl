@@ -15,9 +15,9 @@ class MenuControl extends ServiceProvider
     public function boot(): void
     {
         View::composer(['components.*'], function ($view) {
-            // $menu = Menu::where('parent', 0)->orderBy('ordered')->get();
+            $menu = Menu::where('parent', 0)->orderBy('ordered')->get();
             // $profile_picture = User::find(session('auth.id'))->profile_picture;
-            // $view->with(['menus' => $menu, 'profile_picture' => $profile_picture]);
+            $view->with(['menus' => $menu]);
         });
     }
 }

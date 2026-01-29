@@ -15,9 +15,10 @@ class isMentor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session('auth.role') != "M") {
+        if (session('auth.role') != 'M') {
             return redirect()->route('home.index');
         }
+
         return $next($request);
     }
 }

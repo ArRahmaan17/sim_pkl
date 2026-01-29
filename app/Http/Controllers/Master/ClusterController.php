@@ -17,6 +17,7 @@ class ClusterController extends Controller
     {
         return view('layouts.Masters.Cluster.index', ['clusters' => Cluster::all()]);
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -32,11 +33,13 @@ class ClusterController extends Controller
             $data['created_at'] = now('Asia/Jakarta');
             Cluster::insert($data);
             DB::commit();
+
             return Response()->json([
-                'message' => 'Successfully create new student cluster'
+                'message' => 'Successfully create new student cluster',
             ], 200);
         } catch (Throwable $e) {
             DB::rollBack();
+
             return Response()->json(['message' => 'Failed create new student cluster'], 500);
         }
     }
@@ -50,10 +53,12 @@ class ClusterController extends Controller
             $data = Cluster::findOrFail($id);
             $response = ['message' => 'We found your data', 'data' => $data];
             $status = 200;
+
             return Response()->json($response, $status);
         } catch (\Throwable $th) {
             $status = 404;
             $response = ['message' => 'We cant found your data', 'data' => []];
+
             return Response()->json($response, $status);
         }
     }
@@ -65,7 +70,7 @@ class ClusterController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -73,14 +78,16 @@ class ClusterController extends Controller
             $data['updated_at'] = now('Asia/Jakarta');
             Cluster::find($id)->update($data);
             DB::commit();
+
             return Response()->json([
-                'message' => 'Successfully update student cluster'
+                'message' => 'Successfully update student cluster',
             ], 200);
         } catch (\Throwable $th) {
             dd($th);
             DB::rollBack();
+
             return Response()->json([
-                'message' => 'Failed update student cluster'
+                'message' => 'Failed update student cluster',
             ], 500);
         }
     }

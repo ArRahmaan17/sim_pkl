@@ -21,18 +21,20 @@ class StudentClusterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cluster_id' => 'string'
+            'group_id' => 'string',
         ]);
         DB::beginTransaction();
         try {
             User::find($request->id)->update([
-                'cluster_id' => intval($request->cluster_id) != 0 ? intval($request->cluster_id) : null, 'updated_at' => now('Asia/Jakarta')
+                'group_id' => intval($request->group_id) != 0 ? intval($request->group_id) : null, 'updated_at' => now('Asia/Jakarta'),
             ]);
             DB::commit();
+
             return Response()->json(['message' => 'Successfully Change Group'], 200);
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th);
+
             return Response()->json(['message' => 'Failed change group'], 500);
         }
     }

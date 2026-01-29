@@ -19,9 +19,6 @@ return new class extends Migration
                 ->nullable();
             $table->string('email')
                 ->unique();
-            $table->string('student_identification_number')
-                ->unique()
-                ->nullable();
             $table->string('username')
                 ->unique();
             $table->string('password');
@@ -31,14 +28,12 @@ return new class extends Migration
                 ->nullable();
             $table->string('profile_picture')
                 ->nullable();
-            $table->char('gender', 1)
-                ->nullable();
-            $table->char('role', 1)
-                ->default('M')
-                ->nullable();
+            $table->foreignId('gender_id');
             $table->date('last_reset_password')
                 ->nullable();
             $table->dateTime('last_login')
+                ->nullable();
+            $table->dateTime('phone_number_verificated_at')
                 ->nullable();
             $table->timestamps();
         });

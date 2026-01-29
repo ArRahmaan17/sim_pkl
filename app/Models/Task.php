@@ -9,9 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
+
     protected $dispatchesEvents = [
-        'created' => TaskEvent::class
+        'created' => TaskEvent::class,
     ];
+
     protected $fillable = [
         'title',
         'start_date',
@@ -21,12 +23,14 @@ class Task extends Model
         'thumbnail',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
     public function allFile()
     {
         return $this->hasMany(TaskFile::class, 'task_id', 'id');
     }
+
     public function last_activity()
     {
         return $this->hasOne(

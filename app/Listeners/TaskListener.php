@@ -3,8 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\TaskEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class TaskListener
 {
@@ -21,6 +19,6 @@ class TaskListener
      */
     public function handle(TaskEvent $event): void
     {
-        info('Test Create Task ' . $event->task->title);
+        info('Test Create Task '.$event->task->title);
     }
 }

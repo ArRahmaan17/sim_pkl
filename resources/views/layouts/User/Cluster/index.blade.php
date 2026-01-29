@@ -14,7 +14,7 @@
             <div class="row">
                 <div class="col row cluster shadow p-2 mx-1" id="cluster-null">
                     @foreach ($users as $user)
-                        @if ($user->role == 'S' && $user->cluster_id == null)
+                        @if ($user->role == 'S' && $user->group_id == null)
                             <div class="col-12 rounded shadow mt-1" data-user="{{ json_encode($user) }}">
                                 {{ $user->first_name . ' ' . $user->last_name }} / {{ $user->username }}
                             </div>
@@ -24,7 +24,7 @@
                 @foreach ($clusters as $cluster)
                     <div class="col row cluster shadow p-2 mx-1" id="cluster-{{ $cluster->id }}">
                         @foreach ($users as $user)
-                            @if ($user->role == 'S' && $user->cluster_id == $cluster->id)
+                            @if ($user->role == 'S' && $user->group_id == $cluster->id)
                                 <div class="col-12 rounded shadow mt-1" data-user="{{ json_encode($user) }}">
                                     {{ $user->first_name . ' ' . $user->last_name }} / {{ $user->username }}
                                 </div>
@@ -69,7 +69,7 @@
                 }).on('over', function(el, container) {
                     container.className += ' ex-over';
                     let data = $(el).data('user');
-                    data.cluster_id = $(container).attr('id').split('cluster-').join('');
+                    data.group_id = $(container).attr('id').split('cluster-').join('');
                     data._token = `{{ csrf_token() }}`;
                     $(el).data('user', data);
                 }).on('out', function(el, container) {

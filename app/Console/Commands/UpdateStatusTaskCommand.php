@@ -28,11 +28,11 @@ class UpdateStatusTaskCommand extends Command
     {
         Task::where([
             'status' => 'Pending',
-            'start_date' => now('Asia/Jakarta')->format('Y-m-d')
+            'start_date' => now('Asia/Jakarta')->format('Y-m-d'),
         ])->update(['status' => 'Progress']);
         Task::where([
             'status' => 'Progress',
-            'deadline_date' => now('Asia/Jakarta')->format('Y-m-d')
+            'deadline_date' => now('Asia/Jakarta')->format('Y-m-d'),
         ])->update(['status' => 'End']);
     }
 }

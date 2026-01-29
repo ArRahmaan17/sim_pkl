@@ -37,7 +37,7 @@ class SendAttendanceSuccessNotification extends Command
                 'file_attendance',
                 Storage::disk('attendance')->get($attendance->photo),
                 'photo.jpg'
-            )->post(env('WA_SERVICES') . 'attendance-success/' . implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))) . '/' . $attendance->status);
+            )->post(env('WA_SERVICES').'attendance-success/'.implode('', explode('(+62)', implode('', explode(' ', $user->phone_number)))).'/'.$attendance->status);
         }
     }
 }

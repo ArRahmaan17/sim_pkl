@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Change Password</title>
-    {{-- yk_-7J?oLeYU --}}
 </head>
 
 <body>
     <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
         <tr>
             <td align="center" bgcolor="#f7f7f7" style="padding: 40px 0 30px 0;">
-                <img src="{{ asset('img/company/nug.png') }}" alt="Your Logo" width="150">
+                <img fetchpriority=high src="{{ asset('assets/img/logo_transparent.webp') }}" alt="logo" width="150" class="shadow-light rounded-circle">
             </td>
         </tr>
         <tr>

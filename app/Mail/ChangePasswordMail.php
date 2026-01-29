@@ -3,18 +3,17 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Hash;
 
 class ChangePasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     protected $user;
+
     /**
      * Create a new message instance.
      */
@@ -41,12 +40,12 @@ class ChangePasswordMail extends Mailable
         return new Content(
             view: 'email.change-password',
             with: [
-                'full_name' => $this->user->username ?? $this->user->first_name . ' ' . $this->user->last_name,
+                'full_name' => $this->user->username ?? $this->user->first_name.' '.$this->user->last_name,
                 'email' => base64_encode($this->user->email),
                 'id' => base64_encode(
                     $this->user->id
                 ),
-                'app' => env('APP_VALIDATION')
+                'app' => env('APP_VALIDATION'),
             ]
         );
     }

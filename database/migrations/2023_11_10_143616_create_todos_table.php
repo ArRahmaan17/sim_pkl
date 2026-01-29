@@ -20,10 +20,10 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->text('description');
-            $table->bigInteger('cluster_id')->unsigned();
-            $table->foreign('cluster_id')
+            $table->bigInteger('group_id')->unsigned();
+            $table->foreign('group_id')
                 ->references('id')
-                ->on('clusters')
+                ->on('groups')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
             $table->bigInteger('task_id')->unsigned();

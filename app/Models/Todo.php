@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Todo extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'task_id',
         'description',
-        'cluster_id',
+        'group_id',
         'task_id',
         'start',
         'progress',
@@ -20,6 +21,6 @@ class Todo extends Model
         'finish',
         'evidence_file',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }

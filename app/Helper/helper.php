@@ -13,5 +13,5 @@ function attendance_asset($path)
 
 function profile_asset($path)
 {
-    return base64_encode(Storage::disk('profile-picture')->get($path));
+    return base64_encode(Storage::disk('profile-picture')->get($path) ?? Storage::disk('seeder-picture')->get($path));
 }

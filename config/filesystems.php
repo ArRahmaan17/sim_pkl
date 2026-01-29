@@ -74,6 +74,10 @@ return [
             'root' => storage_path('app/profile-picture'),
             'url' => env('APP_URL') . '/profile-picture',
         ],
+        'seeder-picture' => [
+            'driver' => 'local',
+            'root' => public_path('assets'),
+        ],
         'task-activity' => [
             'driver' => 'local',
             'root' => storage_path('app/task-activity'),
