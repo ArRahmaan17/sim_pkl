@@ -19,17 +19,6 @@ use App\Http\Middleware\isMentor;
 use App\Http\Middleware\Unauthenticated;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 // testing feature
 // Route::prefix('{locale}')
 //     ->where(['locale' => 'en|es|fr'])
@@ -38,9 +27,9 @@ Route::middleware([Unauthenticated::class])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('authentication.logout');
     Route::name('data.')->prefix('data')->group(function () {
         Route::name('tasks.')->prefix('tasks')->group(function () {
-            Route::get('/all', [DatabaseController::class, 'tasks_all'])->name('task.all');
-            Route::get('/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('task.user');
-            Route::get('/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('task.progress');
+            Route::get('/all', [DatabaseController::class, 'tasks_all'])->name('all');
+            Route::get('/role/{role?}/cluster/{id?}', [DatabaseController::class, 'all_student_task'])->name('user');
+            Route::get('/{id?}/progress', [DatabaseController::class, 'show_task_progress'])->name('progress');
         });
         Route::name('users.')->prefix('users')->group(function () {
             Route::get('/all', [DatabaseController::class, 'users_all'])->name('all');
@@ -63,6 +52,7 @@ Route::middleware([Unauthenticated::class])->group(function () {
             Route::put('/update', [ProfileController::class, 'update'])->name('update');
             Route::post('/update-profile-picture', [ProfileController::class, 'update_profile_picture'])->name('update-profile-picture');
             Route::get('/change-password', [ProfileController::class, 'change_password'])->name('change-password');
+            Route::post('/online/{id}', [ProfileController::class, 'online'])->name('status.online');
             Route::post('/{id}/last-change-password', [ProfileController::class, 'last_change_password'])->name('last-change-password');
             Route::post('/changing-password', [ProfileController::class, 'changing_password'])->name('changing-password');
             Route::get('/{id}/accept-changed-password', [ProfileController::class, 'accept_changed_password'])->name('accept-changed-password');
@@ -80,7 +70,6 @@ Route::middleware([Unauthenticated::class])->group(function () {
             Route::get('/download/{id?}', [userTask::class, 'download'])->name('download');
         });
     });
-    Route::post('/online/{id}', [ProfileController::class, 'online'])->name('status.online');
     Route::name('report.')->prefix('report')->group(function () {
         Route::get('/report/daily-progress', [DailyReportController::class, 'index'])->name('daily-progress');
     });

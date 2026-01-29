@@ -23,7 +23,7 @@
                             <p>Dear {{ $full_name }},</p>
                             <p>We have received a request to change your password. To complete the process, please click
                                 the button below:</p>
-                            <p><a href="{{ route('user.profile.accept-changed-password', $id) }}?action={{ $email }}&validation={{ $app }}"
+                            <p><a href="{{ route('users.profile.accept-changed-password', $id) }}?action={{ $email }}&validation={{ $app }}"
                                     style="background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset
                                     Your Password</a></p>
                             <p>If you did not make this request, please ignore this email, and your password will remain

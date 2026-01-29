@@ -1,7 +1,10 @@
 @extends('main')
-@section('css')
-    <link rel="stylesheet" href="{{ asset('modules/dropzonejs/min/basic.min.css') }}">
+@section('title')
+{{ 'Profile '. session('auth.username') }}
 @endsection
+@push('vendor-css')
+    <link rel="stylesheet" href="{{ asset('assets/modules/dropzonejs/min/basic.min.css') }}">
+@endpush
 @section('content')
     <div class="pt-1 row">
         @if (session('try_again'))
@@ -139,14 +142,14 @@
         </div>
     </div>
 @endsection
-@section('script')
-    <script src="{{ asset('modules/sweetalert/sweetalert.min.js') }}"></script>
-    <script src="{{ asset('modules/dropzonejs/min/dropzone.min.js') }}"></script>
+@push('vendor-js')
+    <script src="{{ asset('assets/modules/sweetalert/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('assets/modules/dropzonejs/min/dropzone.min.js') }}"></script>
     <script>
         Dropzone.autoDiscover = false;
         $(function() {
             let profilePictureDropzone = new Dropzone('#update-profile-picture', {
-                url: `{{ route('user.profile.update-profile-picture') }}`,
+                url: `{{ route('users.profile.update-profile-picture') }}`,
                 method: "POST",
                 paramName: 'file',
                 acceptedFiles: '.png, .jpeg, .jpg',
@@ -176,7 +179,7 @@
                 $('.is-invalid').removeClass('is-invalid');
                 $.ajax({
                     type: "PUT",
-                    url: `{{ route('user.profile.update') }}`,
+                    url: `{{ route('users.profile.update') }}`,
                     data: post_data,
                     dataType: "json",
                     success: function(response) {
@@ -219,7 +222,7 @@
                             });
                             $.ajax({
                                 type: "post",
-                                url: `{{ route('user.profile.last-change-password', session('auth.id')) }}`,
+                                url: `{{ route('users.profile.last-change-password', session('auth.id')) }}`,
                                 data: {
                                     '_token': `{{ csrf_token() }}`
                                 },
@@ -228,7 +231,7 @@
                                     setTimeout(() => {
                                         swal.close()
                                         window.location.href =
-                                            `{{ route('user.profile.change-password') }}`;
+                                            `{{ route('users.profile.change-password') }}`;
                                     }, 1500);
                                 },
                                 error: function(error) {
@@ -247,4 +250,4 @@
             })
         });
     </script>
-@endsection
+@endpush

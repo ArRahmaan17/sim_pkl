@@ -49,7 +49,7 @@
 
                             <div class="card-body">
                                 <p class="text-muted">We will send a link to confirm your change password</p>
-                                <form method="POST" action="{{ route('user.profile.changing-password') }}">
+                                <form method="POST" action="{{ route('users.profile.changing-password') }}">
                                     @csrf
                                     <div class="form-group">
                                         <label for="email">Email</label>
@@ -143,7 +143,7 @@
                             setTimeout(() => {
                                 swal.close()
                                 window.location.href =
-                                    `{{ route('user.profile.index') }}`;
+                                    `{{ route('users.profile.index') }}`;
                             }, 1500);
                         } else {
                             swal('Greate choose!', {
